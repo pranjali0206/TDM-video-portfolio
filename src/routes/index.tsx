@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import {
-  ArrowDown, BriefcaseBusiness, Building2, Camera, Check, CirclePlay,
+  ArrowDown, BriefcaseBusiness, Bug, Building2, Camera, Check, CirclePlay,
   Clapperboard, Cpu, Factory, Film, Gem, GraduationCap, Hammer, HeartPulse,
   House, Leaf, Lightbulb, Megaphone, MessageCircle, Package, Palette,
-  Play, Scale, Search, ShoppingBag, Smartphone, Sparkles, Sprout, Stethoscope,
-  Store, Sun, Tooth, Utensils, Users, Video,
+  Play, Scale, Search, ShoppingBag, Smile, Smartphone, Sparkles, Stethoscope,
+  Store, Sun, Utensils, Users, Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroFashion from "@/assets/hero-fashion.jpg";
@@ -57,7 +57,7 @@ const industries = [
   { name: "Healthcare", icon: HeartPulse },
   { name: "Home improvement", icon: Hammer },
   { name: "Food", icon: Utensils },
-  { name: "Dental clinics", icon: Tooth },
+  { name: "Dental clinics", icon: Smile },
   { name: "Chiropractors", icon: Stethoscope },
   { name: "Health supplements", icon: Leaf },
   { name: "Real estate", icon: House },
@@ -70,7 +70,7 @@ const industries = [
   { name: "Enterprises", icon: Building2 },
   { name: "Solar companies", icon: Sun },
   { name: "Roofing contractors", icon: Store },
-  { name: "Pest control", icon: Sprout },
+  { name: "Pest control", icon: Bug },
 ];
 
 const stats = [
