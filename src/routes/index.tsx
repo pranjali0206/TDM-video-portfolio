@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import {
-  ArrowDown, Camera, Check, CirclePlay,
-  Clapperboard, Film, Lightbulb, Megaphone, MessageCircle, Package,
-  Play, Search, ShoppingBag, Smartphone, Sparkles, Users, Video,
+  ArrowDown, BriefcaseBusiness, Building2, Camera, Check, CirclePlay,
+  Clapperboard, Cpu, Factory, Film, Gem, GraduationCap, Hammer, HeartPulse,
+  House, Leaf, Lightbulb, Megaphone, MessageCircle, Package, Palette,
+  Play, Scale, Search, ShoppingBag, Smartphone, Sparkles, Sprout, Stethoscope,
+  Store, Sun, Tooth, Utensils, Users, Video,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroFashion from "@/assets/hero-fashion.jpg";
@@ -45,6 +47,30 @@ const categories = [
   { title: "Product and e-commerce", description: "Beautiful, useful demonstrations that make every product detail feel essential.", icon: Package, videos: ["Product launch", "How it works", "E-commerce loop"] },
   { title: "Campaign production", description: "One strong creative system adapted into every format your campaign needs.", icon: Clapperboard, videos: ["Campaign film", "Cutdown series", "Behind the scenes"] },
   { title: "Events and culture", description: "Atmosphere, energy and real moments captured without losing the story.", icon: Camera, videos: ["Event recap", "Culture film", "Speaker profile"] },
+];
+
+const industries = [
+  { name: "Fashion", icon: ShoppingBag },
+  { name: "Cosmetics", icon: Sparkles },
+  { name: "Service-based businesses", icon: BriefcaseBusiness },
+  { name: "Jewelry", icon: Gem },
+  { name: "Healthcare", icon: HeartPulse },
+  { name: "Home improvement", icon: Hammer },
+  { name: "Food", icon: Utensils },
+  { name: "Dental clinics", icon: Tooth },
+  { name: "Chiropractors", icon: Stethoscope },
+  { name: "Health supplements", icon: Leaf },
+  { name: "Real estate", icon: House },
+  { name: "Law firms", icon: Scale },
+  { name: "Education companies", icon: GraduationCap },
+  { name: "Beauty", icon: Palette },
+  { name: "IT companies", icon: Cpu },
+  { name: "SaaS companies", icon: Smartphone },
+  { name: "Manufacturing companies", icon: Factory },
+  { name: "Enterprises", icon: Building2 },
+  { name: "Solar companies", icon: Sun },
+  { name: "Roofing contractors", icon: Store },
+  { name: "Pest control", icon: Sprout },
 ];
 
 const stats = [
@@ -105,6 +131,25 @@ function Index() {
               {active && <Check className="mt-3 size-4 text-interactive" aria-hidden="true" />}
             </button>;
           })}
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-secondary/45 px-6 py-24 lg:px-10 lg:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-4xl font-extrabold text-ink md:text-5xl">Industries we know</h2>
+            <p className="mt-5 text-lg leading-8 text-muted-foreground">Our production systems adapt to different audiences, buying journeys and business goals.</p>
+          </div>
+          <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+            {industries.map(({ name, icon: Icon }, index) => (
+              <article key={name} className="flex min-h-40 flex-col items-center justify-between rounded-2xl border border-border bg-card px-3 py-6 text-center transition-transform duration-200 hover:-translate-y-1">
+                <span className={`flex size-12 items-center justify-center rounded-full ${index % 2 === 0 ? 'bg-accent/35' : 'bg-primary/10'}`}>
+                  <Icon className="size-6 text-ink" strokeWidth={1.5} aria-hidden="true" />
+                </span>
+                <h3 className="mt-5 text-sm font-bold leading-5 text-ink">{name}</h3>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
