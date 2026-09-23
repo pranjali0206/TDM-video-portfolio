@@ -73,7 +73,7 @@ function Index() {
             <a href="#contact">Plan your next shoot</a>
           </Button>
         </div>
-        <div className="relative aspect-[4/5] max-h-[720px] min-h-[480px] overflow-hidden rounded-3xl bg-night">
+        <div className="relative aspect-[4/5] w-full min-w-0 max-h-[720px] overflow-hidden rounded-3xl bg-night sm:min-h-[480px]">
           {heroFrames.map((frame, index) => (
             <figure key={frame.caption} className="hero-frame absolute inset-0" style={{ animationDelay: `${index * 4}s`, opacity: index === 0 ? 1 : 0 }}>
               <img src={frame.image} alt={frame.caption} width={1024} height={1280} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
