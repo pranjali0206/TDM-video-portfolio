@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import {
-  ArrowDown, BadgePlay, BriefcaseBusiness, Camera, Check, CirclePlay,
+  ArrowDown, Camera, Check, CirclePlay,
   Clapperboard, Film, Lightbulb, Megaphone, MessageCircle, Package,
   Play, Search, ShoppingBag, Smartphone, Sparkles, Users, Video,
 } from "lucide-react";
@@ -162,7 +162,7 @@ function Index() {
           {[
             [Search, "1. Diagnose", "We find the audience tension, business goal and creative opportunity worth solving."],
             [Lightbulb, "2. Create", "We shape the idea, direct the production and make every frame earn its place."],
-            [BadgePlay, "3. Improve", "We deliver, learn from performance and turn those signals into the next iteration."],
+            [Video, "3. Improve", "We deliver, learn from performance and turn those signals into the next iteration."],
           ].map(([Icon, title, text]) => { const StepIcon = Icon as typeof Search; return <article key={title as string} className="rounded-2xl bg-card p-8">
             <StepIcon className="size-7 text-primary" strokeWidth={1.5} /><h3 className="mt-10 text-xl font-extrabold text-ink">{title as string}</h3><p className="mt-4 leading-7 text-muted-foreground">{text as string}</p>
           </article>; })}
