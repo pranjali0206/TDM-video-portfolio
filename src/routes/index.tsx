@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
-  ArrowDownRight, ArrowUpRight, BriefcaseBusiness, Bug, Building2, Camera,
-  Check, Clapperboard, Cpu, Factory, Film, Gem, GraduationCap, Hammer,
+  ArrowDownRight, ArrowRight, ArrowUpRight, BriefcaseBusiness, Bug, Building2, Camera,
+  Check, ChevronLeft, ChevronRight, Clapperboard, Cpu, Factory, Film, Gem, GraduationCap, Hammer,
   HeartPulse, House, Leaf, Lightbulb, LoaderCircle, MessageCircle, Package,
   Palette, Play, Scale, Search, ShoppingBag, Smile, Smartphone, Sparkles,
   Stethoscope, Store, Sun, Target, Utensils, Video, WandSparkles,
@@ -61,12 +61,250 @@ const stripProjects = [
   { image: heroFitness, title: "Wellness", tag: "Campaign launch" },
 ];
 
+// Same names/images as stripProjects, reshaped for the PortfolioCoverflow
+// carousel below (which replaces the old CSS marquee strip).
+const portfolioSlides = stripProjects.map((project) => ({
+  title: project.title,
+  image: project.image,
+}));
+
 const stats = [
   ["33%", "More qualified demand"], ["2.4×", "Stronger creative return"],
   ["41%", "Lower cost per result"], ["18M", "Campaign views"],
 ];
 
 type GeneratedCopy = { headlines: string[]; quotes: string[] };
+
+/**
+ * Stacked-deck hero slider (inBeat-style): the front card sits flat and
+ * fully visible, with the next two cards peeking out just slightly behind
+ * its top-right corner — not a full 3D coverflow, just a shallow offset
+ * stack. Auto-advances on a fast timer and pauses on hover/focus; clicking
+ * a peeking card also jumps straight to it.
+ */
+function HeroSlider() {
+  const total = heroFrames.length;
+  const SECONDS_PER_SLIDE = 1.6;
+
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      setIndex((current) => (current + 1) % total);
+    }, SECONDS_PER_SLIDE * 1000);
+    return () => clearInterval(id);
+  }, [paused, total]);
+
+  const goTo = (frameIndex: number) => setIndex(((frameIndex % total) + total) % total);
+
+  return (
+    <div
+      className="relative aspect-[4/5] w-full min-w-0 max-h-[720px] sm:min-h-[480px]"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      {heroFrames.map((frame, frameIndex) => {
+        // rank 0 = front card, 1 = first peek, 2 = second peek, 3+ = hidden.
+        const rank = (frameIndex - index + total) % total;
+        const isActive = rank === 0;
+        const visible = rank <= 2;
+
+        const translate = rank * 5; // percent, shifts each layer up-and-right
+        const scale = 1 - Math.min(rank, 2) * 0.035;
+        const zIndex = 30 - rank * 10;
+        const opacity = visible ? 1 : 0;
+
+        return (
+          <button
+            key={frame.caption}
+            type="button"
+            onClick={() => goTo(frameIndex)}
+            aria-label={isActive ? frame.caption : `Show ${frame.caption}`}
+            aria-current={isActive}
+            tabIndex={isActive ? -1 : 0}
+            className="absolute inset-0 m-auto overflow-hidden rounded-3xl bg-night shadow-2xl shadow-black/30 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+            style={{
+              width: "92%",
+              height: "96%",
+              transform: `translate(${translate}%, ${-translate}%) scale(${scale})`,
+              opacity,
+              zIndex,
+              cursor: isActive ? "default" : "pointer",
+              pointerEvents: isActive || !visible ? "none" : "auto",
+            }}
+          >
+            <img
+              src={frame.image}
+              alt={frame.caption}
+              width={1024}
+              height={1280}
+              loading={frameIndex === 0 ? "eager" : "lazy"}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/85 to-transparent" />
+            <figcaption
+              className="absolute bottom-7 left-7 right-7 text-sm font-semibold text-primary-foreground transition-opacity duration-300"
+              style={{ opacity: isActive ? 1 : 0 }}
+            >
+              {frame.caption}
+            </figcaption>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Full-bleed, image-led 3D coverflow carousel. Slides span the entire
+ * viewport width edge-to-edge in a tall portrait aspect so images show in
+ * full; auto-scrolls fast, pausing on hover/focus, with dot + arrow
+ * controls for manual override. Replaces the old CSS marquee strip.
+ */
+function PortfolioCoverflow() {
+  const total = portfolioSlides.length;
+  const SECONDS_PER_SLIDE = 2.2;
+
+  const [progress, setProgress] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  pausedRef.current = paused;
+
+  useEffect(() => {
+    let frameId: number;
+    let lastTime: number | null = null;
+
+    const tick = (time: number) => {
+      if (lastTime === null) lastTime = time;
+      const deltaSeconds = (time - lastTime) / 1000;
+      lastTime = time;
+
+      if (!pausedRef.current) {
+        setProgress((current) => (current + deltaSeconds / SECONDS_PER_SLIDE) % total);
+      }
+      frameId = requestAnimationFrame(tick);
+    };
+
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
+
+  const goTo = (target: number) => setProgress(((target % total) + total) % total);
+  const prev = () => goTo(Math.round(progress) - 1);
+  const next = () => goTo(Math.round(progress) + 1);
+  const activeIndex = Math.round(progress) % total;
+
+  const getOffset = (slideIndex: number) => {
+    let diff = slideIndex - progress;
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+    return diff;
+  };
+
+  return (
+    <div
+      className="relative left-1/2 w-screen -translate-x-1/2"
+      style={{ perspective: "2000px" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+    >
+      <div className="relative h-[560px] overflow-hidden sm:h-[760px]">
+        {portfolioSlides.map((slide, slideIndex) => {
+          const offset = getOffset(slideIndex);
+          const distance = Math.abs(offset);
+          const isActive = distance < 0.12;
+          const direction = Math.sign(offset);
+
+          const translateX = offset * 62; // percent
+          const translateZ = -distance * 260; // px
+          const rotateY = -direction * Math.min(distance, 1) * 28; // deg
+          const scale = 1 - Math.min(distance, 2) * 0.14;
+          const opacity = distance > 2.2 ? 0 : 1 - Math.min(distance, 1.6) * 0.4;
+          const zIndex = Math.round((total - distance) * 10);
+
+          return (
+            <button
+              key={slide.title}
+              type="button"
+              onClick={() => goTo(slideIndex)}
+              aria-label={isActive ? slide.title : `Show ${slide.title}`}
+              aria-current={isActive}
+              tabIndex={isActive ? -1 : 0}
+              className="absolute inset-0 m-auto aspect-[4/5] h-full overflow-hidden rounded-[2rem] shadow-2xl shadow-black/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+              style={{
+                transform: `translateX(${translateX}%) translateZ(${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                opacity,
+                zIndex,
+                cursor: isActive ? "default" : "pointer",
+                pointerEvents: distance > 2.2 ? "none" : "auto",
+              }}
+            >
+              <img
+                src={slide.image}
+                alt={slide.title}
+                width={1024}
+                height={1280}
+                loading={slideIndex === 0 ? "eager" : "lazy"}
+                className="h-full w-full object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-night via-night/15 to-transparent" />
+              <div
+                className="absolute inset-x-0 bottom-0 p-7 transition-opacity duration-300 sm:p-10"
+                style={{ opacity: isActive ? 1 : 0 }}
+              >
+                <h3 className="text-2xl font-extrabold uppercase tracking-tight text-primary-foreground sm:text-5xl">
+                  {slide.title}
+                </h3>
+                <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-night/70 px-5 py-2.5 text-sm font-bold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
+                  View project <ArrowRight className="size-4" />
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        onClick={prev}
+        aria-label="Previous project"
+        className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-primary-foreground/10 p-3 text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive sm:left-8"
+      >
+        <ChevronLeft className="size-5" />
+      </button>
+      <button
+        type="button"
+        onClick={next}
+        aria-label="Next project"
+        className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-primary-foreground/10 p-3 text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive sm:right-8"
+      >
+        <ChevronRight className="size-5" />
+      </button>
+
+      <div className="mt-8 flex justify-center gap-2">
+        {portfolioSlides.map((slide, slideIndex) => (
+          <button
+            key={slide.title}
+            type="button"
+            onClick={() => goTo(slideIndex)}
+            aria-label={`Go to ${slide.title}`}
+            aria-current={slideIndex === activeIndex}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              slideIndex === activeIndex ? "w-6 bg-teal" : "w-2 bg-muted-foreground/30"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Index() {
   const runCampaignWriter = useServerFn(generateCampaignCopy);
@@ -110,15 +348,7 @@ function Index() {
             <a href="#contact">Build a campaign that moves <ArrowDownRight /></a>
           </Button>
         </div>
-        <div className="relative aspect-[4/5] w-full min-w-0 max-h-[720px] overflow-hidden rounded-3xl bg-night sm:min-h-[480px]">
-          {heroFrames.map((frame, index) => (
-            <figure key={frame.caption} className="hero-frame absolute inset-0" style={{ animationDelay: `${index * 4}s`, opacity: index === 0 ? 1 : 0 }}>
-              <img src={frame.image} alt={frame.caption} width={1024} height={1280} loading={index === 0 ? "eager" : "lazy"} className="h-full w-full object-cover" />
-              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/90 to-transparent" />
-              <figcaption className="absolute bottom-7 left-7 right-7 text-sm font-bold text-primary-foreground">{frame.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
+        <HeroSlider />
       </section>
 
       <div className="border-y border-border bg-secondary/45 py-7">
@@ -200,19 +430,8 @@ function Index() {
           <p className="font-extrabold text-primary">Built for every feed, screen, and decisive moment.</p>
           <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-extrabold text-ink md:text-5xl">One idea. Infinite momentum.</h2>
         </div>
-        <div className="mt-14 overflow-hidden py-6 [perspective:1200px]">
-          <div className="strip-track flex w-max gap-5 px-3">
-            {[...stripProjects, ...stripProjects].map((project, index) => (
-              <figure key={`${project.title}-${index}`} className="strip-card relative aspect-[4/5] w-[240px] shrink-0 overflow-hidden rounded-2xl bg-night sm:w-[320px]">
-                <img src={project.image} alt={`${project.title} ${project.tag} project`} className="h-full w-full object-cover" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-night/90 via-transparent to-transparent" />
-                <figcaption className="absolute inset-x-0 bottom-0 p-6 text-left text-primary-foreground">
-                  <span className="text-xs font-bold text-teal">{project.tag}</span>
-                  <strong className="mt-1 block text-xl">{project.title}</strong>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+        <div className="mt-14">
+          <PortfolioCoverflow />
         </div>
       </section>
 
