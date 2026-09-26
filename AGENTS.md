@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Use the semantic palette and display/body font roles defined in `src/styles.css` for page presentation, so visual changes remain cohesive and themeable.
