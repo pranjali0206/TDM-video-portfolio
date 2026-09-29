@@ -98,7 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      // ?v= busts browsers' sticky favicon cache after the TDM icon replaced the default one.
+      { rel: "icon", href: "/favicon.ico?v=2", sizes: "any" },
+      { rel: "icon", href: "/favicon.png?v=2", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png?v=2" },
     ],
   }),
   shellComponent: RootShell,
