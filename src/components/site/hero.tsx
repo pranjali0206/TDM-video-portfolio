@@ -136,15 +136,15 @@ export function Hero() {
         >
           <div className="max-w-xl">
             <p className="text-xl font-medium leading-snug text-ink md:text-2xl">
-              Digital growth for{" "}
+              Experts in{" "}
               <FlipWords
                 words={heroFlipWords}
                 className="font-serif text-[1.18em] italic text-deep-teal"
               />
             </p>
             <p className="mt-3 max-w-md text-base leading-relaxed text-ink/70">
-              Performance marketing, high-converting websites and smart automation — working
-              together to turn clicks into customers.
+              Deep expertise across marketing, technology and AI — every service working together
+              to turn clicks into customers.
             </p>
           </div>
 

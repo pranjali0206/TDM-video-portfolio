@@ -65,12 +65,15 @@ export const clients = [
 // Montage frames for the inline preview pill in the hero headline.
 export const heroMontage = [heroFashion, heroProduct, heroHospitality, heroFitness, heroEvents];
 
+// Our services, cycling in the hero's "Experts in …" line.
 export const heroFlipWords = [
-  "growing startups",
-  "real estate brands",
-  "e-commerce stores",
-  "B2B companies",
-  "local businesses",
+  "MediaHouse",
+  "Ads",
+  "Websites",
+  "CRM",
+  "ERP",
+  "Automations",
+  "AI Agents",
 ];
 
 export const categories = [
