@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { chapters } from "./content";
 import { useExperience } from "./experience";
-import { LiveTimecode, RollText } from "./primitives";
+import { RollText } from "./primitives";
 import { useSectionLinks } from "./use-section-links";
 
 const sectionLinks = chapters.filter((chapter) =>
@@ -129,10 +129,6 @@ export function Nav() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <span className="mr-3 hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/55 xl:flex">
-              <span className="rec-blink size-2 rounded-full bg-glow" />
-              <LiveTimecode />
-            </span>
             <a
               href={hrefFor("contact")}
               onClick={(event) => {
@@ -214,9 +210,9 @@ export function Nav() {
             ))}
         </nav>
         <div className="flex flex-col gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 sm:flex-row sm:items-end sm:justify-between">
-          <span data-menu-meta>TDM Groups — Strategy · Creative · Performance</span>
+          <span data-menu-meta>TDM Groups — Marketing · Technology · Growth</span>
           <span data-menu-meta className="flex items-center gap-2">
-            <span className="rec-blink size-2 rounded-full bg-glow" /> On air
+            <span className="rec-blink size-2 rounded-full bg-glow" /> Always optimising
           </span>
         </div>
       </div>

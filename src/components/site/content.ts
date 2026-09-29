@@ -2,15 +2,11 @@ import {
   BarChart3,
   Bot,
   Boxes,
-  Building2,
-  Camera,
   Clapperboard,
   ClipboardCheck,
   Facebook,
-  Film,
   Filter,
   Globe,
-  House,
   MapPin,
   Megaphone,
   Package,
@@ -48,7 +44,7 @@ export const images = {
 // Sections the nav, menu, and bottom scrub-bar can jump to.
 export const chapters = [
   { id: "top", label: "Intro" },
-  { id: "reel", label: "Showreel" },
+  { id: "reel", label: "Showcase" },
   { id: "studio", label: "Studio" },
   { id: "work", label: "Work" },
   { id: "formats", label: "Formats" },
@@ -66,62 +62,62 @@ export const clients = [
   "Rural Edibles",
 ];
 
-// Montage frames for the inline "video pill" in the hero headline.
+// Montage frames for the inline preview pill in the hero headline.
 export const heroMontage = [heroFashion, heroProduct, heroHospitality, heroFitness, heroEvents];
 
 export const heroFlipWords = [
-  "real estate launches",
-  "founder stories",
-  "brand campaigns",
-  "architecture tours",
-  "live events",
+  "growing startups",
+  "real estate brands",
+  "e-commerce stores",
+  "B2B companies",
+  "local businesses",
 ];
 
 export const categories = [
   {
-    title: "Real Estate Plotting",
+    title: "Performance Marketing",
     description:
-      "Plot and layout films that turn undeveloped land into a story buyers can already picture themselves living in.",
-    icon: House,
-    videos: ["Plot walkthrough", "Aerial site tour", "Investment pitch"],
+      "Google and Meta campaigns built on sharp targeting, tested creative and profitable bidding — so every rupee of ad spend is accountable.",
+    icon: Megaphone,
+    tags: ["Google Ads", "Meta Ads", "Retargeting"],
   },
   {
-    title: "Architecture, Residential & Commercial",
+    title: "SEO & Content Strategy",
     description:
-      "Architectural films for residential homes and commercial builds, shot to do full justice to the design and the space.",
-    icon: Building2,
-    videos: ["Residential showcase", "Commercial space tour", "Design walkthrough"],
+      "Technical SEO, local search and content that ranks — putting your business in front of people already searching for what you sell.",
+    icon: Search,
+    tags: ["Technical SEO", "Local SEO", "Content strategy"],
   },
   {
-    title: "Documentary & Founder Story",
+    title: "Websites & Landing Pages",
     description:
-      "Long-form documentary and founder-story films that build trust by showing the people and purpose behind the brand.",
-    icon: Film,
-    videos: ["Founder story", "Brand documentary", "Behind the build"],
+      "Fast, modern websites and landing pages engineered to convert — designed around your customer, measured on every click.",
+    icon: Globe,
+    tags: ["Web design", "Landing pages", "Conversion optimisation"],
   },
   {
-    title: "Brand Identity & Campaigns",
+    title: "CRM, Automation & AI",
     description:
-      "One clear brand idea carried through logo, film, and message — built out as a full campaign that runs across every channel.",
-    icon: Clapperboard,
-    videos: ["Brand film", "Identity reveal", "Campaign rollout"],
+      "CRM, ERP, workflow automations and AI agents that capture every lead, remove busywork and let your business scale without the chaos.",
+    icon: Bot,
+    tags: ["CRM & ERP", "Workflow automation", "AI agents"],
   },
   {
-    title: "Events & Hosting",
+    title: "Brand & Digital Creative",
     description:
-      "Launches, site visits, and live events captured and hosted with energy — so every moment builds momentum for the next sale.",
-    icon: Camera,
-    videos: ["Event recap", "Launch coverage", "Site visit hosting"],
+      "One clear brand idea carried through identity, social content and ad creative — built to stand out and perform on every channel.",
+    icon: PenTool,
+    tags: ["Brand identity", "Social content", "Ad creatives"],
   },
 ];
 
 export const formats = [
-  { image: heroProduct, title: "Product", tag: "Sell before they scroll" },
-  { image: heroSocial, title: "Social Media", tag: "Scroll-stopping shorts" },
+  { image: heroProduct, title: "Product", tag: "Launch campaigns that sell" },
+  { image: heroSocial, title: "Social Media", tag: "Content that builds community" },
   { image: heroAi, title: "AI Content", tag: "Faster, sharper, scaled" },
-  { image: heroBranding, title: "Branding", tag: "Identity in motion" },
-  { image: heroEcommerce, title: "E-commerce", tag: "Product pages that move" },
-  { image: heroEvents, title: "Events", tag: "Momentum, captured live" },
+  { image: heroBranding, title: "Branding", tag: "Identity that sticks" },
+  { image: heroEcommerce, title: "E-commerce", tag: "Stores that convert" },
+  { image: heroEvents, title: "Events", tag: "Launches that fill the room" },
 ];
 
 export const expertise = [
@@ -285,7 +281,7 @@ export const aboutPillars = [
   {
     label: "Mission",
     title: "Make every frame earn its place.",
-    body: "We create films, brands and digital systems that do more than look good — they move people to act and move businesses forward.",
+    body: "We build campaigns, brands and digital systems that do more than look good — they move people to act and move businesses forward.",
   },
   {
     label: "Vision",
@@ -307,7 +303,7 @@ export const aboutProcess = [
   },
   {
     step: "Create",
-    body: "Script, shoot, edit, design and build — story and strategy crafted together under one roof.",
+    body: "Strategy, creative, websites and automations — designed and built together under one roof.",
   },
   {
     step: "Launch",

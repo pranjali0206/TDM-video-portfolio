@@ -76,13 +76,13 @@ export function Showreel() {
           data-reel-word="left"
           className="font-display text-[15vw] uppercase leading-none md:text-[9vw]"
         >
-          Show
+          Our
         </span>
         <span
           data-reel-word="right"
           className="font-display text-[15vw] uppercase leading-none text-outline [--stroke:var(--deep-teal)] md:text-[9vw]"
         >
-          reel
+          work
         </span>
       </div>
 
@@ -90,7 +90,7 @@ export function Showreel() {
         data-reel-meta
         className="absolute inset-x-6 top-28 z-20 flex items-start justify-between md:inset-x-14"
       >
-        <SectionLabel>Showreel 2026</SectionLabel>
+        <SectionLabel>Selected work 2026</SectionLabel>
         <span className="hidden font-mono text-[11px] uppercase tracking-[0.25em] text-ink/50 sm:block">
           Scroll to expand
         </span>
@@ -99,9 +99,9 @@ export function Showreel() {
       <div data-reel-frame className="absolute inset-0 z-10 will-change-[clip-path]">
         <div data-reel-media className="absolute inset-0">
           <VideoSlot
-            title="TDM Groups — Showreel 2026"
-            label="Reel 01"
-            cursorLabel="Play reel"
+            title="TDM Groups — Selected work 2026"
+            label="Showcase"
+            cursorLabel="Play"
             poster={images.events}
             size="lg"
             className="absolute inset-0 rounded-none ring-0"

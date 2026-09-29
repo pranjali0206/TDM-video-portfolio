@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import { AboutIntro } from "./about-intro";
 import { aboutCapabilities, industries, problemSolutions, testimonials } from "./content";
-import { Corners, LiveTimecode, Reveal, VideoSlot } from "./primitives";
+import { Corners, Reveal, VideoSlot } from "./primitives";
 
 // ─── Kit ─────────────────────────────────────────────────────────────────────
 
@@ -398,18 +398,19 @@ function StatementCard() {
         </span>
       </h2>
       <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 md:text-lg">
-        We’re a small, senior team that treats every project like it’s going in the portfolio —
-        because it is. <strong className="font-semibold text-ink">No junior handoffs</strong>, no
-        endless decks, no design-by-committee mush. Just{" "}
-        <strong className="font-semibold text-ink">sharp work, shipped fast</strong>, in one shared
-        thread with the people actually making it.
+        We’re a digital marketing and technology partner that treats every project like it’s
+        going in the portfolio — because it is.{" "}
+        <strong className="font-semibold text-ink">No vanity metrics</strong>, no endless decks, no
+        guesswork. Just{" "}
+        <strong className="font-semibold text-ink">data-driven strategy, shipped fast</strong> —
+        campaigns, websites and systems that keep your business growing.
       </p>
       <div className="mt-auto pt-8">
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
           <span>TDM Groups, since 2019</span>
           <span className="flex items-center gap-2">
             <StatusDot />
-            <span className="text-ink">Available now</span>
+            <span className="text-ink">Your growth partner</span>
           </span>
         </div>
       </div>
@@ -511,22 +512,12 @@ function AboutHeader() {
         <div className="orb left-[42%] top-[38%] size-[18rem] bg-glow/25 [animation-delay:-12s]" />
       </div>
 
-      {/* Camera viewfinder, as on the home page. */}
+      {/* Corner frame, as on the home page. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-3 bottom-0 top-6 md:inset-x-8 md:top-10"
       >
         <Corners className="inset-0 text-ink/35" size="size-5 md:size-8" />
-        <div className="absolute left-4 top-4 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-ink/60 md:left-7 md:top-6 md:text-[11px]">
-          <span className="flex items-center gap-2">
-            <span className="rec-blink size-2 rounded-full bg-glow" />
-            Rec
-          </span>
-          <LiveTimecode className="text-ink" />
-        </div>
-        <div className="absolute right-4 top-4 hidden font-mono text-[11px] uppercase tracking-[0.25em] text-ink/55 sm:block md:right-7 md:top-6">
-          About · Take 01
-        </div>
       </div>
 
       <div className="relative">

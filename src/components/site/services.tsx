@@ -75,7 +75,7 @@ function ExpertisePicker() {
           data-fade
           className="mt-5 max-w-sm font-serif text-2xl italic leading-tight text-deep-teal"
         >
-          Great films deserve an audience. We make sure they find one.
+          Great products deserve an audience. We make sure they find one.
         </p>
 
         <div className="mt-9 flex flex-wrap gap-3">
@@ -191,7 +191,7 @@ export function Services() {
             to perform.
           </h2>
           <p data-fade className="mt-8 max-w-xl text-lg leading-relaxed text-ink/70">
-            Film, edit, design, performance marketing and AI automation — deep expertise across
+            Performance marketing, SEO, websites, CRM and AI automation — deep expertise across
             every discipline, working as one system to turn attention into measurable growth.
           </p>
         </div>

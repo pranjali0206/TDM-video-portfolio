@@ -77,17 +77,17 @@ export function Capabilities() {
         <div>
           <SectionLabel>Capabilities</SectionLabel>
           <h2 data-split className="mt-8 text-5xl leading-[0.92] md:text-7xl lg:text-8xl">
-            ways we make ideas move
+            ways we grow your business
           </h2>
         </div>
         <p data-fade className="max-w-md text-lg leading-relaxed text-ink/65">
-          No filler. No forgettable frames. Every decision is built to earn attention and drive
-          action.
+          No vanity metrics. No guesswork. Every campaign, page and system is built to earn
+          attention and turn it into revenue.
         </p>
       </div>
 
       <div className="mx-auto flex max-w-[1500px] flex-col gap-6 lg:gap-0">
-        {categories.map(({ title, description, icon: Icon, videos }, index) => (
+        {categories.map(({ title, description, icon: Icon, tags }, index) => (
           <div
             key={title}
             data-cap-card
@@ -143,12 +143,12 @@ export function Capabilities() {
                     {description}
                   </p>
                   <ul data-cap-reveal className="mt-8 flex flex-wrap gap-2 lg:mt-auto lg:pt-8">
-                    {videos.map((video) => (
+                    {tags.map((tag) => (
                       <li
-                        key={video}
+                        key={tag}
                         className="rounded-full border border-ink/20 bg-white/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/75"
                       >
-                        {video}
+                        {tag}
                       </li>
                     ))}
                   </ul>
@@ -159,18 +159,21 @@ export function Capabilities() {
                   className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3 lg:grid-rows-2"
                 >
                   <VideoSlot
-                    title={videos[0] ?? ""}
-                    label={`Clip 0${index + 1}.1`}
+                    title={tags[0] ?? ""}
+                    label="Case study"
+                    cursorLabel="View"
                     className="col-span-2 aspect-video lg:row-span-2 lg:aspect-auto"
                   />
                   <VideoSlot
-                    title={videos[1] ?? ""}
-                    label={`Clip 0${index + 1}.2`}
+                    title={tags[1] ?? ""}
+                    label="Case study"
+                    cursorLabel="View"
                     className="aspect-[4/5] lg:aspect-auto"
                   />
                   <VideoSlot
-                    title={videos[2] ?? ""}
-                    label={`Clip 0${index + 1}.3`}
+                    title={tags[2] ?? ""}
+                    label="Case study"
+                    cursorLabel="View"
                     className="aspect-[4/5] lg:aspect-auto"
                   />
                 </div>

@@ -25,7 +25,7 @@ function HeroPill({ onClick }: { onClick: () => void }) {
   return (
     <span
       data-cursor="play"
-      data-cursor-label="Reel"
+      data-cursor-label="Work"
       onClick={onClick}
       className="relative inline-block h-[0.72em] w-[1.85em] shrink-0 overflow-hidden rounded-full shadow-[0_18px_40px_-18px_rgba(0,40,40,0.6)] ring-4 ring-white/70"
     >
@@ -43,7 +43,7 @@ function HeroPill({ onClick }: { onClick: () => void }) {
       <span className="absolute inset-0 bg-gradient-to-r from-ink/40 to-transparent" />
       <span className="absolute left-[0.14em] top-1/2 flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-ink/70 px-2.5 py-1 font-mono text-[10px] font-medium normal-case tracking-[0.2em] text-ivory backdrop-blur-sm md:text-xs">
         <span className="rec-blink size-1.5 rounded-full bg-glow" />
-        REEL
+        WORK
       </span>
     </span>
   );
@@ -136,15 +136,15 @@ export function Hero() {
         >
           <div className="max-w-xl">
             <p className="text-xl font-medium leading-snug text-ink md:text-2xl">
-              Scroll-stopping content for{" "}
+              Digital growth for{" "}
               <FlipWords
                 words={heroFlipWords}
                 className="font-serif text-[1.18em] italic text-deep-teal"
               />
             </p>
             <p className="mt-3 max-w-md text-base leading-relaxed text-ink/70">
-              The scroll is relentless. We create work that gives people a reason to stop,
-              remember, and act.
+              Performance marketing, high-converting websites and smart automation — working
+              together to turn clicks into customers.
             </p>
           </div>
 
@@ -171,7 +171,7 @@ export function Hero() {
                 className="group inline-flex h-14 items-center gap-3 rounded-full border border-ink/20 bg-white/50 px-6 text-base font-semibold text-ink backdrop-blur-md transition-colors hover:border-ink"
               >
                 <Play className="size-4" fill="currentColor" strokeWidth={0} />
-                <RollText>Watch the reel</RollText>
+                <RollText>See our work</RollText>
               </button>
             </Magnetic>
           </div>

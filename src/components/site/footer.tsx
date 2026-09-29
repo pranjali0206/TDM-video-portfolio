@@ -72,7 +72,7 @@ export function Footer() {
           <div>
             <img src={tdmLogo} alt="TDM Groups" className="h-12 w-auto brightness-0" />
             <p className="mt-6 max-w-sm font-serif text-3xl italic leading-tight text-ink/85">
-              Frame by frame, we make attention mean something.
+              Click by click, we make attention mean something.
             </p>
           </div>
           <nav
@@ -158,9 +158,9 @@ export function Footer() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/60">
           <span>© {new Date().getFullYear()} TDM Groups</span>
-          <span>Strategy · Creative · Performance</span>
+          <span>Marketing · Technology · Growth</span>
           <span className="flex items-center gap-2">
-            <span className="rec-blink size-1.5 rounded-full bg-glow" /> Always rolling
+            <span className="rec-blink size-1.5 rounded-full bg-glow" /> Always optimising
           </span>
         </div>
       </footer>

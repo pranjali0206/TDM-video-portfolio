@@ -10,12 +10,12 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "A small, senior team that treats every project like it’s going in the portfolio. MediaHouse, ads, websites, CRM, ERP, automations and AI agents — since 2019.",
+          "TDM Groups is a digital marketing and technology company — performance ads, SEO, websites, CRM, ERP, automations and AI agents that turn attention into growth.",
       },
-      { property: "og:title", content: "About TDM Groups — What’s up" },
+      { property: "og:title", content: "About TDM Groups — Where clicks become growth" },
       {
         property: "og:description",
-        content: "We make people stop and ask, who made that? Sharp work, shipped fast.",
+        content: "Data-driven marketing and technology, built to turn attention into revenue.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -4,7 +4,7 @@ import { aboutPillars, aboutProcess, aboutValues, clients, images } from "./cont
 import { Corners, Reveal } from "./primitives";
 
 /**
- * The About-us opener: who TDM Groups is, what drives the studio, how a
+ * The About-us opener: who TDM Groups is, what drives the company, how a
  * project runs and who trusts us — before the "What's up" bento board.
  */
 export function AboutIntro() {
@@ -35,7 +35,7 @@ export function AboutIntro() {
                 className="mt-6 text-[clamp(2.6rem,7.4vw,7.2rem)] leading-[0.92] tracking-[-0.02em]"
                 style={{ fontStretch: "108%" }}
               >
-                Where stories
+                Where clicks
                 <br />
                 become{" "}
                 <span
@@ -48,8 +48,8 @@ export function AboutIntro() {
             </Reveal>
             <Reveal delay={160}>
               <p className="mt-8 max-w-xl text-lg leading-relaxed text-ink/75 md:text-xl">
-                TDM Groups is an editing house, creative studio and growth partner. We bring film,
-                design, performance marketing and smart technology together — so the work that wins
+                TDM Groups is a digital marketing and technology company. We bring performance
+                marketing, SEO, websites, CRM and AI automation together — so the work that wins
                 your audience’s attention also wins their business.
               </p>
             </Reveal>
@@ -72,7 +72,7 @@ export function AboutIntro() {
               <div className="absolute inset-y-0 left-0 w-[72%] overflow-hidden rounded-[1.75rem] shadow-[0_40px_80px_-40px_rgba(0,40,40,0.6)]">
                 <img
                   src={images.events}
-                  alt="TDM Groups crew filming a live event"
+                  alt="A TDM Groups brand launch event"
                   loading="lazy"
                   className="size-full object-cover"
                 />
@@ -87,7 +87,7 @@ export function AboutIntro() {
                 />
               </div>
               <div className="absolute right-[4%] top-[8%] rotate-6 rounded-full bg-ink px-4 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-ivory shadow-lg">
-                Film · Design · Growth
+                Marketing · Tech · Growth
               </div>
             </div>
           </Reveal>

@@ -80,7 +80,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "TDM Groups" },
       {
         name: "description",
-        content: "Video production, editing, and performance creative for ambitious brands.",
+        content:
+          "Digital marketing, websites, CRM and AI automation for businesses that want real growth.",
       },
       { name: "author", content: "TDM Groups" },
       { name: "theme-color", content: "#f4faf5" },

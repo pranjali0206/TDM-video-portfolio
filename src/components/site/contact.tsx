@@ -95,18 +95,18 @@ export function Contact() {
             data-fade
             className="font-serif text-[15vw] italic leading-[0.9] text-glow md:text-[9vw]"
           >
-            Let’s roll.
+            Let’s grow.
           </p>
         </div>
 
         <div className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
           <div data-fade>
             <p className="max-w-md text-xl leading-relaxed text-ink/75">
-              Bring us the goal. We will bring the angle, the energy, and the work built to move the
-              numbers.
+              Bring us the goal. We will bring the strategy, the technology and the campaigns built
+              to move the numbers.
             </p>
             <ol className="mt-10 space-y-4 border-t border-ink/10 pt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
-              {["Share the goal", "Get the creative angle", "Roll camera"].map((step, index) => (
+              {["Share the goal", "Get a growth plan", "Launch & scale"].map((step, index) => (
                 <li key={step} className="flex items-center gap-4">
                   <span className="text-deep-teal">0{index + 1}</span>
                   <span className="h-px w-6 bg-ink/20" />

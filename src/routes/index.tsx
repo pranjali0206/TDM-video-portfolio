@@ -14,17 +14,17 @@ import { Testimonials } from "@/components/site/testimonials";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TDM Groups — Video production & editing studio" },
+      { title: "TDM Groups — Digital marketing & technology company" },
       {
         name: "description",
         content:
-          "TDM Groups is an editing house and creative studio making real estate, architecture, founder, brand, and event films that turn attention into growth.",
+          "TDM Groups is a digital marketing and technology company: performance ads, SEO, websites, CRM, automation and AI agents that turn attention into leads, sales and growth.",
       },
       { property: "og:title", content: "TDM Groups — Make attention mean something" },
       {
         property: "og:description",
         content:
-          "Films, campaigns, and performance creative for brands that refuse to be scrolled past.",
+          "Performance marketing, high-converting websites and smart automation for businesses that want real growth.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
