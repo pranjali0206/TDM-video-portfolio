@@ -151,6 +151,7 @@ export function Contact() {
         <div className="flex flex-col items-center text-center">
           <SectionLabel>Start a project</SectionLabel>
           <h2
+            data-contact-title
             data-split
             className="mt-8 text-[13vw] uppercase leading-[0.88] md:text-[8.5vw]"
             style={{ fontStretch: "118%" }}
