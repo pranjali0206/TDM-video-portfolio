@@ -15,7 +15,7 @@ const pillTones: Tone[] = ["teal", "lime", "coral", "blush", "deep", "mint"];
 const EXPERTISE_INTERVAL_MS = 5000;
 
 /**
- * The twelve disciplines behind the seven services: sticker pills on one side,
+ * Our signature services: sticker pills on one side,
  * a big quote panel on the other that takes on the selected pill's colour.
  * It flips through on its own until someone picks one.
  */
@@ -55,36 +55,37 @@ function ExpertisePicker() {
   const Icon = current.icon;
 
   return (
-    <div className="mx-auto mt-24 grid max-w-[1500px] items-center gap-10 md:mt-36 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+    <div className="mx-auto grid max-w-[1500px] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
       <div>
         <p
           data-fade
           className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.28em] text-deep-teal"
         >
           <Star className="size-3.5 fill-current" strokeWidth={0} />
-          The skills behind the work
+          What we do best
         </p>
         <h3 data-split className="mt-5 text-4xl leading-[0.95] md:text-6xl">
-          We have expertise in
+          Our signature expertise
         </h3>
-        <p data-fade className="mt-6 max-w-md text-lg leading-relaxed text-ink/70">
-          We offer cutting-edge digital marketing services worldwide, empowering your brand to grow
-          in the competitive market.
+        <p data-fade className="mt-6 max-w-md text-lg leading-relaxed font-medium text-ink">
+          From intelligent automation to real estate, every practice is led by deep, hands-on
+          experience and built to deliver measurable growth.
         </p>
         <p
           data-fade
           className="mt-5 max-w-sm font-serif text-2xl italic leading-tight text-deep-teal"
         >
-          Great products deserve an audience. We make sure they find one.
+          10+ years of ad expertise. ₹230 Cr+ in client sales.
         </p>
 
         <div className="mt-9 flex flex-wrap gap-3">
-          {expertise.map(({ title, icon: PillIcon }, index) => {
+          {expertise.map(({ short, title, icon: PillIcon }, index) => {
             const isActive = index === active;
             const pill = tones[pillTones[index % pillTones.length]!];
             return (
               <button
                 key={title}
+                aria-label={title}
                 type="button"
                 aria-pressed={isActive}
                 aria-controls="expertise-panel"
@@ -102,7 +103,7 @@ function ExpertisePicker() {
                 style={{ background: pill.bg, color: pill.fg }}
               >
                 <PillIcon className="size-4" strokeWidth={1.8} />
-                {title}
+                {short}
               </button>
             );
           })}
@@ -124,23 +125,33 @@ function ExpertisePicker() {
         </span>
 
         <div ref={panelRef} className="relative">
-          <p data-panel-line className="font-mono text-xs uppercase tracking-[0.22em] opacity-70">
-            {String(active + 1).padStart(2, "0")} / {expertise.length} — Our expertise
+          <p data-panel-line className="font-mono text-xs uppercase tracking-[0.22em] opacity-90">
+            Signature expertise
           </p>
           <div data-panel-line className="mt-6 flex items-center gap-4">
             <span className="grid size-14 shrink-0 rotate-6 place-items-center rounded-2xl bg-white/85 text-ink">
               <Icon className="size-6" strokeWidth={1.8} />
             </span>
             <h4
-              className="font-display text-3xl font-extrabold leading-[1] md:text-5xl"
+              className="text-balance font-display text-3xl font-extrabold leading-[1.02] md:text-[2.6rem]"
               style={{ fontStretch: "105%" }}
             >
               {current.title}
             </h4>
           </div>
+          <ul data-panel-line className="mt-6 flex flex-wrap gap-2">
+            {current.highlights.map((highlight) => (
+              <li
+                key={highlight}
+                className="rounded-full bg-white/85 px-3.5 py-1.5 text-sm font-bold text-ink"
+              >
+                {highlight}
+              </li>
+            ))}
+          </ul>
           <p
             data-panel-line
-            className="mt-7 text-lg font-semibold leading-snug md:text-xl md:leading-snug"
+            className="mt-6 text-lg font-semibold leading-snug md:text-xl md:leading-snug"
           >
             “{current.description}”
           </p>
@@ -164,12 +175,12 @@ function ExpertisePicker() {
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 
-/** Services: the service orbit around the TDM globe and the expertise picker. */
+/** Services: the headline and the service orbit around the TDM globe. */
 export function Services() {
   return (
     <section
       id="services"
-      className="relative z-10 -mt-12 overflow-hidden rounded-t-[2.5rem] bg-card px-6 py-28 text-ink shadow-[0_-30px_80px_-50px_rgba(0,40,40,0.5)] md:-mt-16 md:rounded-t-[4rem] md:px-14 md:py-40 lg:px-20"
+      className="relative z-10 overflow-hidden rounded-t-[2.5rem] bg-card px-6 py-28 text-ink shadow-[0_-30px_80px_-50px_rgba(0,40,40,0.5)] md:rounded-t-[4rem] md:px-14 md:py-40 lg:px-20"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="orb -left-24 top-40 size-[26rem] bg-accent/25" />
@@ -190,7 +201,7 @@ export function Services() {
             </span>{" "}
             to perform.
           </h2>
-          <p data-fade className="mt-8 max-w-xl text-lg leading-relaxed text-ink/70">
+          <p data-fade className="mt-8 max-w-xl text-lg leading-relaxed font-medium text-ink">
             Performance marketing, SEO, websites, CRM and AI automation — deep expertise across
             every discipline, working as one system to turn attention into measurable growth.
           </p>
@@ -198,7 +209,21 @@ export function Services() {
       </div>
 
       <ServiceUniverse />
+    </section>
+  );
+}
 
+/** Expertise: our signature services, as their own section further down the page. */
+export function Expertise() {
+  return (
+    <section
+      id="expertise"
+      className="relative overflow-hidden bg-card px-6 py-28 text-ink md:px-14 md:py-40 lg:px-20"
+    >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="orb -right-24 top-24 size-[24rem] bg-accent/25" />
+        <div className="orb -left-24 bottom-10 size-[22rem] bg-teal/35 [animation-delay:-8s]" />
+      </div>
       <div className="relative">
         <ExpertisePicker />
       </div>

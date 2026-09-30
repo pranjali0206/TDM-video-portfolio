@@ -81,24 +81,27 @@ export function Manifesto() {
       id="studio"
       className="relative bg-ivory px-6 py-28 text-ink md:px-14 md:py-44 lg:px-20"
     >
-      <SectionLabel>The studio</SectionLabel>
+      <SectionLabel>Who we are</SectionLabel>
 
       <p
         data-manifesto
-        className="mt-10 font-display text-[clamp(2.1rem,4.6vw,5.8rem)] font-bold leading-[1.02] tracking-[-0.02em] text-balance md:mt-14"
+        className="mt-10 flex flex-col gap-3 font-display text-[clamp(2.1rem,4.6vw,5.8rem)] font-bold leading-[1.08] tracking-[-0.02em] text-balance sm:gap-4 md:mt-14 md:gap-6"
         style={{ fontStretch: "104%" }}
       >
-        <span className="block text-ink/55">
-          The spotlight <Chip src={images.events} /> is where we start.
+        <span className="block text-deep-teal">
+          Attention <Chip src={images.social} /> is where we begin.
         </span>
         <span className="block">
-          Leads and sales <Chip src={images.product} /> are where we{" "}
-          <em className="font-serif font-normal italic tracking-normal text-glow">finish.</em>
+          Growth <Chip src={images.ecommerce} /> is what we{" "}
+          <em className="font-serif font-normal italic tracking-normal text-glow">deliver.</em>
         </span>
-        <span className="mt-8 flex items-center gap-5 text-[0.42em] font-semibold tracking-[-0.01em] md:mt-12 md:gap-7">
+        <span className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-[0.42em] font-semibold leading-tight tracking-[-0.01em] md:mt-10 md:gap-x-7">
           <span aria-hidden className="h-px w-12 bg-glow md:w-20" />
           <span>
             That’s <span className="text-deep-teal">TDM Groups.</span>
+          </span>
+          <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-ink md:text-xs">
+            Marketing · Technology · Growth
           </span>
         </span>
       </p>
@@ -111,7 +114,7 @@ export function Manifesto() {
           <h2 data-split className="mt-6 text-4xl leading-[0.95] md:text-6xl">
             Creative decisions, backed by results.
           </h2>
-          <p data-fade className="mt-7 max-w-md text-lg leading-relaxed text-ink/70">
+          <p data-fade className="mt-7 max-w-md text-lg leading-relaxed font-medium text-ink">
             Pretty is not a strategy. We build the message that matters, test the work in the real
             world, and make every next move sharper.
           </p>
@@ -136,8 +139,8 @@ export function Manifesto() {
                 </span>
                 <span className="text-glow">{stat.suffix}</span>
               </p>
-              <p className="mt-4 text-base font-medium text-ink/75">{stat.label}</p>
-              <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/40">
+              <p className="mt-4 text-base font-medium text-ink">{stat.label}</p>
+              <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink">
                 Reference benchmark
               </p>
             </div>

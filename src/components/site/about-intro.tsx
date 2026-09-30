@@ -47,7 +47,7 @@ export function AboutIntro() {
               </h1>
             </Reveal>
             <Reveal delay={160}>
-              <p className="mt-8 max-w-xl text-lg leading-relaxed text-ink/75 md:text-xl">
+              <p className="mt-8 max-w-xl text-lg leading-relaxed font-medium text-ink md:text-xl">
                 TDM Groups is a digital marketing and technology company. We bring performance
                 marketing, SEO, websites, CRM and AI automation together — so the work that wins
                 your audience’s attention also wins their business.
@@ -56,7 +56,7 @@ export function AboutIntro() {
             <Reveal delay={220}>
               <a
                 href="#whats-up"
-                className="mt-10 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-ink/60 transition-colors hover:text-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+                className="mt-10 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.25em] text-ink transition-colors hover:text-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
               >
                 <span className="grid size-9 place-items-center rounded-full border border-ink/20">
                   <ArrowDown className="size-4" />
@@ -122,8 +122,8 @@ export function AboutIntro() {
                 <p
                   className={
                     index === 1
-                      ? "mt-5 text-base leading-relaxed text-ivory/70"
-                      : "mt-5 text-base leading-relaxed text-ink/70"
+                      ? "mt-5 text-base leading-relaxed text-ivory/90"
+                      : "mt-5 text-base leading-relaxed font-medium text-ink"
                   }
                 >
                   {pillar.body}
@@ -149,7 +149,7 @@ export function AboutIntro() {
                   work
                 </span>
               </h2>
-              <p className="max-w-sm text-base leading-relaxed text-ink/70">
+              <p className="max-w-sm text-base leading-relaxed font-medium text-ink">
                 One clear path from idea to impact — strategy, story and systems moving together.
               </p>
             </div>
@@ -169,7 +169,9 @@ export function AboutIntro() {
                     <h3 className="mt-8 text-2xl md:text-3xl" style={{ fontStretch: "105%" }}>
                       {item.step}
                     </h3>
-                    <p className="mt-3 text-base leading-relaxed text-ink/70">{item.body}</p>
+                    <p className="mt-3 text-base leading-relaxed font-medium text-ink">
+                      {item.body}
+                    </p>
                   </div>
                 </Reveal>
               </li>
@@ -204,7 +206,7 @@ export function AboutIntro() {
               {clients.map((client) => (
                 <li
                   key={client}
-                  className="border-t border-ink/15 pt-4 font-display text-lg font-bold leading-tight text-ink/80"
+                  className="border-t border-ink/15 pt-4 font-display text-lg font-bold leading-tight text-ink"
                   style={{ fontStretch: "105%" }}
                 >
                   {client.replace(/\.$/, "")}

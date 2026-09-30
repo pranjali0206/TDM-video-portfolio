@@ -565,7 +565,7 @@ export function ServiceUniverse() {
             data-detail-line
             className="mt-6 inline-flex max-w-md items-start gap-2 rounded-2xl rounded-bl-sm bg-secondary px-4 py-2.5 text-base font-medium"
           >
-            <span aria-hidden="true" className="mt-0.5 font-mono text-[10px] font-bold text-ink/50">
+            <span aria-hidden="true" className="mt-0.5 font-mono text-[10px] font-bold text-ink">
               Q
             </span>
             {service.question}
@@ -594,7 +594,7 @@ export function ServiceUniverse() {
                   "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive",
                   isActive
                     ? "border-ink bg-ink text-ivory"
-                    : "border-ink/15 text-ink/75 hover:border-ink hover:text-ink",
+                    : "border-ink/15 text-ink hover:border-ink hover:text-ink",
                 )}
               >
                 <span className="size-2 rounded-full" style={{ background: markOf(index) }} />

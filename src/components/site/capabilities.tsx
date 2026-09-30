@@ -80,7 +80,7 @@ export function Capabilities() {
             ways we grow your business
           </h2>
         </div>
-        <p data-fade className="max-w-md text-lg leading-relaxed text-ink/65">
+        <p data-fade className="max-w-md text-lg leading-relaxed font-medium text-ink">
           No vanity metrics. No guesswork. Every campaign, page and system is built to earn
           attention and turn it into revenue.
         </p>
@@ -113,7 +113,7 @@ export function Capabilities() {
                 <div className="flex flex-col">
                   <div
                     data-cap-reveal
-                    className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.25em] text-ink/60"
+                    className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.25em] text-ink"
                   >
                     <span className="flex items-center gap-3 text-ink">
                       <Icon className="size-5" strokeWidth={1.5} />
@@ -138,7 +138,7 @@ export function Capabilities() {
                   </h3>
                   <p
                     data-cap-reveal
-                    className="mt-5 max-w-md text-base leading-relaxed text-ink/75 md:text-lg"
+                    className="mt-5 max-w-md text-base leading-relaxed font-medium text-ink md:text-lg"
                   >
                     {description}
                   </p>
@@ -146,7 +146,7 @@ export function Capabilities() {
                     {tags.map((tag) => (
                       <li
                         key={tag}
-                        className="rounded-full border border-ink/20 bg-white/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink/75"
+                        className="rounded-full border border-ink/20 bg-white/40 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-ink"
                       >
                         {tag}
                       </li>

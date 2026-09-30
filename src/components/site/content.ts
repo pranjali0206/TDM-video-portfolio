@@ -2,18 +2,16 @@ import {
   BarChart3,
   Bot,
   Boxes,
+  Building2,
   Clapperboard,
-  ClipboardCheck,
-  Facebook,
-  Filter,
   Globe,
-  MapPin,
+  Magnet,
   Megaphone,
-  Package,
+  MousePointerClick,
+  Palette,
   PenTool,
   Search,
   Share2,
-  ShoppingCart,
   Sparkles,
   TrendingUp,
   Users,
@@ -44,22 +42,32 @@ export const images = {
 // Sections the nav, menu, and bottom scrub-bar can jump to.
 export const chapters = [
   { id: "top", label: "Intro" },
-  { id: "reel", label: "Showcase" },
+  { id: "services", label: "Services" },
   { id: "studio", label: "Studio" },
   { id: "work", label: "Work" },
   { id: "formats", label: "Formats" },
-  { id: "services", label: "Services" },
   { id: "reviews", label: "Reviews" },
   { id: "contact", label: "Contact" },
 ] as const;
 
 export const clients = [
-  "Godrej",
-  "MD-Urban Links.",
-  "RedWood Biotech",
-  "SH Infratech",
-  "HM Reality",
-  "Rural Edibles",
+  "AB Associates",
+  "HM Realty",
+  "MD Urban Links",
+  "Arcura",
+  "Tulsi Traders",
+  "Redwood Biotech",
+  "Dreamnest Properties",
+  "Mac Realty",
+  "Ideal Group",
+  "Omaze",
+  "Godrej Properties",
+  "SH Infotech",
+  "R21 Realty",
+  "Pitara",
+  "Medical",
+  "Journey Singh",
+  "Eduwise",
 ];
 
 // Montage frames for the inline preview pill in the hero headline.
@@ -123,78 +131,120 @@ export const formats = [
   { image: heroEvents, title: "Events", tag: "Launches that fill the room" },
 ];
 
+// Our signature services, as shown in the expertise picker: a short label for
+// the pill, the full name and highlight tags for the panel.
 export const expertise = [
   {
-    title: "Google Ads",
-    icon: Search,
+    short: "AI Automation",
+    title: "Autonomous AI & Intelligent Automation",
+    icon: Bot,
+    highlights: ["AI agents", "Workflow automation"],
     description:
-      "Don't waste money running Google Ads campaigns without understanding the Ad rank, Auction Insights, Impression Share, and, most importantly, the profitable bidding strategies.",
+      "AI agents and automated workflows that capture leads, answer customers and run repetitive work around the clock — so your team can focus on growth.",
   },
   {
-    title: "Facebook Ads",
-    icon: Facebook,
+    short: "Web Experiences",
+    title: "Immersive Web Experiences",
+    icon: Globe,
+    highlights: ["Websites", "Landing pages"],
     description:
-      "Reaching and influencing people to take appropriate actions on your Facebook ads requires real psychology and targeting skills. We have worked on hundreds of Facebook advertising accounts across industries to generate leads and sell physical products.",
+      "Powerful, immersive websites and landing pages that load fast, look stunning and are engineered to turn visitors into customers.",
   },
   {
-    title: "SEO",
-    icon: TrendingUp,
+    short: "Business Systems",
+    title: "Enterprise Business Systems",
+    icon: Boxes,
+    highlights: ["CRM", "ERP", "HRMS", "AI tools"],
     description:
-      "As the best seo company in India, we optimize websites to rank in top search results for the targeted keywords. Our SEO services are comprehensive suite of content marketing, technical wellness and backlinks authority.",
+      "CRM, ERP, HRMS and custom AI tools that bring every lead, deal, team and process into one system that scales with you.",
   },
   {
-    title: "Conversion Rate Optimisation",
-    icon: BarChart3,
+    short: "Ad Reels",
+    title: "Conversion-Crafted Ad Reels",
+    icon: Clapperboard,
+    highlights: ["Creative reels", "Sales-driven"],
     description:
-      "We help you improve the user experience on the landing pages to improve the conversion rate. We do analytics health checks, user research, insights gathering, qualitative and quantitative research.",
+      "Scroll-stopping creative reels scripted around what sells — built to grab attention in seconds and drive real action.",
   },
   {
-    title: "Sales Funnel",
-    icon: Filter,
-    description:
-      "A single tool can fulfill all of your performance marketing needs. Through Clickfunnels, we create profitable sales funnels, digital marketing strategies, and web pages.",
-  },
-  {
-    title: "Ecommerce Marketing",
-    icon: ShoppingCart,
-    description:
-      "We help eCommerce brands to scale with our digital marketing services by providing comprehensive Google Ads, Facebook Ads, and SEO solutions. As a leading eCommerce marketing agency, Our eCommerce strategies are based on ROI and profits to enable a brand growth and sustainability.",
-  },
-  {
-    title: "Amazon Marketing",
-    icon: Package,
-    description:
-      "Amazon is no longer an option for merchants to scale their business. We can help you become the best seller on Amazon. We use contextual and interest-based advertising strategies with a sales funnel to generate sales and reviews on the Amazon store. Get in touch for a free consultation.",
-  },
-  {
-    title: "Lead Generation",
-    icon: Users,
-    description:
-      "Utilize our expertise in lead generation with digital marketing. We enable businesses to remove their bottleneck of lead generation by using effective digital marketing campaigns.",
-  },
-  {
-    title: "Local SEO",
-    icon: MapPin,
-    description:
-      "Local search engine optimization is an essential tool for growing a local business. Local customers can reach your business point, explore the best eCommerce marketing services, leave feedback, and use Google Maps to visit you.",
-  },
-  {
-    title: "Social Media Marketing",
-    icon: Share2,
-    description:
-      "More than a billion people are active on social media. The latest updates on social networking sites make the job of a Social Media Strategist even more responsible for delivering better and more valued content to reach the audience.",
-  },
-  {
-    title: "Graphic Designing",
+    short: "Brand Design",
+    title: "Brand Identity & Visual Design Systems",
     icon: PenTool,
+    highlights: ["Brand identity", "Business graphics"],
     description:
-      "Our graphic designing services are specialized to boost your digital marketing results. We make graphics to boost your ads performance, landing pages conversions, and email campaigns responses.",
+      "Structured, beautiful brand graphics and business-ready visual assets that keep every touchpoint consistent and unmistakably yours.",
   },
   {
-    title: "Auditing",
-    icon: ClipboardCheck,
+    short: "Real Estate 360°",
+    title: "Real Estate 360°",
+    icon: Building2,
+    highlights: ["Aerial drone cinematography", "AI property visualisation"],
     description:
-      "Hire our marketing experts to audit your existing team marketing campaigns on the regular basis so we can guide them to get the maximum ROI of your marketing dollars. Our auditing services include Google Ads, Facebook Ads, CRO, SEO, and Content Marketing.",
+      "A professional end-to-end solution for real estate — from aerial drone shoots and AI property visualisation to campaigns that fill site visits.",
+  },
+  {
+    short: "Performance Ads",
+    title: "Performance Marketing Mastery",
+    icon: TrendingUp,
+    highlights: ["10+ years of ad expertise", "₹230 Cr+ in client sales"],
+    description:
+      "Over a decade of running ads that pay for themselves — a proven journey of ₹230 Cr+ in sales generated for our clients.",
+  },
+  {
+    short: "Google Ads",
+    title: "Google Ads & Search Performance",
+    icon: MousePointerClick,
+    highlights: ["Search", "Performance Max", "Profitable bidding"],
+    description:
+      "Campaigns built on Ad Rank, auction insights and impression share — with bidding strategies tuned for profit, not just clicks.",
+  },
+  {
+    short: "Meta Ads",
+    title: "Meta Ads Growth Engine",
+    icon: Megaphone,
+    highlights: ["Facebook", "Instagram", "Precision targeting"],
+    description:
+      "Facebook and Instagram campaigns that pair audience psychology with sharp targeting to generate leads and sell products at scale.",
+  },
+  {
+    short: "SEO",
+    title: "Search Authority & SEO",
+    icon: Search,
+    highlights: ["Technical SEO", "Content", "Backlink authority"],
+    description:
+      "Technical health, content and backlink authority working together to rank your website at the top for the searches that matter.",
+  },
+  {
+    short: "CRO Lab",
+    title: "Conversion Rate Optimisation Lab",
+    icon: BarChart3,
+    highlights: ["Analytics audits", "User research", "A/B testing"],
+    description:
+      "Analytics health checks, user research and testing that sharpen every landing page — so the traffic you already have converts better.",
+  },
+  {
+    short: "Lead Generation",
+    title: "Precision Lead Generation",
+    icon: Magnet,
+    highlights: ["Qualified leads", "Funnels", "Lead nurturing"],
+    description:
+      "Campaigns and funnels designed to remove your lead bottleneck — delivering a steady flow of qualified, sales-ready prospects.",
+  },
+  {
+    short: "Social Media",
+    title: "Social Media Brand Building",
+    icon: Share2,
+    highlights: ["Content strategy", "Community", "Engagement"],
+    description:
+      "Consistent, valuable content and community management that grow your audience and turn followers into loyal customers.",
+  },
+  {
+    short: "Graphic Design",
+    title: "High-Impact Graphic Design",
+    icon: Palette,
+    highlights: ["Ad creatives", "Landing visuals", "Email graphics"],
+    description:
+      "Graphics designed to perform — lifting ad results, landing page conversions and email responses, not just looking good.",
   },
 ];
 
@@ -208,62 +258,77 @@ export const stats = [
 ];
 
 // Client reviews for the home-page testimonial wall. The first four ride the
-// top row, the rest the bottom row.
-export const reviews = [
+// top row, the rest the bottom row. Draft wording — every quote must be
+// approved by the named client before it goes live. `name` is optional:
+// without it the card leads with the company.
+export type Review = {
+  service: string;
+  quote: string;
+  name?: string;
+  role: string;
+  company: string;
+};
+
+export const reviews: Review[] = [
   {
-    service: "Websites",
+    service: "Web Experiences",
     quote:
-      "The new site doesn’t just look sharp — it converts. Signups went up before we even ran a single ad.",
+      "Working with TDM has been really smooth from day one. They listen properly, share ideas of their own and always deliver on time. It honestly feels like having our own team, not an outside agency.",
     name: "Ravishankar Shukla",
     role: "Founder",
-    company: "RedWood Biotech",
+    company: "Redwood Biotech",
   },
   {
-    service: "CRM",
+    service: "Business Systems",
     quote:
-      "No lead falls through the cracks anymore. Our sales team actually trusts the pipeline now.",
+      "What I like most about TDM is how organised they are. Everything is explained clearly, updates come on time, and we always know what is happening. Very professional people to work with.",
     name: "Mayank Jagwani",
-    role: "CEO",
-    company: "MD-Urban Links",
+    role: "Director",
+    company: "MD Urban Links",
   },
   {
-    service: "MediaHouse",
+    service: "Real Estate 360°",
     quote:
-      "Our content finally looks like nobody else’s in the space. Engagement doubled in the first month.",
+      "The quality of work is excellent. The team understood our brand quickly and everything they made looked premium. We have already recommended them to a few friends in business.",
+    role: "Founder",
+    company: "HM Realty",
+  },
+  {
+    service: "Brand Design",
+    quote:
+      "They took time to understand what we actually wanted before starting. Very creative team, easy to talk to, and happy to make changes without any fuss. Really happy with the final result.",
     name: "Dipthi Jagwani",
     role: "Architect",
-    company: "Arcura Studio",
+    company: "Arcusa",
   },
   {
-    service: "Ads",
+    service: "Performance Ads",
     quote:
-      "We stopped guessing with ad spend. Every rupee is accountable now. CAC dropped by a third.",
-    name: "Vipul Jain",
-    role: "Founder",
-    company: "Vipulanchal",
+      "We had worked with other agencies before, but TDM is on a different level. They are honest, transparent and genuinely care about our results. We finally feel our marketing is in safe hands.",
+    role: "Marketing Head",
+    company: "Dreamnest Properties",
   },
   {
-    service: "ERP",
+    service: "AI Automation",
     quote:
-      "We went from three spreadsheets and a prayer to one system that actually talks to itself.",
-    name: "Vikram Malhotra",
-    role: "Operations Head",
-    company: "Aveer Destino",
-  },
-  {
-    service: "Automations",
-    quote:
-      "The repetitive stuff just handles itself now. My team finally has time to think, not just process.",
-    name: "Ananya Iyer",
-    role: "COO",
-    company: "Veranya Veda",
-  },
-  {
-    service: "AI Agents",
-    quote: "It genuinely feels like we hired three extra people, without hiring anyone.",
+      "Super responsive team. Whenever we had a question or an urgent change, they sorted it out quickly. Their technical knowledge is strong and they explain things in simple words.",
     name: "Rohan Mehta",
     role: "CEO",
-    company: "SH Infratech",
+    company: "SH Infotech",
+  },
+  {
+    service: "Meta Ads",
+    quote:
+      "Very practical and hardworking team. No big promises, just good work done properly. Our business has grown since we started with them, and we are glad we made the decision.",
+    role: "Owner",
+    company: "Tulsi Traders",
+  },
+  {
+    service: "Lead Generation",
+    quote:
+      "From planning to execution, everything was handled very professionally. They are always ready with fresh ideas and never make you feel like a small client. Highly recommended.",
+    role: "Co-founder",
+    company: "Eduwise",
   },
 ];
 

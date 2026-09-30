@@ -10,7 +10,7 @@ import { useExperience } from "./experience";
 import { RollText } from "./primitives";
 import { useSectionLinks } from "./use-section-links";
 
-const indexLinkClass = "group w-fit text-ink/75 transition-colors hover:text-ink";
+const indexLinkClass = "group w-fit text-ink transition-colors hover:text-ink";
 
 const istTime = () =>
   new Intl.DateTimeFormat("en-IN", {
@@ -71,7 +71,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr]">
           <div>
             <img src={tdmLogo} alt="TDM Groups" className="h-12 w-auto brightness-0" />
-            <p className="mt-6 max-w-sm font-serif text-3xl italic leading-tight text-ink/85">
+            <p className="mt-6 max-w-sm font-serif text-3xl italic leading-tight text-ink">
               Click by click, we make attention mean something.
             </p>
           </div>
@@ -79,7 +79,7 @@ export function Footer() {
             aria-label="Footer"
             className="grid grid-cols-2 content-start gap-x-6 gap-y-3 text-sm"
           >
-            <p className="col-span-2 mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-ink/55">
+            <p className="col-span-2 mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-ink">
               Index
             </p>
             <Link to="/about" className={indexLinkClass}>
@@ -101,7 +101,7 @@ export function Footer() {
           </nav>
           <div className="flex flex-col justify-between gap-8">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-ink/55">
+              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-ink">
                 Studio time · IST
               </p>
               <p
@@ -156,7 +156,7 @@ export function Footer() {
           </svg>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/60">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink">
           <span>© {new Date().getFullYear()} TDM Groups</span>
           <span>Marketing · Technology · Growth</span>
           <span className="flex items-center gap-2">

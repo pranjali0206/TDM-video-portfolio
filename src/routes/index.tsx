@@ -6,8 +6,7 @@ import { Contact } from "@/components/site/contact";
 import { FormatsRing } from "@/components/site/formats-ring";
 import { Hero } from "@/components/site/hero";
 import { Manifesto } from "@/components/site/manifesto";
-import { Services } from "@/components/site/services";
-import { Showreel } from "@/components/site/showreel";
+import { Expertise, Services } from "@/components/site/services";
 import { SiteShell } from "@/components/site/site-shell";
 import { Testimonials } from "@/components/site/testimonials";
 
@@ -37,12 +36,12 @@ function Index() {
   return (
     <SiteShell hud>
       <Hero />
-      <Showreel />
+      <Services />
       <Manifesto />
       <ClientMarquee />
       <Capabilities />
       <FormatsRing />
-      <Services />
+      <Expertise />
       <Testimonials />
       <Contact />
     </SiteShell>

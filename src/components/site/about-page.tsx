@@ -39,7 +39,7 @@ function Card({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/50">
+      <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.22em] text-ink">
         <span className="flex items-center gap-2">
           <span className="size-2 rounded-[2px] border border-current" />
           {label}
@@ -171,7 +171,7 @@ function ProblemSolutionCard() {
 
   return (
     <Card label="faq" tone="teal">
-      <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
+      <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
         Same question in your mind?
       </p>
 
@@ -203,7 +203,7 @@ function ProblemSolutionCard() {
           <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-ink text-accent">
             <Icon className="size-3.5" />
           </span>
-          <p className="text-base leading-relaxed text-ink/80">
+          <p className="text-base leading-relaxed font-medium text-ink">
             {current.answer} <span className="font-semibold text-ink">— {current.service}</span>
           </p>
         </div>
@@ -366,7 +366,7 @@ function TestimonialCard() {
           <span className="grid size-9 place-items-center rounded-full bg-ink font-mono text-[10px] font-bold text-accent">
             {current.initials}
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink/55">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink">
             {current.name} · {current.role}
           </span>
         </figcaption>
@@ -397,16 +397,16 @@ function StatementCard() {
           who made that?
         </span>
       </h2>
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink/70 md:text-lg">
-        We’re a digital marketing and technology partner that treats every project like it’s
-        going in the portfolio — because it is.{" "}
+      <p className="mt-6 max-w-2xl text-base leading-relaxed font-medium text-ink md:text-lg">
+        We’re a digital marketing and technology partner that treats every project like it’s going
+        in the portfolio — because it is.{" "}
         <strong className="font-semibold text-ink">No vanity metrics</strong>, no endless decks, no
         guesswork. Just{" "}
         <strong className="font-semibold text-ink">data-driven strategy, shipped fast</strong> —
         campaigns, websites and systems that keep your business growing.
       </p>
       <div className="mt-auto pt-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
           <span>TDM Groups, since 2019</span>
           <span className="flex items-center gap-2">
             <StatusDot />
@@ -468,9 +468,9 @@ function IndustriesCard() {
   return (
     <Card label="hero.frame" tone="lime">
       <IndustryRotator />
-      <div className="mt-auto flex items-center justify-between pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink/55">
+      <div className="mt-auto flex items-center justify-between pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink">
         <span>Designed live</span>
-        <span className="rounded-full bg-white/60 px-2.5 py-1 tracking-normal text-ink/70">
+        <span className="rounded-full bg-white/60 px-2.5 py-1 tracking-normal text-ink">
           360 × 240
         </span>
       </div>

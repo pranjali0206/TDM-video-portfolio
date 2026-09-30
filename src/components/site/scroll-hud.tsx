@@ -89,7 +89,7 @@ export function ScrollHud() {
       <div ref={dockRef}>
         <div
           ref={rootRef}
-          className="flex items-center gap-4 rounded-full border border-ink/10 bg-white/75 py-2 pl-4 pr-5 font-mono text-[10px] uppercase tracking-[0.2em] text-ink/55 opacity-0 shadow-[0_10px_40px_-20px_rgba(0,40,40,0.4)] backdrop-blur-xl"
+          className="flex items-center gap-4 rounded-full border border-ink/10 bg-white/75 py-2 pl-4 pr-5 font-mono text-[10px] uppercase tracking-[0.2em] text-ink opacity-0 shadow-[0_10px_40px_-20px_rgba(0,40,40,0.4)] backdrop-blur-xl"
         >
           <span className="flex shrink-0 items-center gap-2">
             <span className="size-1.5 rounded-full bg-glow" />

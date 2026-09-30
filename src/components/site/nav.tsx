@@ -16,7 +16,7 @@ const sectionLinks = chapters.filter((chapter) =>
 );
 
 const barLinkClass =
-  "group flex items-center gap-2 rounded-full px-3 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/70 transition-colors hover:text-deep-teal xl:px-4";
+  "group flex items-center gap-2 rounded-full px-3 py-2 font-display text-sm font-bold uppercase tracking-[0.08em] text-ink transition-colors hover:text-deep-teal xl:px-4 xl:text-[15px]";
 
 const menuLinkClass =
   "group flex items-baseline gap-4 py-2 font-display text-[9.5vw] uppercase leading-none sm:text-[8vw] lg:text-[6vw]";
@@ -182,7 +182,7 @@ export function Nav() {
               className={menuLinkClass}
               style={{ fontStretch: "112%" }}
             >
-              <span className="font-mono text-xs tracking-[0.2em] text-ink/60">01</span>
+              <span className="font-mono text-xs tracking-[0.2em] text-ink">01</span>
               <RollText>About us</RollText>
             </Link>
           </div>
@@ -201,15 +201,13 @@ export function Nav() {
                   className={menuLinkClass}
                   style={{ fontStretch: "112%" }}
                 >
-                  <span className="font-mono text-xs tracking-[0.2em] text-ink/60">
-                    0{index + 2}
-                  </span>
+                  <span className="font-mono text-xs tracking-[0.2em] text-ink">0{index + 2}</span>
                   <RollText>{chapter.label}</RollText>
                 </a>
               </div>
             ))}
         </nav>
-        <div className="flex flex-col gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-ink sm:flex-row sm:items-end sm:justify-between">
           <span data-menu-meta>TDM Groups — Marketing · Technology · Growth</span>
           <span data-menu-meta className="flex items-center gap-2">
             <span className="rec-blink size-2 rounded-full bg-glow" /> Always optimising

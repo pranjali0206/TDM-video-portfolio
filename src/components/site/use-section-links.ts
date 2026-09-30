@@ -19,7 +19,12 @@ export function useSectionLinks() {
 
   const goTo = (id: string) => {
     if (onHome) {
-      scrollTo(`#${id}`);
+      // Contact's headline is a full screen tall on its own, so land lower:
+      // the enquiry form's top sits just past the middle of the screen, with
+      // "Let's grow." still in view above it.
+      const form = id === "contact" && document.querySelector<HTMLElement>("[data-contact-body]");
+      if (form) scrollTo(form, { offset: -Math.round(window.innerHeight * 0.55) });
+      else scrollTo(`#${id}`);
       return;
     }
     void navigate(id === "top" ? { to: "/" } : { to: "/", hash: id });

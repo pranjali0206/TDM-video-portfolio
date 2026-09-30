@@ -270,7 +270,7 @@ export function VideoSlot({
       <div
         className={cn(
           "absolute inset-x-0 top-0 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em]",
-          onPhoto ? "text-ivory/80" : "text-ink/55",
+          onPhoto ? "text-ivory" : "text-ink",
           size === "lg" ? "p-7 md:p-12" : "p-5",
         )}
       >

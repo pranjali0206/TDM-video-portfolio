@@ -4,15 +4,13 @@ import { useRef } from "react";
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-import { reviews } from "./content";
+import { reviews, type Review } from "./content";
 import { SectionLabel } from "./primitives";
 import { tones, type Tone } from "./tones";
 
-type Review = (typeof reviews)[number];
-
 const rows: { items: Review[]; tones: Tone[]; direction: 1 | -1 }[] = [
   { items: reviews.slice(0, 4), tones: ["coral", "ink", "lime", "deep"], direction: -1 },
-  { items: reviews.slice(4), tones: ["teal", "blush", "paper"], direction: 1 },
+  { items: reviews.slice(4), tones: ["teal", "blush", "paper", "mint"], direction: 1 },
 ];
 
 // Enough copies that a row never runs out, even on very wide screens.
@@ -55,7 +53,7 @@ function ReviewCard({
       style={{ background: colors.bg, color: colors.fg }}
     >
       <div className="flex items-center justify-between gap-4">
-        <span className="font-mono text-[11px] uppercase tracking-[0.22em] opacity-70">
+        <span className="font-mono text-[11px] uppercase tracking-[0.22em] opacity-90">
           {review.service}
         </span>
         <span
@@ -86,12 +84,12 @@ function ReviewCard({
             className="grid size-11 shrink-0 place-items-center rounded-full font-mono text-xs font-bold"
             style={{ background: "color-mix(in oklab, currentColor 14%, transparent)" }}
           >
-            {initialsOf(review.name)}
+            {initialsOf(review.name ?? review.company)}
           </span>
           <div className="min-w-0">
-            <p className="font-semibold">{review.name}</p>
-            <p className="truncate text-sm opacity-70">
-              {review.role}, {review.company}
+            <p className="font-semibold">{review.name ?? review.company}</p>
+            <p className="truncate text-sm font-medium opacity-90">
+              {review.name ? `${review.role}, ${review.company}` : review.role}
             </p>
           </div>
         </footer>
@@ -227,7 +225,7 @@ export function Testimonials() {
           className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-px-6 px-6 pb-6 pt-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {mobileCards.map(({ review, tone }) => (
-            <li key={review.name} className="flex shrink-0 snap-start">
+            <li key={review.company} className="flex shrink-0 snap-start">
               <ReviewCard
                 review={review}
                 tone={tone}
@@ -238,7 +236,7 @@ export function Testimonials() {
         </ul>
         <p
           aria-hidden="true"
-          className="mt-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink/50"
+          className="mt-2 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-ink"
         >
           Swipe for more →
         </p>
@@ -256,7 +254,7 @@ export function Testimonials() {
               {Array.from({ length: COPIES }, (_, copy) =>
                 row.items.map((review, i) => (
                   <ReviewCard
-                    key={`${copy}-${review.name}`}
+                    key={`${copy}-${review.company}`}
                     review={review}
                     tone={row.tones[i % row.tones.length] ?? "paper"}
                     duplicate={copy > 0}

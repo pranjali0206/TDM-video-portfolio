@@ -1,7 +1,8 @@
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { readTokenColor } from "@/lib/color";
-import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
 import { formats } from "./content";
 import { createRingScene } from "./formats-ring-scene";
@@ -15,36 +16,22 @@ const STEP = (Math.PI * 2) / PANELS.length;
 const loadThree = import.meta.env.SSR ? null : () => import("three");
 
 /**
- * "One idea. Infinite momentum." — the six formats on a WebGL reel. The
- * section pins while scrolling turns the ring; dragging adds spin. three.js
- * is only fetched once the section is close to the viewport.
+ * "One idea. Infinite momentum." — the six formats on a WebGL ring. The page
+ * scrolls past normally; the arrow buttons (or a sideways drag) turn the
+ * ring. three.js is only fetched once the section is close to the viewport.
  */
 export function FormatsRing() {
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLSpanElement>(null);
-  const progress = useRef(0);
+  const turn = useRef(0);
   const drag = useRef(0);
   const [active, setActive] = useState(0);
   const [mode, setMode] = useState<"webgl" | "fallback">("webgl");
 
-  useGSAP(
-    () => {
-      if (mode !== "webgl" || prefersReducedMotion()) return;
-      ScrollTrigger.create({
-        trigger: rootRef.current,
-        start: "top top",
-        end: "+=240%",
-        pin: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-          progress.current = self.progress;
-          if (barRef.current) gsap.set(barRef.current, { scaleX: self.progress });
-        },
-      });
-    },
-    { scope: rootRef, dependencies: [mode] },
-  );
+  // Each press moves the ring one panel; the scene eases toward the new angle.
+  const move = (steps: 1 | -1) => {
+    turn.current += steps * STEP;
+  };
 
   useGSAP(
     () => {
@@ -83,7 +70,7 @@ export function FormatsRing() {
             dispose = createRingScene(THREE, stage, {
               images: PANELS.map((format) => format.image),
               base: readTokenColor("--secondary"),
-              getTarget: () => progress.current * (formats.length - 1) * STEP + drag.current,
+              getTarget: () => turn.current + drag.current,
               onActive: (index) => setActive(index % formats.length),
             });
           })
@@ -213,7 +200,7 @@ export function FormatsRing() {
             {current.tag}
           </p>
         </div>
-        <div className="shrink-0 text-right font-mono text-[11px] uppercase tracking-[0.22em] text-ink/55">
+        <div className="shrink-0 text-right font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
           <p>
             <span
               className="font-display text-4xl text-ink md:text-5xl"
@@ -224,9 +211,32 @@ export function FormatsRing() {
             / 0{formats.length}
           </p>
           <div className="ml-auto mt-3 h-px w-28 bg-ink/15 md:w-40">
-            <span ref={barRef} className="block h-full origin-left scale-x-0 bg-glow" />
+            <span
+              className="block h-full origin-left bg-glow transition-transform duration-700 ease-out"
+              style={{ transform: `scaleX(${(active + 1) / formats.length})` }}
+            />
           </div>
-          <p className="mt-3 hidden md:block">Scroll or drag</p>
+          {mode === "webgl" && (
+            <div className="pointer-events-auto mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => move(-1)}
+                aria-label="Previous format"
+                className="grid size-12 place-items-center rounded-full border border-ink/25 bg-white/60 text-ink backdrop-blur-md transition-colors hover:border-ink hover:bg-ink hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
+              >
+                <ArrowLeft className="size-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => move(1)}
+                aria-label="Next format"
+                className="grid size-12 place-items-center rounded-full bg-ink text-accent transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
+              >
+                <ArrowRight className="size-5" />
+              </button>
+            </div>
+          )}
+          <p className="mt-3 hidden md:block">Tap the arrows or drag</p>
         </div>
       </div>
     </section>

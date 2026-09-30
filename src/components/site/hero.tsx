@@ -1,4 +1,4 @@
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 import { heroFlipWords, heroMontage } from "./content";
 import { useExperience } from "./experience";
+import { useSectionLinks } from "./use-section-links";
 import { FlipWords } from "./flip-words";
 import { HeroShader, type HeroShaderState } from "./hero-shader";
 import { Corners, Magnetic, RollText } from "./primitives";
@@ -51,6 +52,7 @@ function HeroPill({ onClick }: { onClick: () => void }) {
 
 export function Hero() {
   const { scrollTo } = useExperience();
+  const { goTo } = useSectionLinks();
   const rootRef = useRef<HTMLElement>(null);
   const shaderState = useRef<HeroShaderState>({ intro: 0, scroll: 0 });
 
@@ -81,7 +83,7 @@ export function Hero() {
     { scope: rootRef },
   );
 
-  const toReel = () => scrollTo("#reel");
+  const toServices = () => scrollTo("#services");
 
   return (
     <section
@@ -113,7 +115,7 @@ export function Hero() {
           <span aria-hidden="true" className="block">
             <span data-hero-row="1" className="flex items-center gap-[0.16em]">
               <span>Make</span>
-              <HeroPill onClick={toReel} />
+              <HeroPill onClick={toServices} />
             </span>
             <span data-hero-row="2" className="block pl-[0.4em] md:pl-[1.5em]">
               Attention
@@ -142,9 +144,9 @@ export function Hero() {
                 className="font-serif text-[1.18em] italic text-deep-teal"
               />
             </p>
-            <p className="mt-3 max-w-md text-base leading-relaxed text-ink/70">
-              Deep expertise across marketing, technology and AI — every service working together
-              to turn clicks into customers.
+            <p className="mt-4 max-w-lg text-lg font-semibold leading-relaxed text-ink md:text-xl">
+              Deep expertise across marketing, technology and AI — every service working together to
+              turn clicks into customers.
             </p>
           </div>
 
@@ -154,7 +156,7 @@ export function Hero() {
                 href="#contact"
                 onClick={(event) => {
                   event.preventDefault();
-                  scrollTo("#contact");
+                  goTo("contact");
                 }}
                 className="group inline-flex h-14 items-center gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink shadow-[0_14px_34px_-14px_var(--accent)] transition-colors hover:bg-glow"
               >
@@ -167,11 +169,11 @@ export function Hero() {
             <Magnetic>
               <button
                 type="button"
-                onClick={toReel}
+                onClick={toServices}
                 className="group inline-flex h-14 items-center gap-3 rounded-full border border-ink/20 bg-white/50 px-6 text-base font-semibold text-ink backdrop-blur-md transition-colors hover:border-ink"
               >
-                <Play className="size-4" fill="currentColor" strokeWidth={0} />
-                <RollText>See our work</RollText>
+                <ArrowDown className="size-4" />
+                <RollText>Explore services</RollText>
               </button>
             </Magnetic>
           </div>

@@ -13,8 +13,14 @@ import { gsap, prefersReducedMotion, ScrollTrigger } from "@/lib/gsap";
 
 type ScrollTarget = string | number | HTMLElement;
 
+type ScrollOptions = {
+  immediate?: boolean;
+  /** Pixels added to the target's position (negative lands above it). */
+  offset?: number;
+};
+
 type ExperienceValue = {
-  scrollTo: (target: ScrollTarget, options?: { immediate?: boolean }) => void;
+  scrollTo: (target: ScrollTarget, options?: ScrollOptions) => void;
   lockScroll: (locked: boolean) => void;
 };
 
@@ -80,14 +86,16 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
     document.documentElement.style.overflow = locked ? "hidden" : "";
   }, []);
 
-  const scrollTo = useCallback((target: ScrollTarget, options?: { immediate?: boolean }) => {
+  const scrollTo = useCallback((target: ScrollTarget, options?: ScrollOptions) => {
     const lenis = lenisRef.current;
     const element =
       typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
     if (element === null) return;
+    const offset = options?.offset ?? 0;
 
     if (lenis) {
       lenis.scrollTo(element, {
+        offset,
         duration: options?.immediate ? 0 : 1.6,
         immediate: options?.immediate ?? false,
         easing: (t) => 1 - Math.pow(1 - t, 4),
@@ -95,8 +103,9 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (typeof element === "number") window.scrollTo({ top: element });
-    else element.scrollIntoView();
+    const top =
+      typeof element === "number" ? element : element.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top + offset });
   }, []);
 
   const value = useMemo(() => ({ scrollTo, lockScroll }), [scrollTo, lockScroll]);

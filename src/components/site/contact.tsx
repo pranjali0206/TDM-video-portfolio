@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
@@ -32,7 +32,7 @@ function Field({
       )}
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-0 top-8 text-lg text-ink/45 transition-all duration-300 peer-focus:top-0 peer-focus:font-mono peer-focus:text-[11px] peer-focus:uppercase peer-focus:tracking-[0.25em] peer-focus:text-deep-teal peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.25em]"
+        className="pointer-events-none absolute left-0 top-8 text-lg font-medium text-ink/70 transition-all duration-300 peer-focus:top-0 peer-focus:font-mono peer-focus:text-[11px] peer-focus:uppercase peer-focus:tracking-[0.25em] peer-focus:text-deep-teal peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:font-mono peer-[:not(:placeholder-shown)]:text-[11px] peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-[0.25em]"
       >
         {label}
         {!required && " (optional)"}
@@ -42,9 +42,75 @@ function Field({
   );
 }
 
+const businessDomains = [
+  "Real Estate & Construction",
+  "Architecture & Interior Design",
+  "Healthcare & Biotech",
+  "Education & Coaching",
+  "Retail & E-commerce",
+  "Trading & Distribution",
+  "Manufacturing",
+  "IT & Software",
+  "Hospitality & Travel",
+  "Finance & Insurance",
+  "Food & Beverage",
+  "Fashion & Lifestyle",
+  "Startup",
+];
+const OTHER_DOMAIN = "Other";
+
+/** Business-domain picker, styled like the underlined text fields around it. */
+function DomainField({
+  value,
+  onChange,
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}) {
+  const id = useId();
+  return (
+    <div className={cn("relative", className)}>
+      <select
+        id={id}
+        name="domain"
+        required
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className={cn(
+          "peer w-full cursor-pointer appearance-none border-0 border-b border-ink/20 bg-transparent px-0 pb-3 pr-8 pt-8 text-lg outline-none",
+          value ? "text-ink" : "text-ink/70",
+        )}
+      >
+        <option value="" disabled>
+          Choose your industry
+        </option>
+        {[...businessDomains, OTHER_DOMAIN].map((domain) => (
+          <option key={domain} value={domain}>
+            {domain}
+          </option>
+        ))}
+      </select>
+      <label
+        htmlFor={id}
+        className="pointer-events-none absolute left-0 top-0 font-mono text-[11px] uppercase tracking-[0.25em] text-deep-teal"
+      >
+        Business domain
+      </label>
+      <ChevronDown
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-4 right-0 size-5 text-ink"
+      />
+      <span className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-deep-teal transition-transform duration-500 peer-focus:scale-x-100" />
+    </div>
+  );
+}
+
 export function Contact() {
   const { scrollTo } = useExperience();
   const [sent, setSent] = useState(false);
+  const [domain, setDomain] = useState("");
   const rootRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -99,13 +165,16 @@ export function Contact() {
           </p>
         </div>
 
-        <div className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+        <div
+          data-contact-body
+          className="mt-20 grid gap-16 md:mt-28 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24"
+        >
           <div data-fade>
-            <p className="max-w-md text-xl leading-relaxed text-ink/75">
+            <p className="max-w-md text-xl leading-relaxed font-medium text-ink">
               Bring us the goal. We will bring the strategy, the technology and the campaigns built
               to move the numbers.
             </p>
-            <ol className="mt-10 space-y-4 border-t border-ink/10 pt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-ink/60">
+            <ol className="mt-10 space-y-4 border-t border-ink/10 pt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
               {["Share the goal", "Get a growth plan", "Launch & scale"].map((step, index) => (
                 <li key={step} className="flex items-center gap-4">
                   <span className="text-deep-teal">0{index + 1}</span>
@@ -137,7 +206,11 @@ export function Contact() {
           >
             <Field label="Name" required />
             <Field label="Email" type="email" required />
-            <Field label="Phone" type="tel" className="md:col-span-2" />
+            <Field label="Phone" type="tel" required />
+            <DomainField value={domain} onChange={setDomain} />
+            {domain === OTHER_DOMAIN && (
+              <Field label="Tell us your business domain" required className="md:col-span-2" />
+            )}
             <Field label="Message" required multiline className="md:col-span-2" />
             <div className="mt-6 md:col-span-2">
               <Magnetic>
