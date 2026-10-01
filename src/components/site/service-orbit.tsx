@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import tdmLogo from "@/assets/tdm-logo.webp";
@@ -18,9 +20,9 @@ const ADVANCE_MS = 4600;
 // One colour per service, in content order:
 // MediaHouse, Ads, Websites, CRM, ERP, Automations, AI Agents.
 const serviceTones: Tone[] = ["coral", "lime", "teal", "ink", "blush", "deep", "mint"];
-const toneOf = (index: number) => tones[serviceTones[index % serviceTones.length]!];
+export const toneOf = (index: number) => tones[serviceTones[index % serviceTones.length]!];
 // Marker colour under the service name (dark tones would vanish under ink text).
-const markOf = (index: number) => {
+export const markOf = (index: number) => {
   const tone = serviceTones[index % serviceTones.length];
   return tone === "ink" || tone === "deep" ? "var(--accent)" : toneOf(index).bg;
 };
@@ -118,7 +120,7 @@ function Globe({
  * above it, nodes behind it smaller and underneath. Changing `active` swings
  * the ring so that service comes to the front, and a beam links it home.
  */
-function ServiceOrbit({ active, onPick }: { active: number; onPick: (index: number) => void }) {
+function ServiceOrbit({ active }: { active: number }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
@@ -127,7 +129,7 @@ function ServiceOrbit({ active, onPick }: { active: number; onPick: (index: numb
   const frontArcRef = useRef<SVGPathElement>(null);
   const beamRef = useRef<SVGLineElement>(null);
   const beamDotRef = useRef<SVGCircleElement>(null);
-  const nodeRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const nodeRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const satelliteRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const meridianRefs = useRef<(SVGEllipseElement | null)[]>([]);
   const activeRef = useRef(active);
@@ -438,17 +440,18 @@ function ServiceOrbit({ active, onPick }: { active: number; onPick: (index: numb
           const Icon = service.icon;
           const isActive = index === active;
           return (
-            <button
+            // Each bubble opens its service's section on the Services page.
+            <Link
               key={service.service}
               ref={(el) => {
                 nodeRefs.current[index] = el;
               }}
-              type="button"
+              to="/services"
+              hash={service.slug}
               tabIndex={-1}
               aria-hidden="true"
               data-cursor="view"
               data-cursor-label="Open"
-              onClick={() => onPick(index)}
               className={cn(
                 "group absolute flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 font-semibold sm:gap-2 shadow-[0_14px_30px_-14px_rgba(0,50,50,0.6)] ring-1 ring-ink/10 transition-[box-shadow] duration-500 will-change-transform sm:py-1.5 sm:pl-1.5 sm:pr-4",
                 isActive &&
@@ -465,7 +468,7 @@ function ServiceOrbit({ active, onPick }: { active: number; onPick: (index: numb
                 <Icon className="size-3 sm:size-4" strokeWidth={1.9} />
               </span>
               <span className="text-[11px] leading-none sm:text-sm">{service.service}</span>
-            </button>
+            </Link>
           );
         })}
       </div>
@@ -523,7 +526,7 @@ export function ServiceUniverse() {
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
       >
-        <ServiceOrbit active={active} onPick={choose} />
+        <ServiceOrbit active={active} />
       </div>
 
       <div
@@ -534,7 +537,7 @@ export function ServiceUniverse() {
         <div
           ref={detailRef}
           aria-live={auto ? "off" : "polite"}
-          className="min-h-[21rem] md:min-h-[19rem]"
+          className="min-h-[24rem] md:min-h-[22rem]"
         >
           <p
             data-detail-line
@@ -579,6 +582,15 @@ export function ServiceUniverse() {
             {service.answer}
             <span className="text-glow">”</span>
           </blockquote>
+          <Link
+            data-detail-line
+            to="/services"
+            hash={service.slug}
+            className="group mt-7 inline-flex items-center gap-2 font-semibold text-deep-teal"
+          >
+            <span className="border-b border-current">Explore {service.service}</span>
+            <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+          </Link>
         </div>
 
         <div role="group" aria-label="Choose a service" className="mt-8 flex flex-wrap gap-2">

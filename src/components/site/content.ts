@@ -431,50 +431,142 @@ export const industries = [
   },
 ];
 
-// One problem → solution pair per service; powers the rotating
-// "Same question in your mind?" card.
+// The seven services. Each drives an orbit bubble on the home-page globe, the
+// rotating "Same question in your mind?" card on About, and a full section on
+// the /services page (anchored at `slug`).
 export const problemSolutions = [
   {
     service: "MediaHouse",
+    slug: "mediahouse",
     icon: Clapperboard,
     question: "Your content looks like everyone else’s?",
     answer: "Our MediaHouse crafts a look competitors can’t copy.",
+    tagline: "Content & creative studio",
+    summary:
+      "Our in-house creative studio produces the content your brand runs on — ad reels, social content, brand graphics and real estate visuals, all planned around what makes people stop, remember and buy.",
+    includes: [
+      "Sales-driven ad reels & short-form video",
+      "Social media content calendars",
+      "Brand graphics & campaign creatives",
+      "Real estate drone shoots & AI property visuals",
+      "Product and launch content",
+      "Scripts, hooks & creative direction",
+    ],
+    outcomes: ["Scroll-stopping creative", "One consistent brand look", "Content that converts"],
   },
   {
     service: "Ads",
+    slug: "ads",
     icon: Megaphone,
     question: "Burning budget on ads that don’t convert?",
     answer: "Our Ads team turns spend into signal, not noise.",
+    tagline: "Performance marketing",
+    summary:
+      "Over a decade of running Google and Meta campaigns that pay for themselves. We plan, launch and optimise every campaign around one thing — profitable leads and sales, with clear reporting on where every rupee goes.",
+    includes: [
+      "Google Search & Performance Max",
+      "Facebook & Instagram (Meta) ads",
+      "Lead generation campaigns",
+      "Retargeting & remarketing",
+      "Conversion tracking & analytics",
+      "Weekly optimisation & clear reports",
+    ],
+    outcomes: ["10+ years of ad expertise", "₹230 Cr+ in client sales", "Lower cost per lead"],
   },
   {
     service: "Websites",
+    slug: "websites",
     icon: Globe,
     question: "A website that looks pretty but does nothing?",
     answer: "We build Websites engineered to convert, not just impress.",
+    tagline: "Websites & landing pages",
+    summary:
+      "Fast, immersive websites and landing pages designed around your customer. Every page is built to load quickly, rank well on Google and guide visitors toward one clear action.",
+    includes: [
+      "Business & corporate websites",
+      "High-converting landing pages",
+      "E-commerce stores",
+      "SEO-ready structure & speed optimisation",
+      "Conversion rate optimisation (CRO)",
+      "Hosting, security & ongoing support",
+    ],
+    outcomes: ["More enquiries from the same traffic", "Fast on every device", "Easy to update"],
   },
   {
     service: "CRM",
+    slug: "crm",
     icon: Users,
     question: "Leads slipping through the cracks?",
     answer: "Our CRM keeps every lead tracked and every deal alive.",
+    tagline: "Customer relationship management",
+    summary:
+      "One place for every lead, call and deal. We set up and customise a CRM around how your sales team actually works — so no enquiry is forgotten and every follow-up happens on time.",
+    includes: [
+      "CRM setup & customisation",
+      "Lead capture from ads, website & WhatsApp",
+      "Sales pipelines & deal stages",
+      "Automatic follow-up reminders",
+      "Team roles & performance dashboards",
+      "Data migration & team training",
+    ],
+    outcomes: ["No lost leads", "Faster follow-ups", "Clear sales visibility"],
   },
   {
     service: "ERP",
+    slug: "erp",
     icon: Boxes,
     question: "Operations held together by spreadsheets and duct tape?",
     answer: "We build ERP systems that actually scale as you grow.",
+    tagline: "ERP, HRMS & business systems",
+    summary:
+      "Replace scattered spreadsheets with one connected system. We build ERP and HRMS solutions that bring inventory, accounts, HR and operations together — tailored to your business, not the other way round.",
+    includes: [
+      "Custom ERP development",
+      "Inventory & order management",
+      "Billing, accounts & GST-ready invoicing",
+      "HRMS — attendance, payroll & leave",
+      "Role-based access & approvals",
+      "Real-time business reports",
+    ],
+    outcomes: ["One source of truth", "Less manual work", "Systems that scale with you"],
   },
   {
     service: "Automations",
+    slug: "automations",
     icon: Bot,
     question: "Your team drowning in repetitive busywork?",
     answer: "We automate the grind so your team can focus on growth.",
+    tagline: "Workflow automation",
+    summary:
+      "We find the repetitive tasks slowing your team down and automate them — connecting your tools so data moves on its own, messages go out on time and reports build themselves.",
+    includes: [
+      "Workflow & process automation",
+      "WhatsApp & email automation",
+      "App and tool integrations",
+      "Automatic lead routing",
+      "Scheduled reports & alerts",
+      "Document & data-entry automation",
+    ],
+    outcomes: ["Hours saved every week", "Fewer human errors", "Team focused on growth"],
   },
   {
     service: "AI Agents",
+    slug: "ai-agents",
     icon: Sparkles,
     question: "Wish you had more hands, without more headcount?",
     answer: "Our AI Agents work around the clock like a full extra team.",
+    tagline: "AI agents & AI tools",
+    summary:
+      "Custom AI agents trained on your business that answer customers, qualify leads and handle routine work 24/7 — on your website, WhatsApp and internal tools.",
+    includes: [
+      "AI chat agents for website & WhatsApp",
+      "Lead qualification & appointment booking",
+      "Customer support automation",
+      "Custom AI tools for your team",
+      "Knowledge bases trained on your data",
+      "Integration with your CRM & systems",
+    ],
+    outcomes: ["24/7 instant replies", "More leads handled", "Growth without extra headcount"],
   },
 ];
 

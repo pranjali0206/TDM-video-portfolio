@@ -60,10 +60,15 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (id) {
       void (document.fonts?.ready ?? Promise.resolve()).then(() => {
-        const target = document.getElementById(id);
+        // Contact lands on its headline, clear of the nav, so the form shows too.
+        const contactTitle =
+          id === "contact" ? document.querySelector<HTMLElement>("[data-contact-title]") : null;
+        const target = contactTitle ?? document.getElementById(id);
         if (cancelled || !target) return;
         ScrollTrigger.refresh();
-        const top = target.getBoundingClientRect().top + window.scrollY;
+        const navHeight = document.querySelector<HTMLElement>("header.fixed")?.offsetHeight ?? 0;
+        const top =
+          target.getBoundingClientRect().top + window.scrollY - (contactTitle ? navHeight + 48 : 0);
         if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
         else window.scrollTo(0, top);
       });

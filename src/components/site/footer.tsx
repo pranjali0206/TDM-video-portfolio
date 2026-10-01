@@ -58,7 +58,8 @@ export function Footer() {
     { scope: rootRef },
   );
 
-  const links = chapters.filter((chapter) => chapter.id !== "top");
+  // Services has its own page, linked separately below.
+  const links = chapters.filter((chapter) => chapter.id !== "top" && chapter.id !== "services");
 
   return (
     <div
@@ -84,6 +85,9 @@ export function Footer() {
             </p>
             <Link to="/about" className={indexLinkClass}>
               <RollText>About us</RollText>
+            </Link>
+            <Link to="/services" className={indexLinkClass}>
+              <RollText>Services</RollText>
             </Link>
             {links.map((chapter) => (
               <a
