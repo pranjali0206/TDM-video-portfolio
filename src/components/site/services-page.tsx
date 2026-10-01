@@ -15,7 +15,7 @@ function ServicesHeader() {
   return (
     <header
       id="top"
-      className="relative overflow-hidden px-6 pb-16 pt-36 md:px-14 md:pb-24 md:pt-44 lg:px-20"
+      className="relative overflow-hidden px-6 pb-12 pt-32 md:px-14 md:pb-24 md:pt-44 lg:px-20"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="orb -left-[8%] top-[10%] size-[26rem] bg-accent/45" />
@@ -45,15 +45,19 @@ function ServicesHeader() {
           </h1>
         </Reveal>
         <Reveal delay={160}>
-          <p className="mt-8 max-w-2xl text-lg font-medium leading-relaxed text-ink md:text-xl">
+          <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-ink sm:mt-8 sm:text-lg md:text-xl">
             Creative, marketing and technology under one roof — from the content that wins attention
             to the systems that turn it into sales. Pick a service to see exactly what’s included.
           </p>
         </Reveal>
 
-        {/* Jump links to each service below. */}
+        {/* Jump links to each service below, all visible at once (wrapping onto
+            a few lines on phones). */}
         <Reveal delay={220}>
-          <nav aria-label="Services on this page" className="mt-10 flex flex-wrap gap-2.5">
+          <nav
+            aria-label="Services on this page"
+            className="mt-8 flex flex-wrap gap-2 sm:mt-10 sm:gap-2.5"
+          >
             {problemSolutions.map((service, index) => {
               const Icon = service.icon;
               return (
@@ -65,13 +69,13 @@ function ServicesHeader() {
                     scrollTo(`#${service.slug}`);
                     window.history.replaceState(null, "", `#${service.slug}`);
                   }}
-                  className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-white/70 py-1.5 pl-1.5 pr-4 text-sm font-bold text-ink backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+                  className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-ink/15 bg-white/70 py-1 pl-1 pr-3 text-[13px] font-bold sm:gap-2 sm:py-1.5 sm:pl-1.5 sm:pr-4 sm:text-sm text-ink backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
                 >
                   <span
-                    className="grid size-7 place-items-center rounded-full"
+                    className="grid size-6 place-items-center rounded-full sm:size-7"
                     style={{ background: toneOf(index).bg, color: toneOf(index).fg }}
                   >
-                    <Icon className="size-3.5" strokeWidth={2} />
+                    <Icon className="size-3 sm:size-3.5" strokeWidth={2} />
                   </span>
                   {service.service}
                 </a>
@@ -94,31 +98,32 @@ function ServiceSection({ service, index }: { service: Service; index: number })
     <section
       id={service.slug}
       aria-labelledby={`${service.slug}-title`}
-      className="scroll-mt-28 border-t border-ink/10 px-6 py-20 md:px-14 md:py-28 lg:px-20"
+      // Top padding clears the fixed nav bar when a section is jumped to.
+      className="scroll-mt-28 border-t border-ink/10 px-6 pb-16 pt-24 md:px-14 md:py-28 lg:px-20"
     >
-      <div className="mx-auto grid max-w-[1400px] items-start gap-10 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-[1400px] items-start gap-8 md:gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal className={cn(flipped && "lg:order-2")}>
           <div
-            className="relative flex min-h-[22rem] flex-col overflow-hidden rounded-[2rem] p-8 shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] md:min-h-[26rem] md:p-12"
+            className="relative flex min-h-[17rem] flex-col overflow-hidden rounded-[1.5rem] p-6 shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] sm:p-8 md:min-h-[26rem] md:p-12"
             style={{ background: colors.bg, color: colors.fg }}
           >
-            <Corners className="inset-4 text-current opacity-40" size="size-4" />
-            <div className="relative flex items-center justify-between gap-4">
-              <span className="grid size-16 -rotate-6 place-items-center rounded-2xl bg-white/90 text-ink shadow-lg">
-                <Icon className="size-7" strokeWidth={1.8} />
+            <Corners className="inset-3 text-current opacity-40 sm:inset-4" size="size-4" />
+            <div className="relative flex items-start justify-between gap-4">
+              <span className="grid size-12 shrink-0 -rotate-6 place-items-center rounded-2xl bg-white/90 text-ink shadow-lg sm:size-16">
+                <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
               </span>
-              <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em]">
+              <span className="min-w-0 pt-1 text-right font-mono text-[10px] font-medium uppercase leading-relaxed tracking-[0.18em] sm:text-[11px] sm:tracking-[0.25em]">
                 {service.tagline}
               </span>
             </div>
             <h2
               id={`${service.slug}-title`}
-              className="relative mt-auto pt-12 font-display text-[clamp(3rem,7vw,6rem)] font-extrabold leading-[0.9] tracking-[-0.02em]"
+              className="relative mt-auto break-words pt-10 font-display text-[clamp(2.1rem,9vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.02em] sm:pt-12"
               style={{ fontStretch: "110%" }}
             >
               {service.service}
             </h2>
-            <p className="relative mt-5 max-w-md text-lg font-semibold leading-snug md:text-xl">
+            <p className="relative mt-4 max-w-md text-base font-semibold leading-snug sm:mt-5 sm:text-lg md:text-xl">
               {service.question}
             </p>
           </div>
@@ -126,26 +131,35 @@ function ServiceSection({ service, index }: { service: Service; index: number })
 
         <Reveal delay={120} className={cn(flipped && "lg:order-1")}>
           <p
-            className="font-display text-2xl font-bold leading-snug md:text-3xl"
+            className="font-display text-xl font-bold leading-snug sm:text-2xl md:text-3xl"
             style={{ fontStretch: "105%" }}
           >
-            <span className="relative isolate">
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-[-0.06em] bottom-[0.06em] -z-10 h-[0.32em] -rotate-1 rounded-sm"
-                style={{ background: markOf(index) }}
-              />
+            {/* A highlighter stroke that follows the text across line breaks. */}
+            <span
+              className="box-decoration-clone"
+              style={{
+                backgroundImage: `linear-gradient(${markOf(index)}, ${markOf(index)})`,
+                backgroundSize: "100% 0.32em",
+                backgroundPosition: "0 88%",
+                backgroundRepeat: "no-repeat",
+              }}
+            >
               {service.answer}
             </span>
           </p>
-          <p className="mt-6 text-lg font-medium leading-relaxed text-ink">{service.summary}</p>
+          <p className="mt-5 text-base font-medium leading-relaxed text-ink sm:mt-6 sm:text-lg">
+            {service.summary}
+          </p>
 
-          <h3 className="mt-10 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal">
+          <h3 className="mt-8 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal sm:mt-10">
             What’s included
           </h3>
-          <ul className="mt-5 grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
+          <ul className="mt-4 grid gap-x-8 gap-y-3 sm:mt-5 sm:grid-cols-2 sm:gap-y-3.5">
             {service.includes.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-base font-semibold text-ink">
+              <li
+                key={item}
+                className="flex items-start gap-3 text-[15px] font-semibold leading-snug text-ink sm:text-base"
+              >
                 <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-ink text-accent">
                   <Check className="size-3" strokeWidth={3} />
                 </span>
@@ -154,24 +168,25 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             ))}
           </ul>
 
-          <h3 className="mt-10 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal">
+          <h3 className="mt-8 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal sm:mt-10">
             What you get
           </h3>
-          <ul className="mt-4 flex flex-wrap gap-2.5">
+          <ul className="mt-4 flex flex-wrap gap-2 sm:gap-2.5">
             {service.outcomes.map((outcome) => (
               <li
                 key={outcome}
-                className="rounded-full border border-ink/15 bg-white px-4 py-2 text-sm font-bold text-ink"
+                className="rounded-full border border-ink/15 bg-white px-3.5 py-1.5 text-[13px] font-bold text-ink sm:px-4 sm:py-2 sm:text-sm"
               >
                 {outcome}
               </li>
             ))}
           </ul>
 
+          {/* Full-width on phones for an easy thumb tap. */}
           <Link
             to="/"
             hash="contact"
-            className="group mt-10 inline-flex h-14 items-center gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink shadow-[0_14px_34px_-14px_var(--accent)] transition-colors hover:bg-glow"
+            className="group mt-8 flex h-14 w-full items-center justify-between gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink shadow-[0_14px_34px_-14px_var(--accent)] transition-colors hover:bg-glow sm:mt-10 sm:inline-flex sm:w-auto sm:justify-start"
           >
             Start with {service.service}
             <span className="grid size-10 place-items-center rounded-full bg-ink text-accent transition-transform duration-500 group-hover:rotate-45">
@@ -186,9 +201,9 @@ function ServiceSection({ service, index }: { service: Service; index: number })
 
 function ServicesCta() {
   return (
-    <section className="px-6 pb-32 pt-8 md:px-14 lg:px-20">
+    <section className="px-4 pb-24 pt-4 sm:px-6 md:px-14 md:pb-32 md:pt-8 lg:px-20">
       <Reveal>
-        <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[2.5rem] bg-ink px-8 py-16 text-center text-ivory md:px-16 md:py-24">
+        <div className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[1.75rem] bg-ink px-6 py-14 text-center text-ivory sm:rounded-[2.5rem] sm:px-8 sm:py-16 md:px-16 md:py-24">
           <div aria-hidden="true" className="pointer-events-none absolute inset-0">
             <div className="orb -left-20 -top-20 size-[22rem] bg-accent/30" />
             <div className="orb -bottom-24 -right-16 size-[22rem] bg-glow/25 [animation-delay:-7s]" />
@@ -197,7 +212,7 @@ function ServicesCta() {
             Not sure where to start?
           </p>
           <h2
-            className="relative mx-auto mt-6 max-w-3xl text-4xl leading-[0.95] md:text-6xl"
+            className="relative mx-auto mt-5 max-w-3xl text-balance text-[clamp(2rem,8.5vw,2.25rem)] leading-[1] sm:mt-6 md:text-6xl"
             style={{ fontStretch: "105%" }}
           >
             Tell us the goal. We’ll build the{" "}
