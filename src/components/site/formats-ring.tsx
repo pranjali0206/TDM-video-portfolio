@@ -1,177 +1,151 @@
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-import { readTokenColor } from "@/lib/color";
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
-import { formats } from "./content";
-import { createRingScene } from "./formats-ring-scene";
 import { SectionLabel } from "./primitives";
+import { ringReels, reelUrls } from "./reels";
 
-// Twice round the six formats makes a denser, more cinematic curved wall.
-const PANELS = [...formats, ...formats];
-const STEP = (Math.PI * 2) / PANELS.length;
-
-// Browser-only: the SSR flag is static, so the server bundle drops three.js entirely.
-const loadThree = import.meta.env.SSR ? null : () => import("three");
+const COUNT = ringReels.length;
+const STEP = 360 / COUNT;
+// Degrees per second the ring turns on its own.
+const DRIFT = 9;
 
 /**
- * "One idea. Infinite momentum." — the six formats on a WebGL ring. The page
- * scrolls past normally; the arrow buttons (or a sideways drag) turn the
- * ring. three.js is only fetched once the section is close to the viewport.
+ * "One idea. Infinite momentum." — real MediaHouse reels on a turning 3D ring
+ * (CSS 3D, plain <video>, so the clips play straight from the video host).
+ * It turns on its own, can be dragged or stepped with the arrows, and only
+ * the reels facing the viewer play.
  */
 export function FormatsRing() {
-  const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const turn = useRef(0);
-  const drag = useRef(0);
-  const [active, setActive] = useState(0);
-  const [mode, setMode] = useState<"webgl" | "fallback">("webgl");
+  const ringRef = useRef<HTMLDivElement>(null);
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const motion = useRef({ angle: 0, nudge: 0, dragging: false, hover: false });
 
-  // Each press moves the ring one panel; the scene eases toward the new angle.
-  const move = (steps: 1 | -1) => {
-    turn.current += steps * STEP;
+  const step = (direction: 1 | -1) => {
+    const m = motion.current;
+    gsap.to(m, { nudge: m.nudge - direction * STEP, duration: 0.9, ease: "power3.out" });
   };
 
-  useGSAP(
-    () => {
-      gsap.fromTo(
-        "[data-format-title]",
-        { yPercent: 105 },
-        { yPercent: 0, duration: 0.9, ease: "expo.out" },
-      );
-      gsap.fromTo(
-        "[data-format-tag]",
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: "expo.out" },
-      );
-    },
-    { scope: rootRef, dependencies: [active] },
-  );
-
-  // Load three.js lazily and mount the scene.
   useEffect(() => {
     const stage = stageRef.current;
-    if (mode !== "webgl" || !stage) return;
-    if (prefersReducedMotion()) {
-      setMode("fallback");
-      return;
-    }
+    const ring = ringRef.current;
+    if (!stage || !ring) return;
+    const reduced = prefersReducedMotion();
+    const m = motion.current;
 
-    let dispose: (() => void) | null = null;
-    let cancelled = false;
-    const observer = new IntersectionObserver(
+    let visible = false;
+    const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry?.isIntersecting || !loadThree) return;
-        observer.disconnect();
-        loadThree()
-          .then((THREE) => {
-            if (cancelled) return;
-            dispose = createRingScene(THREE, stage, {
-              images: PANELS.map((format) => format.image),
-              base: readTokenColor("--secondary"),
-              getTarget: () => turn.current + drag.current,
-              onActive: (index) => setActive(index % formats.length),
-            });
-          })
-          .catch((error: unknown) => {
-            console.warn("Formats ring fell back to static layout", error);
-            if (!cancelled) setMode("fallback");
-          });
+        visible = entry?.isIntersecting ?? false;
+        if (!visible) videoRefs.current.forEach((video) => video?.pause());
       },
-      { rootMargin: "150% 0px" },
+      { rootMargin: "100px 0px" },
     );
-    observer.observe(stage);
+    io.observe(stage);
 
-    return () => {
-      cancelled = true;
-      observer.disconnect();
-      dispose?.();
+    const render = () => {
+      const turn = m.angle + m.nudge;
+      ring.style.transform = `translateZ(calc(var(--radius) * -1)) rotateY(${turn}deg)`;
+      panelRefs.current.forEach((panel, index) => {
+        if (!panel) return;
+        // 1 = facing the viewer, -1 = facing away.
+        const facing = Math.cos(((index * STEP + turn) * Math.PI) / 180);
+        panel.style.opacity = String(Math.max(0, 0.25 + 0.75 * facing));
+        const video = videoRefs.current[index];
+        if (!video || reduced) return;
+        if (visible && facing > 0.35) {
+          if (video.paused) video.play().catch(() => {});
+        } else if (!video.paused) {
+          video.pause();
+        }
+      });
     };
-  }, [mode]);
 
-  // Drag to spin (horizontal only — vertical gestures keep scrolling the page).
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
+    const tick = (_time: number, deltaTime: number) => {
+      if (!visible) return;
+      if (!reduced && !m.dragging) {
+        m.angle -= DRIFT * (m.hover ? 0.3 : 1) * (Math.min(deltaTime, 50) / 1000);
+      }
+      render();
+    };
+    gsap.ticker.add(tick);
+    render();
+
+    // Drag sideways to spin; vertical swipes keep scrolling the page.
     let startX = 0;
-    let startDrag = 0;
-    let dragging = false;
-
+    let startAngle = 0;
+    let pointer: number | null = null;
+    let moved = false;
     const down = (event: PointerEvent) => {
-      dragging = true;
+      pointer = event.pointerId;
       startX = event.clientX;
-      startDrag = drag.current;
+      startAngle = m.angle;
+      moved = false;
     };
     const move = (event: PointerEvent) => {
-      if (dragging) drag.current = startDrag + (startX - event.clientX) * 0.006;
+      if (event.pointerId !== pointer) return;
+      const dx = event.clientX - startX;
+      if (!moved && Math.abs(dx) > 6) {
+        moved = true;
+        m.dragging = true;
+        stage.setPointerCapture(event.pointerId);
+      }
+      if (moved) m.angle = startAngle + dx * 0.25;
     };
-    const up = () => {
-      dragging = false;
+    const up = (event: PointerEvent) => {
+      if (event.pointerId !== pointer) return;
+      pointer = null;
+      m.dragging = false;
     };
-
+    // A drag that ends on a reel shouldn't also open it.
+    const swallowClick = (event: MouseEvent) => {
+      if (!moved) return;
+      event.preventDefault();
+      event.stopPropagation();
+      moved = false;
+    };
+    const enter = () => (m.hover = true);
+    const leave = () => (m.hover = false);
     stage.addEventListener("pointerdown", down);
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
-    return () => {
-      stage.removeEventListener("pointerdown", down);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-    };
-  }, [mode]);
+    stage.addEventListener("pointermove", move);
+    stage.addEventListener("pointerup", up);
+    stage.addEventListener("pointercancel", up);
+    stage.addEventListener("click", swallowClick, true);
+    stage.addEventListener("pointerenter", enter);
+    stage.addEventListener("pointerleave", leave);
 
-  const current = formats[active] ?? formats[0]!;
+    return () => {
+      gsap.ticker.remove(tick);
+      io.disconnect();
+      stage.removeEventListener("pointerdown", down);
+      stage.removeEventListener("pointermove", move);
+      stage.removeEventListener("pointerup", up);
+      stage.removeEventListener("pointercancel", up);
+      stage.removeEventListener("click", swallowClick, true);
+      stage.removeEventListener("pointerenter", enter);
+      stage.removeEventListener("pointerleave", leave);
+    };
+  }, []);
 
   return (
     <section
-      ref={rootRef}
       id="formats"
-      className="relative h-[100svh] min-h-[600px] overflow-hidden bg-secondary text-ink"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-secondary py-24 text-ink md:py-28"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[58%] size-[80vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
+        className="pointer-events-none absolute left-1/2 top-[55%] size-[80vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
             "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent), transparent 55%)",
         }}
       />
 
-      {mode === "webgl" ? (
-        <div
-          ref={stageRef}
-          data-cursor="drag"
-          data-cursor-label="Drag"
-          aria-hidden="true"
-          className="absolute inset-0 touch-pan-y select-none"
-        />
-      ) : (
-        <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 md:px-14">
-          {formats.map((format) => (
-            <figure
-              key={format.title}
-              className="aspect-[4/5] w-[62vw] shrink-0 snap-center overflow-hidden rounded-3xl md:w-[24vw]"
-            >
-              <img
-                src={format.image}
-                alt={format.title}
-                loading="lazy"
-                className="size-full object-cover"
-              />
-            </figure>
-          ))}
-        </div>
-      )}
-
-      <ul className="sr-only">
-        {formats.map((format) => (
-          <li key={format.title}>
-            {format.title} — {format.tag}
-          </li>
-        ))}
-      </ul>
-
-      <div className="pointer-events-none absolute inset-x-6 top-24 flex flex-col items-center text-center md:top-28">
+      <div className="relative flex flex-col items-center px-6 text-center">
         <SectionLabel>Formats</SectionLabel>
         <h2 className="mt-5 text-4xl leading-[0.95] md:text-6xl">
           One idea.{" "}
@@ -185,59 +159,85 @@ export function FormatsRing() {
         </h2>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-6 bottom-8 flex items-end justify-between gap-6 md:inset-x-14 md:bottom-24">
-        <div aria-hidden="true">
-          <div className="overflow-hidden">
-            <p
-              data-format-title
-              className="font-display text-[13vw] uppercase leading-[0.92] md:text-[min(6vw,9svh)]"
-              style={{ fontStretch: "118%" }}
-            >
-              {current.title}
-            </p>
+      {/* The ring */}
+      <div
+        ref={stageRef}
+        data-cursor="drag"
+        data-cursor-label="Drag"
+        className="relative my-auto flex cursor-grab touch-pan-y select-none items-center justify-center py-10 [--panel:clamp(11rem,min(22vw,42svh),22rem)] [--radius:calc(var(--panel)*2.05)] [perspective:1800px] active:cursor-grabbing md:py-14"
+      >
+        <div
+          className="relative h-[calc(var(--panel)*1.25)] w-[var(--panel)] [transform-style:preserve-3d]"
+          style={{ transform: "rotateX(-6deg)" }}
+        >
+          <div ref={ringRef} className="absolute inset-0 [transform-style:preserve-3d]">
+            {ringReels.map((reel, index) => {
+              const urls = reelUrls(reel.industry, reel.slug);
+              return (
+                <div
+                  key={reel.slug}
+                  ref={(el) => {
+                    panelRefs.current[index] = el;
+                  }}
+                  className="absolute inset-0 [backface-visibility:hidden]"
+                  style={{ transform: `rotateY(${index * STEP}deg) translateZ(var(--radius))` }}
+                >
+                  <Link
+                    to="/media-house"
+                    search={{ tab: reel.industry }}
+                    hash="reels"
+                    draggable={false}
+                    aria-label={reel.title}
+                    className="block size-full overflow-hidden rounded-[1.5rem] bg-ink shadow-[0_40px_80px_-35px_rgba(0,40,40,0.65)] ring-1 ring-ink/10"
+                  >
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[index] = el;
+                      }}
+                      src={urls.preview}
+                      poster={urls.poster}
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
+                      className="pointer-events-none size-full object-cover"
+                    />
+                  </Link>
+                </div>
+              );
+            })}
           </div>
-          <p data-format-tag className="mt-2 font-serif text-2xl italic text-deep-teal md:text-3xl">
-            {current.tag}
-          </p>
         </div>
-        <div className="shrink-0 text-right font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
-          <p>
-            <span
-              className="font-display text-4xl text-ink md:text-5xl"
-              style={{ fontStretch: "118%" }}
-            >
-              0{active + 1}
-            </span>{" "}
-            / 0{formats.length}
-          </p>
-          <div className="ml-auto mt-3 h-px w-28 bg-ink/15 md:w-40">
-            <span
-              className="block h-full origin-left bg-glow transition-transform duration-700 ease-out"
-              style={{ transform: `scaleX(${(active + 1) / formats.length})` }}
-            />
-          </div>
-          {mode === "webgl" && (
-            <div className="pointer-events-auto mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => move(-1)}
-                aria-label="Previous format"
-                className="grid size-12 place-items-center rounded-full border border-ink/25 bg-white/60 text-ink backdrop-blur-md transition-colors hover:border-ink hover:bg-ink hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
-              >
-                <ArrowLeft className="size-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => move(1)}
-                aria-label="Next format"
-                className="grid size-12 place-items-center rounded-full bg-ink text-accent transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
-              >
-                <ArrowRight className="size-5" />
-              </button>
-            </div>
-          )}
-          <p className="mt-3 hidden md:block">Tap the arrows or drag</p>
-        </div>
+      </div>
+
+      {/* Controls: arrows either side of the one call to action. */}
+      <div className="relative flex items-center justify-center gap-3 px-6">
+        <button
+          type="button"
+          onClick={() => step(-1)}
+          aria-label="Previous reels"
+          className="grid size-12 place-items-center rounded-full border border-ink/25 bg-white/60 text-ink backdrop-blur-md transition-colors hover:border-ink hover:bg-ink hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
+        >
+          <ArrowLeft className="size-5" />
+        </button>
+        <Link
+          to="/media-house"
+          hash="reels"
+          className="group inline-flex h-12 items-center gap-3 rounded-full bg-ink pl-7 pr-2 text-base font-semibold text-ivory transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:h-14"
+        >
+          View more
+          <span className="grid size-9 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-10">
+            <ArrowUpRight className="size-5" />
+          </span>
+        </Link>
+        <button
+          type="button"
+          onClick={() => step(1)}
+          aria-label="Next reels"
+          className="grid size-12 place-items-center rounded-full bg-ink text-accent transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:size-14"
+        >
+          <ArrowRight className="size-5" />
+        </button>
       </div>
     </section>
   );

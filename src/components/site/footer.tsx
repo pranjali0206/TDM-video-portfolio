@@ -59,7 +59,9 @@ export function Footer() {
   );
 
   // Services has its own page, linked separately below.
-  const links = chapters.filter((chapter) => chapter.id !== "top" && chapter.id !== "services");
+  const links = chapters.filter(
+    (chapter) => !["top", "services", "formats", "reviews"].includes(chapter.id),
+  );
 
   return (
     <div

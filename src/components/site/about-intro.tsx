@@ -1,11 +1,11 @@
 import { ArrowDown, Star } from "lucide-react";
 
-import { aboutPillars, aboutProcess, aboutValues, clients, images } from "./content";
+import { aboutPillars, aboutValues, clients, images } from "./content";
 import { Corners, Reveal } from "./primitives";
 
 /**
- * The About-us opener: who TDM Groups is, what drives the company, how a
- * project runs and who trusts us — before the "What's up" bento board.
+ * The About-us opener: who TDM Groups is and what drives the company —
+ * before the "What's up" bento board.
  */
 export function AboutIntro() {
   return (
@@ -32,7 +32,7 @@ export function AboutIntro() {
             <Reveal delay={80}>
               <h1
                 id="about-intro-title"
-                className="mt-6 text-[clamp(2.6rem,7.4vw,7.2rem)] leading-[0.92] tracking-[-0.02em]"
+                className="text-teal-gradient mt-6 text-[clamp(2.6rem,7.4vw,7.2rem)] leading-[0.92] tracking-[-0.02em]"
                 style={{ fontStretch: "108%" }}
               >
                 Where clicks
@@ -48,9 +48,9 @@ export function AboutIntro() {
             </Reveal>
             <Reveal delay={160}>
               <p className="mt-8 max-w-xl text-lg leading-relaxed font-medium text-ink md:text-xl">
-                TDM Groups is a digital marketing and technology company. We bring performance
-                marketing, SEO, websites, CRM and AI automation together — so the work that wins
-                your audience’s attention also wins their business.
+                TDM Groups is an AI-powered business consulting company. We give you the tools to
+                automate your operations and grow your sales — pairing deep market understanding
+                with sharp strategy to find what works and take it to its optimal level.
               </p>
             </Reveal>
             <Reveal delay={220}>
@@ -132,55 +132,21 @@ export function AboutIntro() {
             </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
 
-        {/* ── How we work ────────────────────────────────────────────── */}
-        <div className="mt-24 md:mt-32">
-          <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <h2
-                className="max-w-2xl text-4xl leading-[0.95] md:text-6xl"
-                style={{ fontStretch: "105%" }}
-              >
-                How we{" "}
-                <span
-                  className="font-serif font-normal italic tracking-normal text-glow"
-                  style={{ fontStretch: "100%" }}
-                >
-                  work
-                </span>
-              </h2>
-              <p className="max-w-sm text-base leading-relaxed font-medium text-ink">
-                One clear path from idea to impact — strategy, story and systems moving together.
-              </p>
-            </div>
-          </Reveal>
-
-          <ol className="mt-12 grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 ring-1 ring-ink/10 sm:grid-cols-2 lg:grid-cols-4">
-            {aboutProcess.map((item, index) => (
-              <li key={item.step} className="bg-card">
-                <Reveal delay={index * 90} className="h-full">
-                  <div className="group flex h-full flex-col p-7 transition-colors duration-500 hover:bg-secondary md:p-8">
-                    <span
-                      className="font-display text-6xl font-extrabold leading-none text-ink/10 transition-colors duration-500 group-hover:text-glow"
-                      style={{ fontStretch: "110%" }}
-                    >
-                      0{index + 1}
-                    </span>
-                    <h3 className="mt-8 text-2xl md:text-3xl" style={{ fontStretch: "105%" }}>
-                      {item.step}
-                    </h3>
-                    <p className="mt-3 text-base leading-relaxed font-medium text-ink">
-                      {item.body}
-                    </p>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-        </div>
-
+/** What TDM stands for and who trusts us — closes the About page. */
+export function AboutValues() {
+  return (
+    <section
+      aria-label="What we stand for"
+      className="relative px-6 pb-28 md:px-14 md:pb-36 lg:px-20"
+    >
+      <div className="relative mx-auto max-w-[1400px]">
         {/* ── What we stand for + who trusts us ──────────────────────── */}
-        <div className="mt-24 grid gap-12 md:mt-32 lg:grid-cols-2 lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-deep-teal">
               What we stand for

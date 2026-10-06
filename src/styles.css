@@ -21,6 +21,7 @@
  *   font-display — big kinetic headlines (Archivo, variable width axis)
  *   font-sans    — body copy (Inter Tight)
  *   font-serif   — italic editorial accents inside headlines (Instrument Serif)
+ *   font-hero    — the hero statement: heavy, wide geometric sans (Unbounded)
  *   font-mono    — editing-suite HUD: timecodes, labels, counters (JetBrains Mono)
  */
 
@@ -28,6 +29,7 @@
   --font-sans: "Inter Tight", "Hind", sans-serif;
   --font-display: "Archivo", "Archivo Black", sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
+  --font-hero: "Unbounded", "Archivo", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -70,6 +72,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-ink: var(--ink);
+  --color-jet: var(--jet);
   --color-ivory: var(--ivory);
   --color-night: var(--night);
   --color-night-soft: var(--night-soft);
@@ -101,6 +104,8 @@
   --input: oklch(0.66 0.035 184);
   --ring: oklch(0.533 0.082 186);
   --ink: oklch(0.22 0.038 195);
+  /* Pure, neutral black for the big hero type (ink is a teal-tinted near-black). */
+  --jet: oklch(0 0 0);
   --ivory: oklch(0.979 0.009 151);
   --night: oklch(0.25 0.07 190);
   --night-soft: oklch(0.323 0.046 195);
@@ -235,6 +240,31 @@
   animation: rec-blink 1.4s steps(1) infinite;
 }
 
+/* Teal gradient headings (every page but home). When SplitText breaks a
+   heading into rising lines, each line paints the gradient itself, so the
+   colour travels with the text instead of sitting still behind it. */
+@utility text-teal-gradient {
+  --heading-gradient: linear-gradient(
+    105deg,
+    var(--night-soft) 0%,
+    var(--deep-teal) 55%,
+    color-mix(in oklab, var(--deep-teal) 62%, var(--accent)) 100%
+  );
+  background-image: var(--heading-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  &:has(.split-line) {
+    background-image: none;
+  }
+  & .split-line {
+    background-image: var(--heading-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
 /* SplitText mask wrappers: pad so tight display leading never clips glyphs. */
 .split-line-mask {
   padding-block: 0.06em 0.14em;
@@ -336,8 +366,58 @@
   pointer-events: none;
 }
 
+/* Hero entrance, in CSS so it runs from the very first paint (no flash
+   before hydration): headline lines rise out of their masks, the bottom band
+   fades up. Stagger with --d. */
+@keyframes hero-rise {
+  from { transform: translateY(110%); }
+}
+@keyframes hero-fade {
+  from { opacity: 0; transform: translateY(24px); }
+}
+.hero-rise { animation: hero-rise 1.3s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }
+.hero-fade { animation: hero-fade 1.2s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }
+
+/* Endless horizontal ribbon: render the content twice, side by side. */
+@keyframes marquee-x {
+  to { transform: translateX(-50%); }
+}
+
+@utility marquee {
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+}
+
+/* The nav's brain link: the bulb in the brain flickers on-off, then lights
+   up and holds, with a warm halo. Both parts share one 4s clock. */
+@keyframes bulb-on {
+  0%, 26% { opacity: 0; }
+  28% { opacity: 1; }
+  31% { opacity: 0; }
+  35% { opacity: 1; }
+  38% { opacity: 0.1; }
+  44%, 86% { opacity: 1; }
+  92%, 100% { opacity: 0; }
+}
+@keyframes bulb-halo {
+  0%, 26% { opacity: 0; transform: scale(0.6); }
+  28% { opacity: 0.8; transform: scale(1); }
+  31% { opacity: 0; transform: scale(0.7); }
+  35% { opacity: 0.8; transform: scale(1); }
+  38% { opacity: 0.05; transform: scale(0.7); }
+  44% { opacity: 1; transform: scale(1.15); }
+  65% { opacity: 0.85; transform: scale(1.3); }
+  86% { opacity: 1; transform: scale(1.15); }
+  92%, 100% { opacity: 0; transform: scale(0.6); }
+}
+
+/* steps(): the bulb snaps on and off like a real one, no fading. */
+.bulb-on { animation: bulb-on 4s steps(1, end) infinite; }
+.bulb-halo { animation: bulb-halo 4s linear infinite; }
+.group:hover .bulb-on,
+.group:hover .bulb-halo { animation-duration: 2.4s; }
+
 @media (prefers-reduced-motion: reduce) {
-  .grain::after, .rec-blink, .video-signal, .orb, .spin-slow, .ring-pulse { animation: none; }
+  .grain::after, .rec-blink, .video-signal, .orb, .spin-slow, .ring-pulse, .marquee, .bulb-on, .bulb-halo { animation: none; }
   [data-reveal] { animation: none !important; }
   /* One near-instant iteration: infinite loops (pulse, ping) must not strobe. */
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }

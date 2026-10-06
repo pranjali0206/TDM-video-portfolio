@@ -7,6 +7,7 @@ import { finePointer, gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from 
 import { cn } from "@/lib/utils";
 
 import { problemSolutions } from "./content";
+import { Marker } from "./primitives";
 import { tones, type Tone } from "./tones";
 
 const COUNT = problemSolutions.length;
@@ -15,7 +16,13 @@ const FRONT = Math.PI / 2; // straight down the screen = nearest the viewer
 const STEP = TAU / COUNT;
 const MERIDIANS = 7;
 const SATELLITES = 3;
-const ADVANCE_MS = 4600;
+const ADVANCE_MS = 3200;
+// The ring turns non-stop, one service per ADVANCE_MS, so the next service
+// reaches the front just as the detail panel moves on to it.
+const DRIFT = STEP / (ADVANCE_MS / 1000); // radians per second
+// Speed while hovered, and while a chosen service is held at the front.
+const SLOW = 0.2;
+const HOLD_MS = 9000;
 
 // One colour per service, in content order:
 // MediaHouse, Ads, Websites, CRM, ERP, Automations, AI Agents.
@@ -26,6 +33,15 @@ export const markOf = (index: number) => {
   const tone = serviceTones[index % serviceTones.length];
   return tone === "ink" || tone === "deep" ? "var(--accent)" : toneOf(index).bg;
 };
+
+// Bold marker colours for highlighted text — bright enough to pop, light
+// enough that ink text stays readable on top.
+const markerColors = [
+  "color-mix(in oklab, var(--glow) 75%, white)",
+  "var(--teal)",
+  "var(--accent)",
+];
+export const markerOf = (index: number) => markerColors[index % markerColors.length]!;
 
 /** Initial (pre-JS) spot on the ring, as percentages, so SSR isn't a heap. */
 const fallbackSpot = (index: number) => {
@@ -120,7 +136,19 @@ function Globe({
  * above it, nodes behind it smaller and underneath. Changing `active` swings
  * the ring so that service comes to the front, and a beam links it home.
  */
-function ServiceOrbit({ active }: { active: number }) {
+function ServiceOrbit({
+  active,
+  auto,
+  slow,
+  onFront,
+  onDrag,
+}: {
+  active: number;
+  auto: boolean;
+  slow: boolean;
+  onFront: (index: number) => void;
+  onDrag: () => void;
+}) {
   const stageRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
@@ -133,8 +161,16 @@ function ServiceOrbit({ active }: { active: number }) {
   const satelliteRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const meridianRefs = useRef<(SVGEllipseElement | null)[]>([]);
   const activeRef = useRef(active);
+  const onFrontRef = useRef(onFront);
+  onFrontRef.current = onFront;
+  const onDragRef = useRef(onDrag);
+  onDragRef.current = onDrag;
   const motion = useRef({
     angle: FRONT,
+    drift: 0,
+    speed: 1,
+    front: 0,
+    dragging: false,
     time: 0,
     width: 0,
     height: 0,
@@ -146,16 +182,31 @@ function ServiceOrbit({ active }: { active: number }) {
   useEffect(() => {
     activeRef.current = active;
     const m = motion.current;
-    const target = FRONT - active * STEP;
+    // While rotating on its own, the drift already brings each service round;
+    // just re-sync the panel with whichever service is at the front now.
+    if (auto) {
+      if (m.front !== active) onFrontRef.current(m.front);
+      return;
+    }
+    const target = FRONT - active * STEP - m.drift;
     // Shortest way round, so the ring never spins the long way.
     const diff = ((((target - m.angle) % TAU) + TAU + Math.PI) % TAU) - Math.PI;
     gsap.to(m, {
       angle: m.angle + diff,
       duration: prefersReducedMotion() ? 0 : 1.4,
       ease: "power3.inOut",
-      overwrite: true,
+      overwrite: "auto",
     });
-  }, [active]);
+  }, [active, auto]);
+
+  useEffect(() => {
+    gsap.to(motion.current, {
+      speed: slow ? SLOW : 1,
+      duration: 0.8,
+      ease: "power2.out",
+      overwrite: "auto",
+    });
+  }, [slow]);
 
   useGSAP(
     (context) => {
@@ -222,7 +273,7 @@ function ServiceOrbit({ active }: { active: number }) {
 
         nodeRefs.current.forEach((node, i) => {
           if (!node) return;
-          const theta = m.angle + i * STEP;
+          const theta = m.angle + m.drift + i * STEP;
           const spread = m.spread[i]?.v ?? 1;
           const depth = (Math.sin(theta) + 1) / 2; // 0 = behind the globe, 1 = in front
           const bob = reduced ? 0 : Math.sin(m.time * 1.6 + i * 1.3) * 5;
@@ -280,7 +331,17 @@ function ServiceOrbit({ active }: { active: number }) {
 
       const tick = (_time: number, deltaTime: number) => {
         if (!visible || m.width === 0) return;
-        if (!reduced) m.time += Math.min(deltaTime, 50) / 1000;
+        if (!reduced) {
+          const dt = Math.min(deltaTime, 50) / 1000;
+          m.time += dt;
+          if (!m.dragging) m.drift -= DRIFT * m.speed * dt;
+          // Tell the panel which service is nearest the viewer.
+          const front = ((Math.round((FRONT - m.angle - m.drift) / STEP) % COUNT) + COUNT) % COUNT;
+          if (front !== m.front) {
+            m.front = front;
+            onFrontRef.current(front);
+          }
+        }
         render();
       };
       gsap.ticker.add(tick);
@@ -291,6 +352,86 @@ function ServiceOrbit({ active }: { active: number }) {
         () => resize.disconnect(),
         () => io.disconnect(),
       ];
+
+      // Spin the ring by hand: drag sideways with a mouse or a finger, let go
+      // and it glides on with the flick's momentum, then carries on turning.
+      {
+        let startX = 0;
+        let lastX = 0;
+        let lastTime = 0;
+        let velocity = 0; // radians per second
+        let moved = false;
+        let pointerId: number | null = null;
+        const perPixel = () => Math.PI / Math.max(m.width, 1);
+
+        const down = (event: PointerEvent) => {
+          if (event.button !== 0) return;
+          pointerId = event.pointerId;
+          startX = lastX = event.clientX;
+          lastTime = performance.now();
+          velocity = 0;
+          moved = false;
+        };
+        const move = (event: PointerEvent) => {
+          if (event.pointerId !== pointerId) return;
+          const dx = event.clientX - lastX;
+          if (!moved && Math.abs(event.clientX - startX) > 6) {
+            moved = true;
+            m.dragging = true;
+            gsap.killTweensOf(m, "angle");
+            stage.setPointerCapture(event.pointerId);
+            onDragRef.current();
+          }
+          if (!moved) return;
+          const now = performance.now();
+          const step = dx * perPixel();
+          m.angle += step;
+          velocity = step / Math.max((now - lastTime) / 1000, 0.008);
+          lastX = event.clientX;
+          lastTime = now;
+        };
+        const up = (event: PointerEvent) => {
+          if (event.pointerId !== pointerId) return;
+          pointerId = null;
+          if (!moved) return;
+          m.dragging = false;
+          // A stale flick (the finger rested before lifting) carries no momentum.
+          if (performance.now() - lastTime > 120) velocity = 0;
+          const glide = Math.max(-Math.PI, Math.min(Math.PI, velocity * 0.35));
+          if (!reduced && glide !== 0) {
+            gsap.to(m, {
+              angle: m.angle + glide,
+              duration: 1.4,
+              ease: "power3.out",
+              overwrite: "auto",
+            });
+          }
+        };
+        // A drag that ends over a service pill shouldn't also open it.
+        const swallowClick = (event: MouseEvent) => {
+          if (!moved) return;
+          event.preventDefault();
+          event.stopPropagation();
+          moved = false;
+        };
+
+        stage.addEventListener("pointerdown", down);
+        stage.addEventListener("pointermove", move);
+        stage.addEventListener("pointerup", up);
+        stage.addEventListener("pointercancel", up);
+        stage.addEventListener("click", swallowClick, true);
+        // Stop the browser's own link/image drag from hijacking the gesture.
+        const noNativeDrag = (event: DragEvent) => event.preventDefault();
+        stage.addEventListener("dragstart", noNativeDrag);
+        cleanups.push(() => {
+          stage.removeEventListener("dragstart", noNativeDrag);
+          stage.removeEventListener("pointerdown", down);
+          stage.removeEventListener("pointermove", move);
+          stage.removeEventListener("pointerup", up);
+          stage.removeEventListener("pointercancel", up);
+          stage.removeEventListener("click", swallowClick, true);
+        });
+      }
 
       if (!reduced) {
         // Entrance: the rings draw themselves, the globe pops, services burst outward.
@@ -361,7 +502,10 @@ function ServiceOrbit({ active }: { active: number }) {
   );
 
   return (
-    <div ref={stageRef} className="relative [perspective:1400px]">
+    <div
+      ref={stageRef}
+      className="relative cursor-grab touch-pan-y select-none [perspective:1400px] active:cursor-grabbing"
+    >
       <div
         ref={tiltRef}
         className="relative mx-auto aspect-[0.92] w-full max-w-[780px] sm:aspect-[1.4]"
@@ -487,16 +631,20 @@ export function ServiceUniverse() {
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
   const [paused, setPaused] = useState(false);
+  const autoRef = useRef(auto);
+  autoRef.current = auto;
 
   useEffect(() => {
     if (prefersReducedMotion()) setAuto(false);
   }, []);
 
+  // After someone picks a service, hold it at the front a while, then go back
+  // to following the rotation.
   useEffect(() => {
-    if (!auto || paused) return;
-    const id = window.setTimeout(() => setActive((current) => (current + 1) % COUNT), ADVANCE_MS);
+    if (auto || prefersReducedMotion()) return;
+    const id = window.setTimeout(() => setAuto(true), HOLD_MS);
     return () => window.clearTimeout(id);
-  }, [active, auto, paused]);
+  }, [auto, active]);
 
   useGSAP(
     () => {
@@ -526,7 +674,15 @@ export function ServiceUniverse() {
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
       >
-        <ServiceOrbit active={active} />
+        <ServiceOrbit
+          active={active}
+          auto={auto}
+          slow={paused || !auto}
+          onDrag={() => setAuto(true)}
+          onFront={(index) => {
+            if (autoRef.current) setActive(index);
+          }}
+        />
       </div>
 
       <div
@@ -553,13 +709,12 @@ export function ServiceUniverse() {
             >
               <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
             </span>
+            {/* The service name as a tilted colour sticker. */}
             <h3 className="min-w-0 break-words text-[clamp(2rem,9.5vw,3rem)] leading-[0.95] md:text-6xl">
-              <span className="relative isolate">
-                <span
-                  aria-hidden="true"
-                  className="absolute inset-x-[-0.08em] bottom-[0.04em] -z-10 h-[0.3em] -rotate-1 rounded-sm"
-                  style={{ background: markOf(active) }}
-                />
+              <span
+                className="inline-block -rotate-2 rounded-xl px-[0.22em] pb-[0.12em] pt-[0.06em] shadow-[0_16px_30px_-16px_rgba(0,40,40,0.55)]"
+                style={{ background: colors.bg, color: colors.fg }}
+              >
                 {service.service}
               </span>
             </h3>
@@ -579,7 +734,9 @@ export function ServiceUniverse() {
             style={{ fontStretch: "100%" }}
           >
             <span className="text-glow">“</span>
-            {service.answer}
+            <Marker key={active} color={markerOf(active)}>
+              {service.answer}
+            </Marker>
             <span className="text-glow">”</span>
           </blockquote>
           <Link
@@ -621,9 +778,10 @@ export function ServiceUniverse() {
             <span
               key={active}
               className={cn(
-                "block h-full origin-left animate-[grow-x_4.6s_linear_forwards] rounded-full bg-deep-teal",
+                "block h-full origin-left animate-[grow-x_linear_forwards] rounded-full bg-deep-teal",
                 paused && "[animation-play-state:paused]",
               )}
+              style={{ animationDuration: `${ADVANCE_MS}ms` }}
             />
           )}
         </div>

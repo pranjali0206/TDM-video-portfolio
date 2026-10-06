@@ -3,9 +3,10 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { AboutIntro } from "./about-intro";
+import { AboutIntro, AboutValues } from "./about-intro";
 import { aboutCapabilities, industries, problemSolutions, testimonials } from "./content";
 import { Corners, Reveal, VideoSlot } from "./primitives";
+import { VIDEO_BASE } from "./reels";
 
 // ─── Kit ─────────────────────────────────────────────────────────────────────
 
@@ -388,7 +389,10 @@ function StatementCard() {
       >
         “
       </span>
-      <h2 className="mt-1 text-3xl leading-[1.04] md:text-5xl" style={{ fontStretch: "105%" }}>
+      <h2
+        className="text-teal-gradient mt-1 text-3xl leading-[1.04] md:text-5xl"
+        style={{ fontStretch: "105%" }}
+      >
         We make people stop and ask,{" "}
         <span
           className="font-serif font-normal italic tracking-normal text-deep-teal"
@@ -489,9 +493,14 @@ function BuildingCard() {
         Agents That Work Around the Clock
       </h3>
       <div className="mt-auto pt-5">
-        {/* Drop the build preview into public/videos/ and pass
-            src="/videos/currently-building.mp4" to play it here. */}
-        <VideoSlot title="Live build preview" label="Live build" live className="h-56 w-full" />
+        <VideoSlot
+          title="AI agents, live"
+          src={`${VIDEO_BASE}/service-section/ai-agents-chat.mp4`}
+          poster={`${VIDEO_BASE}/service-section/ai-agents-chat.jpg`}
+          label="Live build"
+          live
+          className="h-56 w-full"
+        />
       </div>
     </Card>
   );
@@ -529,7 +538,7 @@ function AboutHeader() {
         </Reveal>
         <Reveal delay={80}>
           <h2
-            className="mt-6 text-[19vw] uppercase leading-[0.85] md:text-[12vw]"
+            className="text-teal-gradient mt-6 text-[19vw] uppercase leading-[0.85] md:text-[12vw]"
             style={{ fontStretch: "118%" }}
           >
             What’s{" "}
@@ -555,7 +564,7 @@ export function AboutPage() {
       <section
         id="about"
         aria-label="About TDM Groups"
-        className="relative px-4 pb-32 md:px-10 lg:px-14"
+        className="relative px-4 pb-24 md:px-10 md:pb-32 lg:px-14"
       >
         <div className="mx-auto max-w-[1400px]">
           <div className="grid gap-8 lg:grid-cols-5">
@@ -598,6 +607,7 @@ export function AboutPage() {
           </div>
         </div>
       </section>
+      <AboutValues />
     </>
   );
 }

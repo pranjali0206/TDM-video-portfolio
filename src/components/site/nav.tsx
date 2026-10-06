@@ -6,6 +6,7 @@ import tdmLogo from "@/assets/tdm-logo.webp";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
+import { BrainLink } from "./brain-link";
 import { chapters } from "./content";
 import { useExperience } from "./experience";
 import { RollText } from "./primitives";
@@ -16,13 +17,11 @@ const pageLinks = [
   { to: "/about", label: "About us" },
   { to: "/services", label: "Services" },
 ] as const;
-const sectionLinks = chapters.filter((chapter) =>
-  ["work", "formats", "reviews", "contact"].includes(chapter.id),
-);
-// The mobile menu also lists every other home-page section.
-const menuSectionLinks = chapters.filter(
-  (chapter) => chapter.id !== "top" && chapter.id !== "services",
-);
+// Formats and Reviews stay on the home page but aren't linked from the nav.
+const hiddenSections = ["top", "services", "formats", "reviews"];
+const sectionLinks = chapters.filter((chapter) => chapter.id === "contact");
+// The mobile menu also lists the other home-page sections worth jumping to.
+const menuSectionLinks = chapters.filter((chapter) => !hiddenSections.includes(chapter.id));
 
 const barLinkClass =
   "group flex items-center gap-2 rounded-full px-3 py-2 font-display text-sm font-bold uppercase tracking-[0.08em] text-ink transition-colors hover:text-deep-teal xl:px-4 xl:text-[15px]";
@@ -125,33 +124,36 @@ export function Nav() {
             />
           </a>
 
-          <nav aria-label="Primary" className="hidden items-center gap-0.5 lg:flex">
-            {pageLinks.map((page) => (
-              <Link
-                key={page.to}
-                to={page.to}
-                className={cn(barLinkClass, "data-[status=active]:text-deep-teal")}
-              >
-                <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
-                <RollText>{page.label}</RollText>
-              </Link>
-            ))}
-            {sectionLinks.map((link) => (
-              <a
-                key={link.id}
-                href={hrefFor(link.id)}
-                onClick={(event) => {
-                  event.preventDefault();
-                  go(link.id);
-                }}
-                className={barLinkClass}
-              >
-                <RollText>{link.label}</RollText>
-              </a>
-            ))}
-          </nav>
-
+          {/* Links sit on the right, grouped with the call to action. */}
           <div className="flex items-center gap-2">
+            <nav aria-label="Primary" className="mr-3 hidden items-center gap-0.5 lg:flex xl:mr-5">
+              {pageLinks.map((page) => (
+                <Link
+                  key={page.to}
+                  to={page.to}
+                  className={cn(barLinkClass, "data-[status=active]:text-deep-teal")}
+                >
+                  <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
+                  <RollText>{page.label}</RollText>
+                </Link>
+              ))}
+              {/* MediaHouse: an icon-only brain that lights up. */}
+              <BrainLink className="mx-1" />
+              {sectionLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={hrefFor(link.id)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    go(link.id);
+                  }}
+                  className={barLinkClass}
+                >
+                  <RollText>{link.label}</RollText>
+                </a>
+              ))}
+            </nav>
+            <BrainLink className="lg:hidden" onClick={() => setMenuOpen(false)} />
             <a
               href={hrefFor("contact")}
               onClick={(event) => {

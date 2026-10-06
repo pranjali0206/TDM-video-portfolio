@@ -10,12 +10,13 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "TDM Groups is a digital marketing and technology company — performance ads, SEO, websites, CRM, ERP, automations and AI agents that turn attention into growth.",
+          "TDM Groups is an AI-powered business consulting company. We give you the tools to automate your operations and grow your sales, backed by deep market understanding and sharp strategy.",
       },
       { property: "og:title", content: "About TDM Groups — Where clicks become growth" },
       {
         property: "og:description",
-        content: "Data-driven marketing and technology, built to turn attention into revenue.",
+        content:
+          "AI-powered business consulting: tools to automate your operations and grow your sales.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

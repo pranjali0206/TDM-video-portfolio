@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { Capabilities } from "@/components/site/capabilities";
 import { ClientMarquee } from "@/components/site/client-marquee";
 import { Contact } from "@/components/site/contact";
 import { FormatsRing } from "@/components/site/formats-ring";
 import { Hero } from "@/components/site/hero";
-import { Manifesto } from "@/components/site/manifesto";
+import { Impact } from "@/components/site/impact";
 import { Expertise, Services } from "@/components/site/services";
 import { SiteShell } from "@/components/site/site-shell";
 import { Testimonials } from "@/components/site/testimonials";
@@ -36,10 +35,9 @@ function Index() {
   return (
     <SiteShell hud>
       <Hero />
+      <Impact />
       <Services />
-      <Manifesto />
       <ClientMarquee />
-      <Capabilities />
       <FormatsRing />
       <Expertise />
       <Testimonials />

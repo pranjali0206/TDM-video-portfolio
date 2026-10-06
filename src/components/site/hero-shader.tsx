@@ -62,9 +62,10 @@ void main() {
 
   vec3 col = uBase;
   col = mix(col, uMint, smoothstep(0.25, 0.6, f));
-  col = mix(col, uAccent, smoothstep(0.42, 0.75, f) * 0.92 * clamp(length(q) * 1.3, 0.0, 1.0));
-  col = mix(col, uLime, smoothstep(0.5, 0.78, r.x) * 0.75);
-  col = mix(col, uGlow, smoothstep(0.55, 0.82, r.y) * 0.6);
+  // Teal leads; lime and coral are only faint hints.
+  col = mix(col, uAccent, smoothstep(0.34, 0.7, f) * clamp(length(q) * 1.6, 0.0, 1.0));
+  col = mix(col, uLime, smoothstep(0.58, 0.82, r.x) * 0.2);
+  col = mix(col, uGlow, smoothstep(0.62, 0.86, r.y) * 0.14);
   col = mix(col, uAccent, 0.35 * exp(-md * md * 5.0));
 
   // Keep the lower-left calm, where the copy sits.

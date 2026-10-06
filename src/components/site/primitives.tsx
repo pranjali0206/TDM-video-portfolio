@@ -1,5 +1,5 @@
 import { Play } from "lucide-react";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { finePointer, gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
@@ -180,6 +180,61 @@ export function Corners({ className, size = "size-4" }: { className?: string; si
 }
 
 /** Mono "— Capabilities" style section marker. */
+/**
+ * A thick highlighter stroke that sweeps in behind the text — line by line,
+ * following line breaks — the first time it scrolls into view. Remount it
+ * (change its `key`) to replay the sweep.
+ */
+export function Marker({
+  children,
+  color,
+  className,
+}: {
+  children: ReactNode;
+  color: string;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [on, setOn] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (prefersReducedMotion()) {
+      setOn(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setOn(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <span
+      ref={ref}
+      className={cn(
+        "box-decoration-clone bg-no-repeat px-[0.08em] transition-[background-size] delay-200 duration-[1100ms] ease-[cubic-bezier(0.65,0,0.35,1)]",
+        className,
+      )}
+      style={{
+        backgroundImage: `linear-gradient(${color}, ${color})`,
+        backgroundPosition: "0 92%",
+        backgroundSize: on ? "100% 0.48em" : "0% 0.48em",
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
 export function SectionLabel({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p
@@ -198,7 +253,7 @@ export function SectionLabel({ children, className }: { children: ReactNode; cla
 type VideoSlotProps = {
   title: string;
   /** Drop a real video URL in (e.g. "/videos/plot-walkthrough.mp4") to replace the placeholder. */
-  src?: string;
+  src?: string | undefined;
   poster?: string;
   label?: string;
   cursorLabel?: string;
@@ -227,8 +282,9 @@ export function VideoSlot({
 
   return (
     <figure
-      data-cursor="play"
-      data-cursor-label={cursorLabel}
+      // A playing video needs no "Play" cursor; the placeholder keeps it.
+      data-cursor={src ? undefined : "play"}
+      data-cursor-label={src ? undefined : cursorLabel}
       className={cn(
         "group @container relative isolate overflow-hidden rounded-2xl ring-1 ring-ink/10",
         onPhoto ? "bg-ink text-ivory" : "bg-white/80 text-ink",
@@ -237,12 +293,20 @@ export function VideoSlot({
     >
       {src ? (
         <video
+          // React doesn't render `muted` into the server HTML, so browsers can
+          // refuse to autoplay; mute and start it explicitly once mounted.
+          ref={(video) => {
+            if (!video) return;
+            video.muted = true;
+            void video.play().catch(() => {});
+          }}
           src={src}
           poster={poster}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           className="absolute inset-0 size-full object-cover"
         />
       ) : poster ? (
@@ -281,24 +345,27 @@ export function VideoSlot({
         {!src && <span className="hidden @min-[15rem]:inline">Placeholder</span>}
       </div>
 
-      <span
-        className={cn(
-          "absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full transition duration-500 group-hover:scale-110 group-hover:bg-glow group-hover:text-ink",
-          onPhoto
-            ? "border border-ivory/40 bg-ivory/15 text-ivory backdrop-blur-md"
-            : "bg-accent text-ink shadow-[0_12px_30px_-10px_var(--accent)]",
-          size === "lg" ? "size-20 md:size-28" : "size-12 md:size-14",
-        )}
-      >
-        <Play
+      {/* Play button only on placeholders; real videos just play. */}
+      {!src && (
+        <span
           className={cn(
-            "translate-x-[6%]",
-            size === "lg" ? "size-7 md:size-9" : "size-4 md:size-5",
+            "absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full transition duration-500 group-hover:scale-110 group-hover:bg-glow group-hover:text-ink",
+            onPhoto
+              ? "border border-ivory/40 bg-ivory/15 text-ivory backdrop-blur-md"
+              : "bg-accent text-ink shadow-[0_12px_30px_-10px_var(--accent)]",
+            size === "lg" ? "size-20 md:size-28" : "size-12 md:size-14",
           )}
-          fill="currentColor"
-          strokeWidth={0}
-        />
-      </span>
+        >
+          <Play
+            className={cn(
+              "translate-x-[6%]",
+              size === "lg" ? "size-7 md:size-9" : "size-4 md:size-5",
+            )}
+            fill="currentColor"
+            strokeWidth={0}
+          />
+        </span>
+      )}
 
       <figcaption
         className={cn(

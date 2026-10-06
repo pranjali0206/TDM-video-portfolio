@@ -15,6 +15,7 @@ import {
   Sparkles,
   TrendingUp,
   Users,
+  type LucideIcon,
 } from "lucide-react";
 
 import heroFashion from "@/assets/hero-fashion.jpg";
@@ -42,9 +43,8 @@ export const images = {
 // Sections the nav, menu, and bottom scrub-bar can jump to.
 export const chapters = [
   { id: "top", label: "Intro" },
+  { id: "impact", label: "Impact" },
   { id: "services", label: "Services" },
-  { id: "studio", label: "Studio" },
-  { id: "work", label: "Work" },
   { id: "formats", label: "Formats" },
   { id: "reviews", label: "Reviews" },
   { id: "contact", label: "Contact" },
@@ -84,41 +84,67 @@ export const heroFlipWords = [
   "AI Agents",
 ];
 
-export const categories = [
+// The home-page Work cards. Each card plays one looping animated showreel
+// (or a filmed `video`, once uploaded) and links to its own page.
+type WorkCard = {
+  title: string;
+  eyebrow: string;
+  description: string;
+  icon: LucideIcon;
+  tags: string[];
+  /** Animated showreel drawn in code (see work-scenes.tsx). */
+  scene: "media" | "web" | "automation" | "ads";
+  /** Optional filmed clip; when set it replaces the animated scene. */
+  video: string;
+  href: "/media-house" | "/websites" | "/automation" | "/services";
+  hash?: string;
+};
+
+export const categories: WorkCard[] = [
+  {
+    title: "Brand & Digital Creative",
+    eyebrow: "MediaHouse",
+    description:
+      "Our in-house MediaHouse shapes how your brand looks, sounds and shows up — identity, reels, social content and ad creative made to stop the scroll and stay remembered.",
+    icon: PenTool,
+    tags: ["Brand identity", "Ad reels", "Social content", "Ad creatives"],
+    scene: "media",
+    video: "",
+    href: "/media-house",
+  },
+  {
+    title: "Websites That Convert",
+    eyebrow: "Web & landing pages",
+    description:
+      "We build websites that convert — fast, beautiful and built around your customer, so every visit has a clear path to an enquiry, booking or sale.",
+    icon: Globe,
+    tags: ["Web design", "Landing pages", "E-commerce", "Conversion optimisation"],
+    scene: "web",
+    video: "",
+    href: "/websites",
+  },
+  {
+    title: "CRM, Automation & AI",
+    eyebrow: "Business systems",
+    description:
+      "CRM, ERP, workflow automations and AI agents that capture every lead, follow up on time and take the busywork off your team — so the business runs itself while you grow it.",
+    icon: Bot,
+    tags: ["CRM & ERP", "Workflow automation", "AI agents", "Integrations"],
+    scene: "automation",
+    video: "",
+    href: "/automation",
+  },
   {
     title: "Performance Marketing",
+    eyebrow: "Google & Meta ads",
     description:
       "Google and Meta campaigns built on sharp targeting, tested creative and profitable bidding — so every rupee of ad spend is accountable.",
     icon: Megaphone,
     tags: ["Google Ads", "Meta Ads", "Retargeting"],
-  },
-  {
-    title: "SEO & Content Strategy",
-    description:
-      "Technical SEO, local search and content that ranks — putting your business in front of people already searching for what you sell.",
-    icon: Search,
-    tags: ["Technical SEO", "Local SEO", "Content strategy"],
-  },
-  {
-    title: "Websites & Landing Pages",
-    description:
-      "Fast, modern websites and landing pages engineered to convert — designed around your customer, measured on every click.",
-    icon: Globe,
-    tags: ["Web design", "Landing pages", "Conversion optimisation"],
-  },
-  {
-    title: "CRM, Automation & AI",
-    description:
-      "CRM, ERP, workflow automations and AI agents that capture every lead, remove busywork and let your business scale without the chaos.",
-    icon: Bot,
-    tags: ["CRM & ERP", "Workflow automation", "AI agents"],
-  },
-  {
-    title: "Brand & Digital Creative",
-    description:
-      "One clear brand idea carried through identity, social content and ad creative — built to stand out and perform on every channel.",
-    icon: PenTool,
-    tags: ["Brand identity", "Social content", "Ad creatives"],
+    scene: "ads",
+    video: "",
+    href: "/services",
+    hash: "ads",
   },
 ];
 

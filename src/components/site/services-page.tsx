@@ -5,8 +5,26 @@ import { cn } from "@/lib/utils";
 
 import { problemSolutions } from "./content";
 import { useExperience } from "./experience";
-import { Corners, Reveal } from "./primitives";
-import { markOf, toneOf } from "./service-orbit";
+import { Corners, Marker, Reveal } from "./primitives";
+import { VIDEO_BASE } from "./reels";
+import { servicePath } from "./service-links";
+import { markerOf, toneOf } from "./service-orbit";
+
+// Services that show a looping film (on R2, in `service-section/`) instead of their
+// coloured title card.
+const serviceVideos: Partial<Record<string, string>> = {
+  mediahouse: `${VIDEO_BASE}/service-section/mediahouse`,
+  ads: `${VIDEO_BASE}/service-section/ads`,
+  crm: `${VIDEO_BASE}/service-section/crm`,
+  erp: `${VIDEO_BASE}/service-section/erp`,
+  // The robot "AI agents" film shows automation at work.
+  automations: `${VIDEO_BASE}/service-section/ai-agents`,
+  websites: `${VIDEO_BASE}/service-section/websites`,
+  "ai-agents": `${VIDEO_BASE}/service-section/ai-agents-chat`,
+};
+
+// Videos with a watermark in the bottom-right corner, zoomed in so it's cropped out.
+const logoCropSlugs = ["mediahouse", "erp", "automations"];
 
 type Service = (typeof problemSolutions)[number];
 
@@ -32,7 +50,7 @@ function ServicesHeader() {
         </Reveal>
         <Reveal delay={80}>
           <h1
-            className="mt-6 max-w-5xl text-[clamp(2.6rem,7.2vw,7rem)] leading-[0.92] tracking-[-0.02em]"
+            className="text-teal-gradient mt-6 max-w-5xl text-[clamp(2.6rem,7.2vw,7rem)] leading-[0.92] tracking-[-0.02em]"
             style={{ fontStretch: "108%" }}
           >
             Everything your business needs to{" "}
@@ -93,6 +111,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
   const colors = toneOf(index);
   const Icon = service.icon;
   const flipped = index % 2 === 1;
+  const video = serviceVideos[service.slug];
 
   return (
     <section
@@ -103,30 +122,56 @@ function ServiceSection({ service, index }: { service: Service; index: number })
     >
       <div className="mx-auto grid max-w-[1400px] items-start gap-8 md:gap-10 lg:grid-cols-2 lg:gap-16">
         <Reveal className={cn(flipped && "lg:order-2")}>
-          <div
-            className="relative flex min-h-[17rem] flex-col overflow-hidden rounded-[1.5rem] p-6 shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] sm:p-8 md:min-h-[26rem] md:p-12"
-            style={{ background: colors.bg, color: colors.fg }}
-          >
-            <Corners className="inset-3 text-current opacity-40 sm:inset-4" size="size-4" />
-            <div className="relative flex items-start justify-between gap-4">
-              <span className="grid size-12 shrink-0 -rotate-6 place-items-center rounded-2xl bg-white/90 text-ink shadow-lg sm:size-16">
-                <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
-              </span>
-              <span className="min-w-0 pt-1 text-right font-mono text-[10px] font-medium uppercase leading-relaxed tracking-[0.18em] sm:text-[11px] sm:tracking-[0.25em]">
-                {service.tagline}
-              </span>
+          {video ? (
+            <div className="relative min-h-[17rem] overflow-hidden rounded-[1.5rem] bg-ink shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] md:min-h-[26rem]">
+              <h2 id={`${service.slug}-title`} className="sr-only">
+                {service.service}
+              </h2>
+              <video
+                src={`${video}.mp4`}
+                poster={`${video}.jpg`}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden="true"
+                // MediaHouse, ERP and Automations: zoom in from the top-left so
+                // the bottom-right (Gemini logo) is pushed outside the box and
+                // clipped by `overflow-hidden` on the wrapper. Raise the scale
+                // (e.g. `scale-[1.2]`) if any of the logo is still visible.
+                className={cn(
+                  "absolute inset-0 size-full object-cover",
+                  logoCropSlugs.includes(service.slug) && "origin-top-left scale-[1.15]",
+                )}
+              />
             </div>
-            <h2
-              id={`${service.slug}-title`}
-              className="relative mt-auto break-words pt-10 font-display text-[clamp(2.1rem,9vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.02em] sm:pt-12"
-              style={{ fontStretch: "110%" }}
+          ) : (
+            <div
+              className="relative flex min-h-[17rem] flex-col overflow-hidden rounded-[1.5rem] p-6 shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] sm:p-8 md:min-h-[26rem] md:p-12"
+              style={{ background: colors.bg, color: colors.fg }}
             >
-              {service.service}
-            </h2>
-            <p className="relative mt-4 max-w-md text-base font-semibold leading-snug sm:mt-5 sm:text-lg md:text-xl">
-              {service.question}
-            </p>
-          </div>
+              <Corners className="inset-3 text-current opacity-40 sm:inset-4" size="size-4" />
+              <div className="relative flex items-start justify-between gap-4">
+                <span className="grid size-12 shrink-0 -rotate-6 place-items-center rounded-2xl bg-white/90 text-ink shadow-lg sm:size-16">
+                  <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
+                </span>
+                <span className="min-w-0 pt-1 text-right font-mono text-[10px] font-medium uppercase leading-relaxed tracking-[0.18em] sm:text-[11px] sm:tracking-[0.25em]">
+                  {service.tagline}
+                </span>
+              </div>
+              <h2
+                id={`${service.slug}-title`}
+                className="relative mt-auto break-words pt-10 font-display text-[clamp(2.1rem,9vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.02em] sm:pt-12"
+                style={{ fontStretch: "110%" }}
+              >
+                {service.service}
+              </h2>
+              <p className="relative mt-4 max-w-md text-base font-semibold leading-snug sm:mt-5 sm:text-lg md:text-xl">
+                {service.question}
+              </p>
+            </div>
+          )}
         </Reveal>
 
         <Reveal delay={120} className={cn(flipped && "lg:order-1")}>
@@ -134,18 +179,8 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             className="font-display text-xl font-bold leading-snug sm:text-2xl md:text-3xl"
             style={{ fontStretch: "105%" }}
           >
-            {/* A highlighter stroke that follows the text across line breaks. */}
-            <span
-              className="box-decoration-clone"
-              style={{
-                backgroundImage: `linear-gradient(${markOf(index)}, ${markOf(index)})`,
-                backgroundSize: "100% 0.32em",
-                backgroundPosition: "0 88%",
-                backgroundRepeat: "no-repeat",
-              }}
-            >
-              {service.answer}
-            </span>
+            {/* A thick marker that sweeps in across the lines as it scrolls into view. */}
+            <Marker color={markerOf(index)}>{service.answer}</Marker>
           </p>
           <p className="mt-5 text-base font-medium leading-relaxed text-ink sm:mt-6 sm:text-lg">
             {service.summary}
@@ -182,10 +217,10 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             ))}
           </ul>
 
-          {/* Full-width on phones for an easy thumb tap. */}
+          {/* Full-width on phones for an easy thumb tap. Every service opens its
+              own page (MediaHouse with all the reels). */}
           <Link
-            to="/"
-            hash="contact"
+            to={servicePath(service.slug)}
             className="group mt-8 flex h-14 w-full items-center justify-between gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink shadow-[0_14px_34px_-14px_var(--accent)] transition-colors hover:bg-glow sm:mt-10 sm:inline-flex sm:w-auto sm:justify-start"
           >
             Start with {service.service}

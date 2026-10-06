@@ -11,7 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdsRouteImport } from './routes/ads'
+import { Route as AiAgentsRouteImport } from './routes/ai-agents'
+import { Route as AutomationRouteImport } from './routes/automation'
+import { Route as CrmRouteImport } from './routes/crm'
+import { Route as ErpRouteImport } from './routes/erp'
+import { Route as MediaHouseRouteImport } from './routes/media-house'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as WebsitesRouteImport } from './routes/websites'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,40 +30,134 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdsRoute = AdsRouteImport.update({
+  id: '/ads',
+  path: '/ads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAgentsRoute = AiAgentsRouteImport.update({
+  id: '/ai-agents',
+  path: '/ai-agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationRoute = AutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CrmRoute = CrmRouteImport.update({
+  id: '/crm',
+  path: '/crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ErpRoute = ErpRouteImport.update({
+  id: '/erp',
+  path: '/erp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaHouseRoute = MediaHouseRouteImport.update({
+  id: '/media-house',
+  path: '/media-house',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebsitesRoute = WebsitesRouteImport.update({
+  id: '/websites',
+  path: '/websites',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads': typeof AdsRoute
+  '/ai-agents': typeof AiAgentsRoute
+  '/automation': typeof AutomationRoute
+  '/crm': typeof CrmRoute
+  '/erp': typeof ErpRoute
+  '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/websites': typeof WebsitesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads': typeof AdsRoute
+  '/ai-agents': typeof AiAgentsRoute
+  '/automation': typeof AutomationRoute
+  '/crm': typeof CrmRoute
+  '/erp': typeof ErpRoute
+  '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/websites': typeof WebsitesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ads': typeof AdsRoute
+  '/ai-agents': typeof AiAgentsRoute
+  '/automation': typeof AutomationRoute
+  '/crm': typeof CrmRoute
+  '/erp': typeof ErpRoute
+  '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/websites': typeof WebsitesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/services'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/ads'
+    | '/ai-agents'
+    | '/automation'
+    | '/crm'
+    | '/erp'
+    | '/media-house'
+    | '/services'
+    | '/websites'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/services'
-  id: '__root__' | '/' | '/about' | '/services'
+  to:
+    | '/'
+    | '/about'
+    | '/ads'
+    | '/ai-agents'
+    | '/automation'
+    | '/crm'
+    | '/erp'
+    | '/media-house'
+    | '/services'
+    | '/websites'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/ads'
+    | '/ai-agents'
+    | '/automation'
+    | '/crm'
+    | '/erp'
+    | '/media-house'
+    | '/services'
+    | '/websites'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdsRoute: typeof AdsRoute
+  AiAgentsRoute: typeof AiAgentsRoute
+  AutomationRoute: typeof AutomationRoute
+  CrmRoute: typeof CrmRoute
+  ErpRoute: typeof ErpRoute
+  MediaHouseRoute: typeof MediaHouseRoute
   ServicesRoute: typeof ServicesRoute
+  WebsitesRoute: typeof WebsitesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +176,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ads': {
+      id: '/ads'
+      path: '/ads'
+      fullPath: '/ads'
+      preLoaderRoute: typeof AdsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-agents': {
+      id: '/ai-agents'
+      path: '/ai-agents'
+      fullPath: '/ai-agents'
+      preLoaderRoute: typeof AiAgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automation': {
+      id: '/automation'
+      path: '/automation'
+      fullPath: '/automation'
+      preLoaderRoute: typeof AutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/crm': {
+      id: '/crm'
+      path: '/crm'
+      fullPath: '/crm'
+      preLoaderRoute: typeof CrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/erp': {
+      id: '/erp'
+      path: '/erp'
+      fullPath: '/erp'
+      preLoaderRoute: typeof ErpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media-house': {
+      id: '/media-house'
+      path: '/media-house'
+      fullPath: '/media-house'
+      preLoaderRoute: typeof MediaHouseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/websites': {
+      id: '/websites'
+      path: '/websites'
+      fullPath: '/websites'
+      preLoaderRoute: typeof WebsitesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +238,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdsRoute: AdsRoute,
+  AiAgentsRoute: AiAgentsRoute,
+  AutomationRoute: AutomationRoute,
+  CrmRoute: CrmRoute,
+  ErpRoute: ErpRoute,
+  MediaHouseRoute: MediaHouseRoute,
   ServicesRoute: ServicesRoute,
+  WebsitesRoute: WebsitesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
