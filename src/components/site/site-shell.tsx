@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { ExperienceProvider } from "./experience";
+import { FloatingMascot } from "./floating-mascot";
 import { Footer } from "./footer";
 import { Nav } from "./nav";
 import { Grain, ScrollReveals } from "./scroll-reveals";
@@ -21,6 +22,7 @@ export function SiteShell({ children, hud = false }: { children: ReactNode; hud?
 
       <main className="relative z-10 bg-ivory">{children}</main>
       <Footer />
+      <FloatingMascot />
 
       <ScrollReveals />
     </ExperienceProvider>

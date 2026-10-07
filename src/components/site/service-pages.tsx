@@ -31,6 +31,7 @@ import {
   X,
 } from "lucide-react";
 
+import { MetaAiSection } from "./meta-ai-section";
 import { Reveal } from "./primitives";
 import { VIDEO_BASE } from "./reels";
 import { NumbersStrip, RelatedServices, ServiceContact } from "./service-blocks";
@@ -177,6 +178,8 @@ export function AdsPage() {
       >
         <FeatureGrid items={adChannels} />
       </DetailSection>
+
+      <MetaAiSection />
 
       <DetailSection
         dark

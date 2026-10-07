@@ -21,8 +21,10 @@ const istTime = () =>
   }).format(new Date());
 
 /**
- * Curtain footer: it sits fixed beneath the page and is uncovered as the last
- * section scrolls away, with the wordmark rising into place.
+ * Curtain footer: from tablet up it sits fixed beneath the page and is
+ * uncovered as the last section scrolls away, with the wordmark rising into
+ * place. On phones it simply follows the page at its natural height, so
+ * nothing gets squeezed.
  */
 export function Footer() {
   const { scrollTo } = useExperience();
@@ -67,14 +69,14 @@ export function Footer() {
     <div
       ref={rootRef}
       id="site-footer"
-      className="relative h-[42rem] md:h-[40rem]"
-      style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+      className="relative md:h-[40rem] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
     >
-      <footer className="fixed bottom-0 left-0 flex h-[42rem] w-full flex-col justify-between overflow-hidden bg-accent px-6 pb-6 pt-16 text-ink md:h-[40rem] md:px-14 md:pt-20 lg:px-20">
-        <div className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr]">
+      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden bg-accent px-6 pb-28 pt-14 text-ink md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
+        <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr] md:gap-12">
           <div>
-            <img src={tdmLogo} alt="TDM Groups" className="h-12 w-auto brightness-0" />
-            <p className="mt-6 max-w-sm font-serif text-3xl italic leading-tight text-ink">
+            {/* The logo file has empty space on its left; pull it back to the edge. */}
+            <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-12 w-auto brightness-0" />
+            <p className="mt-5 max-w-sm font-serif text-[1.75rem] italic leading-tight text-ink md:mt-6 md:text-3xl">
               Click by click, we make attention mean something.
             </p>
           </div>
@@ -105,13 +107,14 @@ export function Footer() {
               </a>
             ))}
           </nav>
-          <div className="flex flex-col justify-between gap-8">
+          {/* Phones: time and "Back to top" share one row. */}
+          <div className="flex flex-row items-end justify-between gap-6 md:flex-col md:items-start md:gap-8">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-ink">
                 Studio time · IST
               </p>
               <p
-                className="mt-2 font-display text-4xl tabular-nums"
+                className="mt-2 font-display text-3xl tabular-nums md:text-4xl"
                 style={{ fontStretch: "118%" }}
               >
                 {time}
@@ -162,7 +165,7 @@ export function Footer() {
           </svg>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink">
+        <div className="flex flex-col gap-2.5 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 sm:pr-24 md:pr-28">
           <span>© {new Date().getFullYear()} TDM Groups</span>
           <span>Marketing · Technology · Growth</span>
           <span className="flex items-center gap-2">

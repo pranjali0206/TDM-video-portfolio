@@ -344,6 +344,14 @@
 }
 
 /* A quick playful shake — service-card sticker icons on hover. */
+/* The floating mascot bobs gently in the corner. */
+@keyframes mascot-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+.mascot-bob { animation: mascot-bob 3.6s ease-in-out infinite; }
+.group:hover .mascot-bob { animation-play-state: paused; }
+
 @keyframes wiggle {
   0%, 100% { transform: rotate(0); }
   25% { transform: rotate(-14deg); }
@@ -357,6 +365,18 @@
   33% { transform: translate3d(6%, -8%, 0) scale(1.08); }
   66% { transform: translate3d(-5%, 6%, 0) scale(0.95); }
 }
+
+/* Clouds drift sideways; cloud cards float gently up and down. */
+@keyframes cloud-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(14%, 4%, 0); }
+}
+@keyframes cloud-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.cloud-drift { animation: cloud-drift 40s ease-in-out infinite; }
+.cloud-float { animation: cloud-float 7s ease-in-out infinite; }
 
 @utility orb {
   position: absolute;
@@ -417,7 +437,7 @@
 .group:hover .bulb-halo { animation-duration: 2.4s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .grain::after, .rec-blink, .video-signal, .orb, .spin-slow, .ring-pulse, .marquee, .bulb-on, .bulb-halo { animation: none; }
+  .grain::after, .rec-blink, .video-signal, .orb, .spin-slow, .ring-pulse, .marquee, .bulb-on, .bulb-halo, .mascot-bob, .cloud-drift, .cloud-float { animation: none; }
   [data-reveal] { animation: none !important; }
   /* One near-instant iteration: infinite loops (pulse, ping) must not strobe. */
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }

@@ -11,7 +11,7 @@ void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
 `;
 
 // Domain-warped fbm "light on paper": bright ivory with slow ribbons of teal,
-// lime and coral that bend around the pointer.
+// lime and coral that bend around the pointer, with a faint pink rim on the fog.
 const fragmentSource = `
 precision highp float;
 uniform vec2 uRes;
@@ -66,6 +66,12 @@ void main() {
   col = mix(col, uAccent, smoothstep(0.34, 0.7, f) * clamp(length(q) * 1.6, 0.0, 1.0));
   col = mix(col, uLime, smoothstep(0.58, 0.82, r.x) * 0.2);
   col = mix(col, uGlow, smoothstep(0.62, 0.86, r.y) * 0.14);
+  // Faint pink rim light: a thin line along the edge of the teal fog, where
+  // the fog value crosses into the ribbons — never inside them.
+  // Pushing red up and green down tints toward pink (blending pink over teal
+  // would just turn it grey).
+  float rim = exp(-pow((f - 0.52) / 0.016, 2.0)) * clamp(length(q) * 1.6, 0.0, 1.0);
+  col = clamp(col + vec3(0.26, -0.08, -0.06) * rim, 0.0, 1.0);
   col = mix(col, uAccent, 0.35 * exp(-md * md * 5.0));
 
   // Keep the lower-left calm, where the copy sits.
