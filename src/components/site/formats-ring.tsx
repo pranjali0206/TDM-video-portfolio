@@ -134,7 +134,7 @@ export function FormatsRing() {
   return (
     <section
       id="formats"
-      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-secondary py-24 text-ink md:py-28"
+      className="relative flex min-h-[100svh] flex-col overflow-hidden py-16 text-ink md:py-20"
     >
       <div
         aria-hidden="true"
@@ -147,7 +147,7 @@ export function FormatsRing() {
 
       <div className="relative flex flex-col items-center px-6 text-center">
         <SectionLabel>Formats</SectionLabel>
-        <h2 className="mt-5 text-4xl leading-[0.95] md:text-6xl">
+        <h2 className="text-teal-gradient mt-5 text-4xl leading-[0.95] md:text-6xl">
           One idea.{" "}
           <span
             className="font-serif font-normal italic tracking-normal text-glow"
@@ -225,7 +225,10 @@ export function FormatsRing() {
           hash="reels"
           className="group inline-flex h-12 items-center gap-3 rounded-full bg-ink pl-7 pr-2 text-base font-semibold text-ivory transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:h-14"
         >
-          View more
+          {/* Shortened on phones so the pill fits between the arrows. */}
+          <span>
+            Explore <span className="hidden sm:inline">more of </span>our MediaHouse
+          </span>
           <span className="grid size-9 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-10">
             <ArrowUpRight className="size-5" />
           </span>

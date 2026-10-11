@@ -10,10 +10,13 @@ import { cn } from "@/lib/utils";
 export function FlipWords({
   words,
   className,
+  colors,
   interval = 2800,
 }: {
   words: string[];
   className?: string;
+  /** Optional colour per word (any CSS colour), cycled in order. */
+  colors?: string[];
   interval?: number;
 }) {
   const [index, setIndex] = useState(0);
@@ -62,7 +65,12 @@ export function FlipWords({
   }, [words.length, interval]);
 
   return (
-    <span ref={ref} aria-live="polite" className={cn("relative inline-block", className)}>
+    <span
+      ref={ref}
+      aria-live="polite"
+      className={cn("relative inline-block", className)}
+      style={colors?.length ? { color: colors[index % colors.length] } : undefined}
+    >
       {word.split(" ").map((part, partIndex) => (
         <span key={`${index}-${partIndex}`} className="inline-block whitespace-nowrap">
           {[...part].map((letter, letterIndex) => (

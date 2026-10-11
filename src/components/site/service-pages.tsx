@@ -34,7 +34,7 @@ import {
 import { MetaAiSection } from "./meta-ai-section";
 import { Reveal } from "./primitives";
 import { VIDEO_BASE } from "./reels";
-import { NumbersStrip, RelatedServices, ServiceContact } from "./service-blocks";
+import { NumbersStrip, MoreServices, ServiceContact } from "./service-blocks";
 import {
   CheckList,
   DetailHero,
@@ -241,10 +241,6 @@ export function AdsPage() {
         <CheckList items={adMonthly} />
       </DetailSection>
 
-      <DetailSection label="Works best with" title="Ads land harder with these.">
-        <RelatedServices slugs={["mediahouse", "websites", "crm"]} />
-      </DetailSection>
-
       <ServiceContact
         service="Ads"
         title="Let’s make your ad spend"
@@ -255,6 +251,7 @@ export function AdsPage() {
           options: ["Under ₹50k", "₹50k – ₹2L", "₹2L – ₹5L", "₹5L+", "Not sure yet"],
         }}
       />
+      <MoreServices current="ads" />
     </>
   );
 }
@@ -427,10 +424,6 @@ export function CrmPage() {
         </div>
       </section>
 
-      <DetailSection label="Works best with" title="Fill the CRM, then automate it.">
-        <RelatedServices slugs={["ads", "automations", "ai-agents"]} />
-      </DetailSection>
-
       <ServiceContact
         service="CRM"
         title="Show us how you sell. We’ll build the"
@@ -441,6 +434,7 @@ export function CrmPage() {
           options: ["Just me", "2 – 5", "6 – 20", "21 – 50", "50+"],
         }}
       />
+      <MoreServices current="crm" />
     </>
   );
 }
@@ -632,10 +626,6 @@ export function ErpPage() {
         </div>
       </section>
 
-      <DetailSection label="Works best with" title="Connect sales to operations.">
-        <RelatedServices slugs={["crm", "automations", "ai-agents"]} />
-      </DetailSection>
-
       <ServiceContact
         service="ERP"
         title="Let’s retire the"
@@ -646,6 +636,7 @@ export function ErpPage() {
           options: ["Inventory", "Billing & accounts", "HR & payroll", "Production", "Everything"],
         }}
       />
+      <MoreServices current="erp" />
     </>
   );
 }
@@ -816,10 +807,6 @@ export function AiAgentsPage() {
         </div>
       </section>
 
-      <DetailSection label="Works best with" title="Give your agent a system to work in.">
-        <RelatedServices slugs={["crm", "automations", "ads"]} />
-      </DetailSection>
-
       <ServiceContact
         service="AI Agents"
         title="Let’s build your"
@@ -830,6 +817,7 @@ export function AiAgentsPage() {
           options: ["Website chat", "WhatsApp", "Internal team tool", "All of these"],
         }}
       />
+      <MoreServices current="ai-agents" />
     </>
   );
 }

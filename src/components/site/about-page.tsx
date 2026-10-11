@@ -3,8 +3,14 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { AboutIntro, AboutValues } from "./about-intro";
-import { aboutCapabilities, industries, problemSolutions, testimonials } from "./content";
+import {
+  AboutConnect,
+  AboutExpertise,
+  AboutIntro,
+  AboutMission,
+  AboutThinking,
+} from "./about-intro";
+import { aboutCapabilities, aboutQuestions, industries, testimonials } from "./content";
 import { Corners, Reveal, VideoSlot } from "./primitives";
 import { VIDEO_BASE } from "./reels";
 
@@ -145,8 +151,8 @@ const ANSWER_HOLD_MS = 4000;
 const FADE_GAP_MS = 500;
 
 /**
- * "Same question in your mind?" — a question fades in, then its answer
- * (mapped to a service), then both fade out and the next pair takes over.
+ * "Same question in your mind?" — a question about TDM fades in, then its
+ * answer, then both fade out and the next pair takes over.
  */
 function ProblemSolutionCard() {
   const [index, setIndex] = useState(0);
@@ -157,7 +163,7 @@ function ProblemSolutionCard() {
       if (phase === "question") setPhase("answer");
       else if (phase === "answer") setPhase("hidden");
       else {
-        setIndex((current) => (current + 1) % problemSolutions.length);
+        setIndex((current) => (current + 1) % aboutQuestions.length);
         setPhase("question");
       }
     };
@@ -167,8 +173,7 @@ function ProblemSolutionCard() {
     return () => window.clearTimeout(timeout);
   }, [phase]);
 
-  const current = problemSolutions[index] ?? problemSolutions[0]!;
-  const Icon = current.icon;
+  const current = aboutQuestions[index] ?? aboutQuestions[0]!;
 
   return (
     <Card label="faq" tone="teal">
@@ -177,8 +182,8 @@ function ProblemSolutionCard() {
       </p>
 
       <ul className="sr-only">
-        {problemSolutions.map((pair) => (
-          <li key={pair.service}>
+        {aboutQuestions.map((pair) => (
+          <li key={pair.question}>
             {pair.question} {pair.answer}
           </li>
         ))}
@@ -201,17 +206,15 @@ function ProblemSolutionCard() {
             phase === "answer" ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
           )}
         >
-          <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-ink text-accent">
-            <Icon className="size-3.5" />
+          <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-ink font-mono text-[10px] font-bold text-accent">
+            A
           </span>
-          <p className="text-base leading-relaxed font-medium text-ink">
-            {current.answer} <span className="font-semibold text-ink">— {current.service}</span>
-          </p>
+          <p className="text-base leading-relaxed font-medium text-ink">{current.answer}</p>
         </div>
       </div>
 
       <Dots
-        count={problemSolutions.length}
+        count={aboutQuestions.length}
         active={index}
         activeClass="bg-ink"
         idleClass="bg-ink/25"
@@ -402,12 +405,11 @@ function StatementCard() {
         </span>
       </h2>
       <p className="mt-6 max-w-2xl text-base leading-relaxed font-medium text-ink md:text-lg">
-        We’re a digital marketing and technology partner that treats every project like it’s going
-        in the portfolio — because it is.{" "}
-        <strong className="font-semibold text-ink">No vanity metrics</strong>, no endless decks, no
-        guesswork. Just{" "}
-        <strong className="font-semibold text-ink">data-driven strategy, shipped fast</strong> —
-        campaigns, websites and systems that keep your business growing.
+        We’re a marketing and technology team that cares about your business like it’s our own. We
+        listen first, keep things simple and{" "}
+        <strong className="font-semibold text-ink">deliver work we’re proud of</strong>. No fake
+        numbers, no long meetings — just{" "}
+        <strong className="font-semibold text-ink">real results that help you grow</strong>.
       </p>
       <div className="mt-auto pt-8">
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-5 font-mono text-[11px] uppercase tracking-[0.22em] text-ink">
@@ -607,7 +609,10 @@ export function AboutPage() {
           </div>
         </div>
       </section>
-      <AboutValues />
+      <AboutThinking />
+      <AboutExpertise />
+      <AboutMission />
+      <AboutConnect />
     </>
   );
 }

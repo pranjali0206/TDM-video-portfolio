@@ -1,18 +1,24 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Check, Mail, MessageCircle, Phone } from "lucide-react";
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
 import { companyStats, formatStat } from "./company-stats";
 import { problemSolutions } from "./content";
 import { Reveal } from "./primitives";
-import { contactDetails, servicePath, type ServiceSlug } from "./service-links";
+import {
+  contactDetails,
+  logoCropSlugs,
+  servicePath,
+  serviceVideo,
+  type ServiceSlug,
+} from "./service-links";
 
 /*
  * Shared blocks for the dedicated service pages (/ads, /websites, /crm, /erp,
- * /automation, /ai-agents): the numbers strip, links to the other services
- * and a contact section tailored to each service.
+ * /automation, /ai-agents, /media-house): the numbers strip, a contact section
+ * tailored to each service and the cards for every other service.
  */
 
 /** The company figures, as a ruled row of big numbers. */
@@ -55,39 +61,113 @@ export function NumbersStrip({ dark = false }: { dark?: boolean }) {
   );
 }
 
-/** Cards linking to the services that pair well with this one. */
-export function RelatedServices({ slugs }: { slugs: ServiceSlug[] }) {
-  const services = slugs.map((slug) => problemSolutions.find((item) => item.slug === slug)!);
+/** A service's film that plays only while its card is on screen. */
+function ServiceFilm({ slug }: { slug: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const src = serviceVideo(slug);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) void video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {services.map(({ slug, service, tagline, answer, icon: Icon }, index) => (
-        <li key={slug}>
-          <Reveal delay={index * 80} className="h-full">
-            <Link
-              to={servicePath(slug)}
-              className="group flex h-full flex-col rounded-[1.5rem] border border-ink/10 bg-white/70 p-6 transition duration-500 hover:-translate-y-1.5 hover:border-ink/25 hover:shadow-[0_30px_60px_-30px_rgba(0,40,40,0.45)] md:p-8"
-            >
-              <div className="flex items-center justify-between">
-                <span className="grid size-12 place-items-center rounded-2xl bg-accent text-ink">
-                  <Icon className="size-5" strokeWidth={1.8} />
-                </span>
-                <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:rotate-45" />
-              </div>
-              <p className="mt-6 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-deep-teal">
-                {tagline}
-              </p>
-              <h3
-                className="mt-2 font-display text-2xl font-bold leading-tight"
-                style={{ fontStretch: "105%" }}
-              >
-                {service}
-              </h3>
-              <p className="mt-3 text-[15px] font-medium leading-relaxed text-ink/75">{answer}</p>
-            </Link>
-          </Reveal>
-        </li>
-      ))}
-    </ul>
+    <video
+      ref={ref}
+      src={`${src}.mp4`}
+      poster={`${src}.jpg`}
+      muted
+      loop
+      playsInline
+      preload="none"
+      aria-hidden="true"
+      className={cn(
+        "absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105",
+        logoCropSlugs.includes(slug) && "origin-top-left scale-[1.15] group-hover:scale-[1.2]",
+      )}
+    />
+  );
+}
+
+/**
+ * Closes every service page: what's good about this service, then video
+ * cards for all the others.
+ */
+export function MoreServices({ current }: { current: ServiceSlug }) {
+  const here = problemSolutions.find((item) => item.slug === current)!;
+  const others = problemSolutions.filter((item) => item.slug !== current);
+
+  return (
+    <section className="border-t border-ink/10 px-6 py-20 md:px-14 md:py-28 lg:px-20">
+      <div className="mx-auto max-w-[1400px]">
+        <Reveal>
+          <p className="inline-flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-deep-teal">
+            <span className="h-px w-8 bg-current" />
+            More ways we serve you
+          </p>
+          <h2
+            className="mt-5 max-w-5xl text-[clamp(2rem,5vw,4rem)] leading-[0.98] tracking-[-0.02em] text-ink"
+            style={{ fontStretch: "105%" }}
+          >
+            That’s the good thing about {here.service}: {here.goodThing}
+          </h2>
+          <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-ink sm:text-xl">
+            And we have{" "}
+            <span className="font-serif text-[1.15em] italic text-deep-teal">
+              more to serve you
+            </span>
+            , in different ways. Pick what your business needs next.
+          </p>
+        </Reveal>
+
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 md:mt-16 lg:grid-cols-3">
+          {others.map(({ slug, service, tagline, headline, icon: Icon }, index) => (
+            <li key={slug}>
+              <Reveal delay={(index % 3) * 80} className="h-full">
+                <Link
+                  to={servicePath(slug)}
+                  className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-ink/10 bg-white/70 transition duration-500 hover:-translate-y-1.5 hover:border-ink/25 hover:shadow-[0_30px_60px_-30px_rgba(0,40,40,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden bg-ink">
+                    <ServiceFilm slug={slug} />
+                    <span className="absolute left-4 top-4 grid size-11 place-items-center rounded-2xl bg-accent text-ink shadow-lg">
+                      <Icon className="size-5" strokeWidth={1.8} />
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6 md:p-7">
+                    <p className="font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-deep-teal">
+                      {tagline}
+                    </p>
+                    <h3
+                      className="mt-2 font-display text-2xl font-bold leading-tight"
+                      style={{ fontStretch: "105%" }}
+                    >
+                      {service}
+                    </h3>
+                    <p className="mt-3 text-[15px] font-medium leading-relaxed text-ink/75">
+                      {headline}
+                    </p>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-deep-teal">
+                      <span className="border-b border-current">Explore {service}</span>
+                      <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 

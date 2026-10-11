@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import tdmLogo from "@/assets/tdm-logo.webp";
@@ -7,9 +7,10 @@ import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 import { BrainLink } from "./brain-link";
-import { chapters } from "./content";
+import { chapters, problemSolutions } from "./content";
 import { useExperience } from "./experience";
 import { RollText } from "./primitives";
+import { servicePath } from "./service-links";
 import { useSectionLinks } from "./use-section-links";
 
 // Pages of their own, then links that scroll to home-page sections.
@@ -17,8 +18,8 @@ const pageLinks = [
   { to: "/about", label: "About us" },
   { to: "/services", label: "Services" },
 ] as const;
-// Formats and Reviews stay on the home page but aren't linked from the nav.
-const hiddenSections = ["top", "services", "formats", "reviews"];
+// Formats stays on the home page but isn't linked from the nav.
+const hiddenSections = ["top", "services", "formats"];
 const sectionLinks = chapters.filter((chapter) => chapter.id === "contact");
 // The mobile menu also lists the other home-page sections worth jumping to.
 const menuSectionLinks = chapters.filter((chapter) => !hiddenSections.includes(chapter.id));
@@ -127,18 +128,32 @@ export function Nav() {
           {/* Links sit on the right, grouped with the call to action. */}
           <div className="flex items-center gap-2">
             <nav aria-label="Primary" className="mr-3 hidden items-center gap-0.5 lg:flex xl:mr-5">
-              {pageLinks.map((page) => (
-                <Link
-                  key={page.to}
-                  to={page.to}
-                  className={cn(barLinkClass, "data-[status=active]:text-deep-teal")}
-                >
-                  <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
-                  <RollText>{page.label}</RollText>
-                </Link>
-              ))}
+              {pageLinks.map((page) =>
+                page.to === "/services" ? (
+                  <ServicesMenu key={page.to} label={page.label} />
+                ) : (
+                  <Link
+                    key={page.to}
+                    to={page.to}
+                    className={cn(barLinkClass, "data-[status=active]:text-deep-teal")}
+                  >
+                    <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
+                    <RollText>{page.label}</RollText>
+                  </Link>
+                ),
+              )}
               {/* MediaHouse: an icon-only brain that lights up. */}
               <BrainLink className="mx-1" />
+              <a
+                href={hrefFor("reviews")}
+                onClick={(event) => {
+                  event.preventDefault();
+                  go("reviews");
+                }}
+                className={barLinkClass}
+              >
+                <RollText>Reviews</RollText>
+              </a>
               {sectionLinks.map((link) => (
                 <a
                   key={link.id}
@@ -160,7 +175,7 @@ export function Nav() {
                 event.preventDefault();
                 go("contact");
               }}
-              className="group hidden h-11 items-center gap-2 rounded-full bg-accent pl-5 pr-4 text-sm font-semibold text-ink transition-colors hover:bg-glow sm:inline-flex"
+              className="group hidden h-11 items-center gap-2 rounded-full bg-jet pl-5 pr-4 text-sm font-semibold text-ivory transition-colors hover:bg-deep-teal sm:inline-flex"
             >
               <RollText>Start a project</RollText>
               <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
@@ -193,7 +208,8 @@ export function Nav() {
       <div
         ref={menuRef}
         id="site-menu"
-        className="invisible fixed inset-0 z-[45] flex flex-col justify-between bg-accent px-6 pb-8 pt-28 text-ink md:px-14"
+        data-lenis-prevent
+        className="invisible fixed inset-0 z-[45] flex flex-col justify-between gap-8 overflow-y-auto bg-accent px-6 pb-8 pt-28 text-ink md:px-14"
         style={{ clipPath: "inset(0% 0% 100% 0%)" }}
         aria-hidden={!menuOpen}
       >
@@ -211,6 +227,21 @@ export function Nav() {
                 <span className="font-mono text-xs tracking-[0.2em] text-ink">0{index + 1}</span>
                 <RollText>{page.label}</RollText>
               </Link>
+              {page.to === "/services" && (
+                <div data-menu-link className="flex flex-wrap gap-2 pb-4 pt-1">
+                  {problemSolutions.map((service) => (
+                    <Link
+                      key={service.slug}
+                      to={servicePath(service.slug)}
+                      tabIndex={menuOpen ? 0 : -1}
+                      onClick={() => setMenuOpen(false)}
+                      className="rounded-full border border-ink/25 px-3.5 py-1.5 text-sm font-semibold transition-colors hover:border-ink hover:bg-ink hover:text-accent"
+                    >
+                      {service.service}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
           {menuSectionLinks.map((chapter, index) => (
@@ -242,5 +273,118 @@ export function Nav() {
         </div>
       </div>
     </>
+  );
+}
+
+/**
+ * "Services" in the bar: the link still opens the Services page, and hovering
+ * (or the chevron, for touch and keyboard) drops down every service, each
+ * leading to its own page.
+ */
+function ServicesMenu({ label }: { label: string }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<number | undefined>(undefined);
+
+  const show = () => {
+    window.clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+  // A short delay so the pointer can cross the gap into the panel.
+  const hide = () => {
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setOpen(false), 120);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false);
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onPointer);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
+
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+
+  return (
+    <div
+      ref={rootRef}
+      className="relative flex items-center"
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) setOpen(false);
+      }}
+    >
+      <Link
+        to="/services"
+        onClick={() => setOpen(false)}
+        className={cn(barLinkClass, "pr-1 data-[status=active]:text-deep-teal xl:pr-1")}
+      >
+        <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
+        <RollText>{label}</RollText>
+      </Link>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-controls="services-menu"
+        aria-label={open ? "Hide services" : "Show services"}
+        className="grid size-7 place-items-center rounded-full text-ink transition-colors hover:text-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+      >
+        <ChevronDown
+          className={cn("size-4 transition-transform duration-300", open && "rotate-180")}
+        />
+      </button>
+
+      <div
+        id="services-menu"
+        className={cn(
+          "absolute left-1/2 top-full z-50 w-[22rem] -translate-x-1/2 pt-4 transition-[opacity,transform,visibility] duration-300",
+          open
+            ? "visible translate-y-0 opacity-100"
+            : "pointer-events-none invisible -translate-y-2 opacity-0",
+        )}
+      >
+        <ul className="rounded-3xl border border-ink/10 bg-white/95 p-2 shadow-[0_24px_60px_-24px_rgba(0,40,40,0.45)] backdrop-blur-xl">
+          {problemSolutions.map((service) => {
+            const Icon = service.icon;
+            return (
+              <li key={service.slug}>
+                <Link
+                  to={servicePath(service.slug)}
+                  onClick={() => setOpen(false)}
+                  className="group flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-secondary data-[status=active]:bg-secondary"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent text-ink">
+                    <Icon className="size-4" strokeWidth={1.8} />
+                  </span>
+                  <span className="flex-1 font-display text-sm font-bold uppercase tracking-[0.06em] text-ink">
+                    {service.service}
+                  </span>
+                  <ArrowUpRight className="size-4 text-ink/40 transition-[transform,color] duration-300 group-hover:rotate-45 group-hover:text-deep-teal" />
+                </Link>
+              </li>
+            );
+          })}
+          <li className="mt-1 border-t border-ink/10 pt-1">
+            <Link
+              to="/services"
+              onClick={() => setOpen(false)}
+              className="flex items-center justify-between rounded-2xl px-3 py-2.5 text-sm font-semibold text-deep-teal transition-colors hover:bg-secondary"
+            >
+              All services
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </div>
   );
 }

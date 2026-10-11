@@ -64,7 +64,7 @@ function ExpertisePicker() {
           <Star className="size-3.5 fill-current" strokeWidth={0} />
           What we do best
         </p>
-        <h3 data-split className="mt-5 text-4xl leading-[0.95] md:text-6xl">
+        <h3 data-split className="text-teal-gradient mt-5 text-4xl leading-[0.95] md:text-6xl">
           Our signature expertise
         </h3>
         <p data-fade className="mt-6 max-w-md text-lg leading-relaxed font-medium text-ink">
@@ -180,7 +180,7 @@ export function Services() {
   return (
     <section
       id="services"
-      className="relative z-10 overflow-hidden rounded-t-[2.5rem] bg-card px-6 py-28 text-ink shadow-[0_-30px_80px_-50px_rgba(0,40,40,0.5)] md:rounded-t-[4rem] md:px-14 md:py-40 lg:px-20"
+      className="relative z-10 overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="orb -left-24 top-40 size-[26rem] bg-accent/25" />
@@ -190,7 +190,10 @@ export function Services() {
       <div className="relative mx-auto max-w-[1500px] py-6 text-center">
         <div className="flex flex-col items-center">
           <SectionLabel>Services</SectionLabel>
-          <h2 data-split className="mt-8 text-5xl leading-[0.92] md:text-7xl lg:text-8xl">
+          <h2
+            data-split
+            className="text-teal-gradient mt-8 text-5xl leading-[0.92] md:text-7xl lg:text-8xl"
+          >
             Every craft.
             <br />
             <span
@@ -218,7 +221,7 @@ export function Expertise() {
   return (
     <section
       id="expertise"
-      className="relative overflow-hidden bg-card px-6 py-28 text-ink md:px-14 md:py-40 lg:px-20"
+      className="relative overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="orb -right-24 top-24 size-[24rem] bg-accent/25" />

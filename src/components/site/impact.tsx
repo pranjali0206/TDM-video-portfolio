@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
@@ -6,11 +8,6 @@ import { companyStats as stats, formatStat as format } from "./company-stats";
 import { SectionLabel } from "./primitives";
 import { VIDEO_BASE } from "./reels";
 
-const quote = {
-  text: "In a field full of brown cows, nobody stops to look. Be the purple one.",
-  author: "The TDM way",
-};
-
 // The TDM Effect explainer animation (R2 folder "animated video").
 const animation = {
   src: `${VIDEO_BASE}/animated%20video/tdm-animation-01.mp4`,
@@ -18,9 +15,9 @@ const animation = {
 };
 
 /**
- * Impact: the numbers, one quote we live by, and the TDM Effect animation
- * tucked into the corner — its white backdrop multiplied into the section
- * colour so the character appears to stand on the page itself.
+ * Impact: the numbers, then the way into the TDM Mindset page beside the TDM
+ * Effect animation — its white backdrop multiplied into the section colour so
+ * the character appears to stand on the page itself.
  */
 export function Impact() {
   const rootRef = useRef<HTMLElement>(null);
@@ -45,23 +42,6 @@ export function Impact() {
           },
         });
       });
-
-      // The quote lights up word by word as it scrolls through.
-      gsap.fromTo(
-        "[data-word]",
-        { opacity: 0.14 },
-        {
-          opacity: 1,
-          ease: "none",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: "[data-quote]",
-            start: "top 80%",
-            end: "bottom 45%",
-            scrub: true,
-          },
-        },
-      );
     },
     { scope: rootRef },
   );
@@ -70,7 +50,7 @@ export function Impact() {
     <section
       ref={rootRef}
       id="impact"
-      className="relative overflow-hidden bg-ivory px-6 py-24 text-ink md:px-14 md:py-32 lg:px-20"
+      className="relative overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
     >
       <div className="relative mx-auto max-w-[1400px]">
         <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-12">
@@ -78,7 +58,7 @@ export function Impact() {
             <SectionLabel>Impact in numbers</SectionLabel>
             <h2
               data-split
-              className="mt-6 text-[clamp(2.4rem,6vw,5.5rem)] leading-[0.92] tracking-[-0.02em]"
+              className="text-teal-gradient mt-6 text-[clamp(2.4rem,6vw,5.5rem)] leading-[0.92] tracking-[-0.02em]"
               style={{ fontStretch: "108%" }}
             >
               Growth you can{" "}
@@ -127,34 +107,32 @@ export function Impact() {
           ))}
         </dl>
 
-        <div className="relative mt-20 grid items-end gap-10 md:mt-28 lg:grid-cols-[1fr_auto] lg:gap-6">
-          <figure data-quote className="relative max-w-5xl">
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-2 -top-[0.55em] select-none font-serif text-[clamp(7rem,14vw,12rem)] leading-none text-accent/60 md:-left-6"
+        {/* The way into the TDM Mindset page on the left, the TDM Effect
+            animation beside it filling the right. Stacked on phones. */}
+        <div className="relative mt-20 grid items-center gap-10 md:mt-28 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+          <div data-fade className="flex max-w-xl flex-col items-start text-left">
+            <p className="font-display text-[clamp(1.9rem,4vw,3.6rem)] font-bold leading-[1.02] tracking-[-0.03em]">
+              We take on challenges to create a{" "}
+              <span className="font-serif font-normal italic text-deep-teal">whole new genre</span>{" "}
+              of game.
+            </p>
+            <Link
+              to="/tdm-mindset"
+              className="group mt-8 inline-flex h-16 items-center gap-5 rounded-full bg-ink pl-8 pr-2.5 font-display text-lg font-bold uppercase tracking-[0.06em] text-ivory shadow-[0_20px_44px_-20px_rgba(0,40,40,0.7)] transition-colors hover:bg-deep-teal md:h-[4.5rem] md:text-xl"
             >
-              &ldquo;
-            </span>
-            <blockquote className="relative font-serif text-[clamp(2rem,4.6vw,4.4rem)] italic leading-[1.06] tracking-[-0.01em]">
-              <p>
-                {quote.text.split(" ").map((word, index) => (
-                  <span key={index} data-word className="inline-block whitespace-pre">
-                    {word}{" "}
-                  </span>
-                ))}
-              </p>
-            </blockquote>
-            <figcaption className="mt-8 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.24em] text-deep-teal">
-              <span className="h-px w-10 bg-current opacity-60" />
-              {quote.author}
-            </figcaption>
-          </figure>
+              <span>
+                <span className="hidden sm:inline">Explore the </span>TDM mindset
+              </span>
+              <span className="grid size-11 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-12">
+                <ArrowUpRight className="size-5" />
+              </span>
+            </Link>
+          </div>
 
-          {/* The TDM Effect: small, in the corner, blended into the page. */}
-          <figure
-            data-fade
-            className="mix-blend-multiply relative w-[min(100%,24rem)] justify-self-end lg:w-[22rem] xl:w-[26rem]"
-          >
+          {/* The TDM Effect, blended into the page (its white backdrop multiplies
+              away) and enlarged so the character fills the right-hand column;
+              the soft mask lets the scaled edges fade into the page. */}
+          <figure data-fade className="mix-blend-multiply relative w-full">
             <video
               src={animation.src}
               poster={animation.poster}
@@ -164,9 +142,9 @@ export function Impact() {
               playsInline
               preload="metadata"
               aria-label="The TDM Effect animation"
-              className="aspect-video w-full object-cover brightness-[1.08] contrast-[1.06] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_62%,transparent_100%)]"
+              className="aspect-video w-full scale-[1.2] object-cover brightness-[1.08] contrast-[1.06] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_62%,transparent_100%)] lg:scale-[1.4]"
             />
-            <figcaption className="-mt-2 text-right text-sm font-medium text-ink/70">
+            <figcaption className="mt-4 text-center text-sm font-medium text-ink/70 lg:mt-12">
               <span className="font-bold text-ink">The TDM Effect.</span> Ideas in. Brands out.
             </figcaption>
           </figure>

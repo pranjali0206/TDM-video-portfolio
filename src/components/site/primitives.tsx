@@ -1,5 +1,5 @@
 import { Play } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 import { finePointer, gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
@@ -180,61 +180,6 @@ export function Corners({ className, size = "size-4" }: { className?: string; si
 }
 
 /** Mono "— Capabilities" style section marker. */
-/**
- * A thick highlighter stroke that sweeps in behind the text — line by line,
- * following line breaks — the first time it scrolls into view. Remount it
- * (change its `key`) to replay the sweep.
- */
-export function Marker({
-  children,
-  color,
-  className,
-}: {
-  children: ReactNode;
-  color: string;
-  className?: string;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const [on, setOn] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (prefersReducedMotion()) {
-      setOn(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setOn(true);
-          io.disconnect();
-        }
-      },
-      { threshold: 0.6 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  return (
-    <span
-      ref={ref}
-      className={cn(
-        "box-decoration-clone bg-no-repeat px-[0.08em] transition-[background-size] delay-200 duration-[1100ms] ease-[cubic-bezier(0.65,0,0.35,1)]",
-        className,
-      )}
-      style={{
-        backgroundImage: `linear-gradient(${color}, ${color})`,
-        backgroundPosition: "0 92%",
-        backgroundSize: on ? "100% 0.48em" : "0% 0.48em",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
 export function SectionLabel({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p

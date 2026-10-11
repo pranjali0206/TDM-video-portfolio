@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { ClientMarquee } from "@/components/site/client-marquee";
 import { Contact } from "@/components/site/contact";
 import { FormatsRing } from "@/components/site/formats-ring";
 import { Hero } from "@/components/site/hero";
@@ -33,11 +32,10 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <SiteShell hud>
+    <SiteShell>
       <Hero />
       <Impact />
       <Services />
-      <ClientMarquee />
       <FormatsRing />
       <Expertise />
       <Testimonials />

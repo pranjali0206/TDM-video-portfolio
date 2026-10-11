@@ -1,14 +1,31 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { useSearch } from "@tanstack/react-router";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Link, useSearch } from "@tanstack/react-router";
+import {
+  ArrowUpRight,
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Clapperboard,
+  Play,
+  X,
+} from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 
 import { finePointer, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-import { reelIndustries, reelUrls, type Reel } from "./reels";
+import { featuredReels, reelIndustries, reelUrls, type Reel, type ReelIndustry } from "./reels";
 
 const FIRST_BATCH = 8;
+
+// The tabs: "All" (the best reels from every industry) first, then each
+// industry. One with no reels yet shows a "coming soon" card when opened.
+const showcase: ReelIndustry[] = [
+  { id: "all", label: "All", reels: featuredReels },
+  ...reelIndustries,
+];
 
 /**
  * A reel card: poster first, then a silent preview loop while on screen. On a
@@ -28,7 +45,7 @@ function ReelCard({
   const cardRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tilt = useRef<{ x: (value: number) => void; y: (value: number) => void } | null>(null);
-  const { preview, poster } = reelUrls(industry, reel.slug);
+  const { preview, poster } = reelUrls(reel.folder ?? industry, reel.slug);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -127,7 +144,7 @@ function ReelCard({
   );
 }
 
-/** Full-screen player with sound, stepping through the current industry's reels. */
+/** Full-screen player with sound, stepping through the reels on show. */
 function ReelPlayer({
   industry,
   reels,
@@ -146,7 +163,7 @@ function ReelPlayer({
     if (index === null) return;
     onIndex((index + by + reels.length) % reels.length);
   };
-  const urls = reel ? reelUrls(industry, reel.slug) : null;
+  const urls = reel ? reelUrls(reel.folder ?? industry, reel.slug) : null;
 
   return (
     <DialogPrimitive.Root open={reel != null} onOpenChange={(open) => !open && onClose()}>
@@ -237,19 +254,31 @@ function ReelPlayer({
   );
 }
 
-/** Industry tabs with a sliding highlight. */
+const tabClass =
+  "relative z-10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive sm:px-5 sm:py-2.5";
+
+/**
+ * Industry tabs with a sliding highlight. An industry with sub-categories
+ * (`kinds`) opens a dropdown instead: all of its reels, or one kind.
+ */
 function IndustryTabs({
-  items,
+  industries,
   activeId,
+  kindId,
   onSelect,
 }: {
-  items: { id: string; label: string }[];
+  industries: ReelIndustry[];
   activeId: string;
-  onSelect: (id: string) => void;
+  kindId: string | null;
+  onSelect: (id: string, kind: string | null) => void;
 }) {
   const listRef = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState({ left: 0, top: 0, width: 0, height: 0 });
+  // The highlight only slides once it has a place: on load (even onto a tab
+  // further along, from a ?tab= link) it simply appears under the active tab.
+  const [slide, setSlide] = useState(false);
 
+  // The active tab's label (and so its width) changes with the kind too.
   useLayoutEffect(() => {
     const measure = () => {
       const tab = listRef.current?.querySelector<HTMLElement>(`[data-tab="${activeId}"]`);
@@ -263,10 +292,14 @@ function IndustryTabs({
       }
     };
     measure();
+    const frame = requestAnimationFrame(() => setSlide(true));
     window.addEventListener("resize", measure);
     document.fonts?.ready.then(measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [activeId]);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measure);
+    };
+  }, [activeId, kindId]);
 
   return (
     <div
@@ -277,36 +310,118 @@ function IndustryTabs({
     >
       <span
         aria-hidden="true"
-        className="absolute rounded-full bg-accent shadow-[0_10px_30px_-8px_var(--accent)] transition-all duration-500 ease-[cubic-bezier(0.7,0,0.2,1)]"
+        className={cn(
+          "absolute rounded-full bg-accent shadow-[0_10px_30px_-8px_var(--accent)]",
+          slide && "transition-all duration-500 ease-[cubic-bezier(0.7,0,0.2,1)]",
+        )}
         style={pill}
       />
-      {items.map((item) => {
-        const selected = item.id === activeId;
+      {industries.map((industry) => {
+        const selected = industry.id === activeId;
+        const kind = selected ? industry.kinds?.find((item) => item.id === kindId) : undefined;
+        const label = (
+          <>
+            {industry.label}
+            {kind && <span className="font-semibold opacity-70">· {kind.label}</span>}
+          </>
+        );
+        const className = cn(tabClass, selected ? "text-ink" : "text-ink/65 hover:text-ink");
+
+        if (!industry.kinds) {
+          return (
+            <button
+              key={industry.id}
+              data-tab={industry.id}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              onClick={() => onSelect(industry.id, null)}
+              className={className}
+            >
+              {label}
+            </button>
+          );
+        }
+
         return (
-          <button
-            key={item.id}
-            data-tab={item.id}
-            type="button"
-            role="tab"
-            aria-selected={selected}
-            onClick={() => onSelect(item.id)}
-            className={cn(
-              "relative z-10 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-colors duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive sm:px-5 sm:py-2.5",
-              selected ? "text-ink" : "text-ink/65 hover:text-ink",
-            )}
-          >
-            {item.label}
-          </button>
+          <DropdownMenu.Root key={industry.id} modal={false}>
+            <DropdownMenu.Trigger
+              data-tab={industry.id}
+              role="tab"
+              aria-selected={selected}
+              className={cn(className, "group/kinds")}
+            >
+              {label}
+              <ChevronDown className="size-3.5 transition-transform duration-300 group-data-[state=open]/kinds:rotate-180" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                align="start"
+                sideOffset={8}
+                className="z-50 min-w-[14rem] rounded-2xl border border-ink/10 bg-white/95 p-1.5 text-ink shadow-[0_24px_60px_-24px_rgba(0,40,40,0.45)] backdrop-blur-xl data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+              >
+                {[{ id: null, label: `All ${industry.label}` }, ...industry.kinds].map((item) => {
+                  const count = item.id
+                    ? industry.reels.filter((reel) => reel.kind === item.id).length
+                    : industry.reels.length;
+                  const current = selected && kindId === item.id;
+                  return (
+                    <DropdownMenu.Item
+                      key={item.id ?? "all"}
+                      onSelect={() => onSelect(industry.id, item.id)}
+                      className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold outline-none transition-colors data-[highlighted]:bg-secondary"
+                    >
+                      <Check className={cn("size-4 text-deep-teal", !current && "invisible")} />
+                      <span className="flex-1">{item.label}</span>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink/50">
+                        {count > 0 ? count : ""}
+                      </span>
+                    </DropdownMenu.Item>
+                  );
+                })}
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
         );
       })}
     </div>
   );
 }
 
+/** Stands in for the reel grid while an industry (or kind) has no reels yet. */
+function ComingSoon({ label }: { label: string }) {
+  return (
+    <div className="mt-10 flex flex-col items-center rounded-[1.75rem] border border-dashed border-ink/20 bg-white/60 px-6 py-16 text-center backdrop-blur-md md:py-20">
+      <span className="grid size-14 place-items-center rounded-2xl bg-accent text-ink">
+        <Clapperboard className="size-6" strokeWidth={1.8} />
+      </span>
+      <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.25em] text-deep-teal">
+        Reels coming soon
+      </p>
+      <h3 className="mt-3 max-w-xl text-balance font-display text-2xl font-bold leading-tight md:text-3xl">
+        Our {label} reels are in the edit room.
+      </h3>
+      <p className="mt-3 max-w-md text-base font-medium leading-relaxed text-ink/75">
+        Want one made for your brand while you wait?
+      </p>
+      <Link
+        to="/contact"
+        className="group mt-8 inline-flex h-12 items-center gap-3 rounded-full bg-ink pl-6 pr-2 text-sm font-semibold text-ivory transition-colors hover:bg-deep-teal"
+      >
+        Talk to MediaHouse
+        <span className="grid size-8 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45">
+          <ArrowUpRight className="size-4" />
+        </span>
+      </Link>
+    </div>
+  );
+}
+
 /** Industry tabs over a grid of client reels. */
 export function ReelShowcase() {
-  const industries = reelIndustries.filter((industry) => industry.reels.length > 0);
+  const industries = showcase;
   const [showAll, setShowAll] = useState(false);
+  const [kindId, setKindId] = useState<string | null>(null);
   // A link like /media-house?tab=architecture#reels opens on that industry.
   const { tab } = useSearch({ strict: false }) as { tab?: string };
   const [activeId, setActiveId] = useState(
@@ -315,6 +430,7 @@ export function ReelShowcase() {
   useEffect(() => {
     if (tab && industries.some((industry) => industry.id === tab)) {
       setActiveId(tab);
+      setKindId(null);
       setShowAll(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- industries is static data
@@ -337,35 +453,43 @@ export function ReelShowcase() {
         scrollTrigger: { trigger: gridRef.current, start: "top 85%", once: true },
       });
     },
-    { scope: gridRef, dependencies: [activeId], revertOnUpdate: true },
+    { scope: gridRef, dependencies: [activeId, kindId], revertOnUpdate: true },
   );
 
   const active = industries.find((industry) => industry.id === activeId) ?? industries[0];
   if (!active) return null;
-  const visible = showAll ? active.reels : active.reels.slice(0, FIRST_BATCH);
+  const kind = active.kinds?.find((item) => item.id === kindId);
+  // The reels on show: the whole industry, or just the chosen kind.
+  const reels = kind ? active.reels.filter((reel) => reel.kind === kind.id) : active.reels;
+  const visible = showAll ? reels : reels.slice(0, FIRST_BATCH);
   const wide = visible.filter((reel) => reel.wide);
   const tall = visible.filter((reel) => !reel.wide);
   const card = (reel: Reel) => (
     <ReelCard
       industry={active.id}
       reel={reel}
-      number={active.reels.indexOf(reel) + 1}
-      onOpen={() => setOpenIndex(active.reels.indexOf(reel))}
+      number={reels.indexOf(reel) + 1}
+      onOpen={() => setOpenIndex(reels.indexOf(reel))}
     />
   );
 
   return (
     <div>
       <IndustryTabs
-        items={industries.map(({ id, label }) => ({ id, label }))}
+        industries={industries}
         activeId={active.id}
-        onSelect={(id) => {
+        kindId={kind?.id ?? null}
+        onSelect={(id, nextKind) => {
           setActiveId(id);
+          setKindId(nextKind);
           setShowAll(false);
         }}
       />
 
-      <div ref={gridRef} key={active.id}>
+      <div ref={gridRef} key={`${active.id}/${kind?.id ?? "all"}`}>
+        {reels.length === 0 && (
+          <ComingSoon label={kind ? kind.label.toLowerCase() : active.label} />
+        )}
         {/* Landscape films get their own wider row above the vertical reels. */}
         {wide.length > 0 && (
           <ul className="mt-10 grid gap-4 md:grid-cols-2">
@@ -384,7 +508,7 @@ export function ReelShowcase() {
         )}
       </div>
 
-      {!showAll && active.reels.length > FIRST_BATCH && (
+      {!showAll && reels.length > FIRST_BATCH && (
         <div className="mt-12 flex justify-center">
           <button
             type="button"
@@ -401,7 +525,7 @@ export function ReelShowcase() {
 
       <ReelPlayer
         industry={active.id}
-        reels={active.reels}
+        reels={reels}
         index={openIndex}
         onIndex={setOpenIndex}
         onClose={() => setOpenIndex(null)}

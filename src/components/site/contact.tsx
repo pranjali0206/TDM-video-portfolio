@@ -132,7 +132,7 @@ export function Contact() {
     <section
       ref={rootRef}
       id="contact"
-      className="relative overflow-hidden bg-ivory px-6 pb-32 pt-36 text-ink md:px-14 md:pt-48 lg:px-20"
+      className="relative overflow-hidden px-6 pb-24 pt-16 text-ink md:px-14 md:pt-24 lg:px-20"
     >
       {/* Drifting colour orbs — teal, lime and coral light spilling behind the headline. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
@@ -153,7 +153,7 @@ export function Contact() {
           <h2
             data-contact-title
             data-split
-            className="mt-8 text-[13vw] uppercase leading-[0.88] md:text-[8.5vw]"
+            className="text-teal-gradient mt-8 text-[13vw] uppercase leading-[0.88] md:text-[8.5vw]"
             style={{ fontStretch: "118%" }}
           >
             Need better results?

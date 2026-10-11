@@ -33,12 +33,10 @@ import {
   Workflow,
 } from "lucide-react";
 
-import { clientLogos } from "./client-logos";
-import { filmsMade } from "./company-stats";
 import { categories } from "./content";
 import { Reveal } from "./primitives";
 import { ReelShowcase } from "./reel-showcase";
-import { NumbersStrip, RelatedServices, ServiceContact } from "./service-blocks";
+import { NumbersStrip, MoreServices, ServiceContact } from "./service-blocks";
 import {
   CheckList,
   DetailCta,
@@ -138,59 +136,71 @@ function ReelsSection() {
   );
 }
 
-// Short, punchy proof points for the MediaHouse hero — real figures only.
-const mediaHouseHighlights = [
+// How MediaHouse turns a brief into content that sells: four steps, left to right.
+const mediaHouseFlow = [
   {
-    kicker: "Revenue",
-    value: "₹230 Cr+",
-    text: "in sales generated for the brands we create for.",
+    step: "Idea",
+    title: "Find what sets you apart.",
+    text: "We study your brand, your customers and your market to find the one story worth telling — an angle no one else is using.",
+    tag: "Strategy",
     tone: "bg-night text-ivory",
     accent: "text-accent",
   },
   {
-    kicker: "Growth",
-    value: `${clientLogos.length}+ brands`,
-    text: "grown across real estate, architecture, healthcare and biotech.",
+    step: "Hook",
+    title: "Win the first 3 seconds.",
+    text: "Scripts built around a scroll-stopping opening line, so people stay long enough to care.",
+    tag: "Script",
     tone: "bg-accent text-ink",
     accent: "text-night",
   },
   {
-    kicker: "Results",
-    value: `${filmsMade}+ films`,
-    text: "shot, edited and launched — every one built to stop the scroll.",
+    step: "Shoot",
+    title: "Film it like a brand.",
+    text: "Drone, studio, on-site and AI-assisted visuals — real estate, architecture, healthcare and more.",
+    tag: "Production",
     tone: "bg-card text-ink ring-1 ring-ink/10",
     accent: "text-deep-teal",
   },
   {
-    kicker: "The Purple Cow effect",
-    value: "Be the purple one.",
-    text: "Nobody stops for another brown cow. We make brands people talk about.",
+    step: "Launch",
+    title: "Post it. Test it. Scale it.",
+    text: "Cut for Reels, Stories and ads, then pushed behind the versions that bring real enquiries.",
+    tag: "Growth",
     tone: "bg-glow text-ink",
     accent: "text-night",
   },
 ];
 
-function MediaHouseHighlights() {
+function MediaHouseFlow() {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {mediaHouseHighlights.map(({ kicker, value, text, tone, accent }) => (
+    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {mediaHouseFlow.map(({ step, title, text, tag, tone, accent }, index) => (
         <li
-          key={kicker}
-          className={`flex min-h-[15rem] flex-col rounded-[1.75rem] p-7 transition-transform duration-500 hover:-translate-y-1.5 md:p-8 ${tone}`}
+          key={step}
+          className={`relative flex min-h-[16rem] flex-col rounded-[1.75rem] p-7 transition-transform duration-500 hover:-translate-y-1.5 md:p-8 ${tone}`}
         >
-          <p className={`font-mono text-[11px] font-medium uppercase tracking-[0.25em] ${accent}`}>
-            {kicker}
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p
+              className={`font-mono text-[11px] font-medium uppercase tracking-[0.25em] ${accent}`}
+            >
+              0{index + 1} · {tag}
+            </p>
+            {index < mediaHouseFlow.length - 1 && (
+              <ArrowRight className={`size-4 shrink-0 ${accent}`} aria-hidden="true" />
+            )}
+          </div>
           <p
-            className="mt-auto pt-10 font-display text-[clamp(2rem,3.2vw,2.9rem)] font-bold leading-[0.95] tracking-[-0.03em]"
-            style={{ fontStretch: "105%" }}
+            className="mt-8 font-display text-[clamp(2.2rem,3.4vw,3.1rem)] font-bold uppercase leading-none tracking-[-0.03em]"
+            style={{ fontStretch: "110%" }}
           >
-            {value}
+            {step}
           </p>
-          <p className="mt-3 text-[15px] font-medium leading-snug opacity-80">{text}</p>
+          <p className="mt-auto pt-6 text-lg font-bold leading-tight">{title}</p>
+          <p className="mt-2 text-[15px] font-medium leading-snug opacity-80">{text}</p>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }
 
@@ -204,7 +214,7 @@ export function MediaHousePage() {
         intro="MediaHouse is our in-house creative studio. We shape how your brand looks, sounds and shows up — then produce the reels, posts and ad creative that keep it in front of the right people."
         scene="media"
         videoTitle="MediaHouse showreel"
-        media={<MediaHouseHighlights />}
+        media={<MediaHouseFlow />}
       />
       <ReelsSection />
       <DetailSection
@@ -219,6 +229,7 @@ export function MediaHousePage() {
         title="Let’s make something people"
         accent="remember."
       />
+      <MoreServices current="mediahouse" />
     </>
   );
 }
@@ -399,9 +410,6 @@ export function WebsitesPage() {
           <NumbersStrip />
         </div>
       </section>
-      <DetailSection label="Works best with" title="Bring traffic. Catch every lead.">
-        <RelatedServices slugs={["ads", "mediahouse", "crm"]} />
-      </DetailSection>
       <ServiceContact
         service="Websites"
         title="Let’s build a site that"
@@ -418,6 +426,7 @@ export function WebsitesPage() {
           ],
         }}
       />
+      <MoreServices current="websites" />
     </>
   );
 }
@@ -690,10 +699,6 @@ export function AutomationPage() {
         </div>
       </section>
 
-      <DetailSection label="Works best with" title="Automation runs best on a solid system.">
-        <RelatedServices slugs={["crm", "erp", "ai-agents"]} />
-      </DetailSection>
-
       <ServiceContact
         service="Automations"
         title="Show us your process. We’ll show you what to"
@@ -704,6 +709,7 @@ export function AutomationPage() {
           options: ["Lead follow-ups", "WhatsApp & email", "Reports", "Data entry", "Not sure yet"],
         }}
       />
+      <MoreServices current="automations" />
     </>
   );
 }

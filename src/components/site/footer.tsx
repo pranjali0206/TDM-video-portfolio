@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import tdmLogo from "@/assets/tdm-logo.webp";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
@@ -12,14 +12,6 @@ import { useSectionLinks } from "./use-section-links";
 
 const indexLinkClass = "group w-fit text-ink transition-colors hover:text-ink";
 
-const istTime = () =>
-  new Intl.DateTimeFormat("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date());
-
 /**
  * Curtain footer: from tablet up it sits fixed beneath the page and is
  * uncovered as the last section scrolls away, with the wordmark rising into
@@ -30,13 +22,6 @@ export function Footer() {
   const { scrollTo } = useExperience();
   const { hrefFor, goTo } = useSectionLinks();
   const rootRef = useRef<HTMLDivElement>(null);
-  const [time, setTime] = useState("--:--");
-
-  useEffect(() => {
-    setTime(istTime());
-    const id = window.setInterval(() => setTime(istTime()), 15000);
-    return () => window.clearInterval(id);
-  }, []);
 
   useGSAP(
     () => {
@@ -107,19 +92,7 @@ export function Footer() {
               </a>
             ))}
           </nav>
-          {/* Phones: time and "Back to top" share one row. */}
-          <div className="flex flex-row items-end justify-between gap-6 md:flex-col md:items-start md:gap-8">
-            <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-ink">
-                Studio time · IST
-              </p>
-              <p
-                className="mt-2 font-display text-3xl tabular-nums md:text-4xl"
-                style={{ fontStretch: "118%" }}
-              >
-                {time}
-              </p>
-            </div>
+          <div className="flex md:items-start">
             <button
               type="button"
               onClick={() => scrollTo("#top")}

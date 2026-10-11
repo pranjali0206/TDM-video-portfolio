@@ -1,68 +1,28 @@
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
 
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { cn } from "@/lib/utils";
 
-import { heroFlipWords } from "./content";
-import { useExperience } from "./experience";
-import { FlipWords } from "./flip-words";
+import { DOT_MATRIX_HEIGHT, DotMatrixText, type DotWord } from "./dot-matrix-text";
 import { HeroShader, type HeroShaderState } from "./hero-shader";
-import { VIDEO_BASE } from "./reels";
+import { ServicePills } from "./service-pills";
 
-// The hero statement's typeface: Unbounded, via the font-hero role in styles.css
-// (loaded in __root.tsx).
-const GROTESK = "font-hero";
-
-// The TDM Effect animation ("Ideas in. Brands out."), from the R2 folder "animated video".
-const effectVideo = `${VIDEO_BASE}/animated%20video/tdm-animation-01`;
-
-/**
- * The TDM Effect animation, filling the "o" of "something". Sized and placed
- * from the real Unbounded Bold "o" (measured in em): its ink is a 0.734 ×
- * 0.609 oval starting 0.031em into the letter and dipping 0.016em below the
- * baseline. The margins add up to the letter's advance (0.792em) minus the
- * headline's -0.06em tracking, so "s" and "m" sit exactly where they would.
- */
-function HeroBlob({ onClick }: { onClick: () => void }) {
-  return (
-    <span
-      data-cursor="play"
-      data-cursor-label="Work"
-      onClick={onClick}
-      className="relative -mb-[0.016em] -mr-[0.034em] ml-[0.031em] inline-block h-[0.609em] w-[0.734em] shrink-0 overflow-hidden rounded-[50%] bg-white"
-    >
-      <video
-        // React doesn't render `muted` into the server HTML, so browsers can
-        // refuse to autoplay; mute and start it explicitly once mounted.
-        ref={(video) => {
-          if (!video) return;
-          video.muted = true;
-          void video.play().catch(() => {});
-        }}
-        src={`${effectVideo}.mp4`}
-        poster={`${effectVideo}.jpg`}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-        className="absolute inset-0 size-full object-cover"
-      />
-    </span>
-  );
-}
+// The hero statement, drawn as a dot matrix in Fraunces Black (loaded in
+// __root.tsx): roman words, one italic word for rhythm, "mean" in coral.
+const headline: DotWord[][] = [
+  [{ text: "make" }, { text: "attention", italic: true }],
+  [{ text: "mean", em: true }, { text: "something." }],
+];
 
 /**
  * Hero layout rules (nothing is placed by eye):
- *  - One shared content box. Its left and right edges are the only two
- *    alignment lines on the page.
- *  - All four rows ("make", "attention", "mean", "something.") hug the LEFT
- *    edge; the intro copy hugs the RIGHT edge.
+ *  - Everything sits on one centre line: headline, the services as colour
+ *    pills, the intro and the two buttons.
+ *  - Two centred rows at every size: "make attention" / "mean something.".
  *  - Everything scales from one variable, --fs, so proportions hold at any size.
  */
 export function Hero() {
-  const { scrollTo } = useExperience();
   const rootRef = useRef<HTMLElement>(null);
   const shaderState = useRef<HeroShaderState>({ intro: 0, scroll: 0 });
 
@@ -82,101 +42,71 @@ export function Hero() {
           scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
           defaults: { ease: "none" },
         })
-        .to("[data-hero-row='1']", { xPercent: -4 }, 0)
-        .to("[data-hero-row='2']", { xPercent: 4 }, 0)
-        .to("[data-hero-row='3']", { xPercent: -3 }, 0)
-        .to("[data-hero-row='4']", { xPercent: 3 }, 0)
+        .to("[data-hero-dots]", { yPercent: -12, opacity: 0.4 }, 0)
         .to("[data-hero-bottom]", { yPercent: 40, opacity: 0 }, 0)
         .to(shaderState.current, { scroll: 1 }, 0);
     },
     { scope: rootRef },
   );
 
-  const toServices = () => scrollTo("#services");
-
-  // Same recipe for every row: tight stacking, but room for ascenders/descenders.
-  const mask = "block overflow-y-clip pb-[0.14em] pt-[0.08em] -mt-[0.1em] first:mt-0";
-
   return (
     <section
       ref={rootRef}
       id="top"
-      className="relative h-[100svh] min-h-[680px] overflow-hidden bg-ivory text-ink"
+      className="relative min-h-[max(100svh,680px)] overflow-hidden bg-ivory text-ink"
     >
       <HeroShader stateRef={shaderState} className="absolute inset-0" />
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ivory/35 via-transparent to-ivory/70" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ivory/30 via-transparent to-ivory/60" />
 
-      <div className="relative z-10 flex h-full flex-col justify-center px-5 pb-10 pt-24 md:px-[4.5vw] md:pb-24 md:pt-28">
+      <div className="relative z-10 flex min-h-[max(100svh,680px)] flex-col items-center justify-center px-5 pb-14 pt-24 text-center md:px-[2vw] md:pb-16 md:pt-24">
         {/*
-          --fs is the one number to tune: the widest row ("something.") sets the
-          width limit, the four stacked rows set the height limit.
+          --fs is the one number to tune: the dot matrix takes its font size
+          from this box's height (DOT_MATRIX_HEIGHT × --fs) and shrinks to fit
+          the width.
         */}
-        <div className="[--fs:13.4vw] md:[--fs:min(12.6vw,18.5svh)]">
-          <h1
-            className={cn(
-              GROTESK,
-              "text-[length:var(--fs)] font-bold leading-[0.88] tracking-[-0.06em] text-jet",
-            )}
+        <h1 className="w-full">
+          <span className="sr-only">Make attention mean something.</span>
+          <DotMatrixText
+            data-hero-dots
+            lines={headline}
+            className="w-full [--fs:14vw] md:[--fs:min(14vw,22svh)]"
+            style={{ height: `calc(var(--fs) * ${DOT_MATRIX_HEIGHT})` }}
+          />
+        </h1>
+
+        {/* All the services, right above the promise they add up to. */}
+        <div data-hero-bottom className="mt-6 w-full md:mt-8">
+          <ServicePills />
+        </div>
+
+        {/* Archivo (font-display), bold: the promise, in quotes, reads as a statement. */}
+        <p
+          data-hero-bottom
+          className="hero-fade mx-auto mt-4 max-w-[46rem] text-balance font-display text-[1.15rem] font-bold leading-[1.3] tracking-[-0.01em] text-ink [--d:0.8s] md:mt-5 md:text-[clamp(1.2rem,1.55vw,1.6rem)]"
+        >
+          <span className="text-deep-teal">“</span>Every business has a different problem. We find
+          the insight, build the strategy, create the campaign, and engineer the systems that{" "}
+          <span className="text-deep-teal">turn growth into reality.”</span>
+        </p>
+
+        <div
+          data-hero-bottom
+          className="hero-fade mt-8 flex flex-wrap items-center justify-center gap-3 [--d:0.95s] md:mt-10"
+        >
+          <Link
+            to="/contact"
+            className="group inline-flex h-14 items-center gap-2 rounded-full bg-jet px-8 text-base font-semibold text-ivory transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
           >
-            <span className="sr-only">Make attention mean something.</span>
-            <span aria-hidden="true" className="block">
-              {/* Row 1: left edge */}
-              <span className={mask}>
-                <span data-hero-row="1" className="hero-rise block [--d:0.15s]">
-                  make
-                </span>
-              </span>
-
-              {/* Row 2: left edge */}
-              <span className={mask}>
-                <span data-hero-row="2" className="hero-rise block whitespace-nowrap [--d:0.3s]">
-                  attention
-                </span>
-              </span>
-
-              {/* Row 3: coral "mean", with the intro copy beside it on wide screens */}
-              <span className={mask}>
-                <span
-                  data-hero-row="3"
-                  className="hero-rise flex items-end justify-between gap-8 [--d:0.45s]"
-                >
-                  <span className="text-glow">mean</span>
-                  <span
-                    data-hero-bottom
-                    className="hero-fade mb-[0.12em] hidden max-w-[30rem] font-sans text-[clamp(1rem,1.35vw,1.5rem)] font-medium leading-[1.25] tracking-[-0.02em] text-ink [--d:0.8s] md:block"
-                  >
-                    <span className="block font-bold">
-                      Experts in <FlipWords words={heroFlipWords} className="font-bold text-glow" />
-                    </span>
-                    <span className="mt-1 block">
-                      Deep expertise across marketing, technology and AI — every service working
-                      together to <strong className="font-bold">turn clicks into customers.</strong>
-                    </span>
-                  </span>
-                </span>
-              </span>
-
-              {/* Row 4: the TDM Effect animation in place of the "o" */}
-              <span className={mask}>
-                <span data-hero-row="4" className="hero-rise block whitespace-nowrap [--d:0.6s]">
-                  s<HeroBlob onClick={toServices} />
-                  mething.
-                </span>
-              </span>
-            </span>
-          </h1>
-
-          {/* Phones: the intro copy sits under the headline. */}
-          <div className="hero-fade mt-6 max-w-[34rem] text-[1.05rem] font-medium leading-[1.3] tracking-[-0.02em] text-ink [--d:0.8s] md:hidden">
-            <p className="font-bold">
-              Experts in <FlipWords words={heroFlipWords} className="font-bold text-glow" />
-            </p>
-            <p className="mt-1">
-              Deep expertise across marketing, technology and AI — every service working together to{" "}
-              <strong className="font-bold">turn clicks into customers.</strong>
-            </p>
-          </div>
+            Start a project
+            <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+          </Link>
+          <Link
+            to="/media-house"
+            className="inline-flex h-14 items-center rounded-full border border-ink/15 bg-white px-8 text-base font-semibold text-ink transition-colors hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+          >
+            See our work
+          </Link>
         </div>
       </div>
     </section>

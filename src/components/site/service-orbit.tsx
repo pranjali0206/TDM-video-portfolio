@@ -7,7 +7,7 @@ import { finePointer, gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from 
 import { cn } from "@/lib/utils";
 
 import { problemSolutions } from "./content";
-import { Marker } from "./primitives";
+import { servicePath } from "./service-links";
 import { tones, type Tone } from "./tones";
 
 const COUNT = problemSolutions.length;
@@ -33,15 +33,6 @@ export const markOf = (index: number) => {
   const tone = serviceTones[index % serviceTones.length];
   return tone === "ink" || tone === "deep" ? "var(--accent)" : toneOf(index).bg;
 };
-
-// Bold marker colours for highlighted text — bright enough to pop, light
-// enough that ink text stays readable on top.
-const markerColors = [
-  "color-mix(in oklab, var(--glow) 75%, white)",
-  "var(--teal)",
-  "var(--accent)",
-];
-export const markerOf = (index: number) => markerColors[index % markerColors.length]!;
 
 /** Initial (pre-JS) spot on the ring, as percentages, so SSR isn't a heap. */
 const fallbackSpot = (index: number) => {
@@ -584,14 +575,13 @@ function ServiceOrbit({
           const Icon = service.icon;
           const isActive = index === active;
           return (
-            // Each bubble opens its service's section on the Services page.
+            // Each bubble opens its service's own page.
             <Link
               key={service.service}
               ref={(el) => {
                 nodeRefs.current[index] = el;
               }}
-              to="/services"
-              hash={service.slug}
+              to={servicePath(service.slug)}
               tabIndex={-1}
               aria-hidden="true"
               data-cursor="view"
@@ -730,23 +720,22 @@ export function ServiceUniverse() {
           </p>
           <blockquote
             data-detail-line
-            className="mt-7 max-w-xl font-display text-[clamp(1.5rem,6.8vw,1.875rem)] font-extrabold leading-[1.1] md:text-[2.5rem]"
+            className="mt-7 max-w-xl font-display text-[clamp(1.5rem,6.8vw,1.875rem)] font-extrabold leading-[1.1] text-ink md:text-[2.5rem]"
             style={{ fontStretch: "100%" }}
           >
             <span className="text-glow">“</span>
-            <Marker key={active} color={markerOf(active)}>
-              {service.answer}
-            </Marker>
+            {service.answer}
             <span className="text-glow">”</span>
           </blockquote>
           <Link
             data-detail-line
-            to="/services"
-            hash={service.slug}
-            className="group mt-7 inline-flex items-center gap-2 font-semibold text-deep-teal"
+            to={servicePath(service.slug)}
+            className="group mt-8 inline-flex h-14 items-center gap-4 rounded-full bg-ink pl-7 pr-2 font-display text-base font-bold uppercase tracking-[0.06em] text-ivory shadow-[0_20px_44px_-20px_rgba(0,40,40,0.7)] transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:h-16 md:text-lg"
           >
-            <span className="border-b border-current">Explore {service.service}</span>
-            <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+            Explore {service.service}
+            <span className="grid size-10 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-12">
+              <ArrowUpRight className="size-5" />
+            </span>
           </Link>
         </div>
 

@@ -14,10 +14,12 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdsRouteImport } from './routes/ads'
 import { Route as AiAgentsRouteImport } from './routes/ai-agents'
 import { Route as AutomationRouteImport } from './routes/automation'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as ErpRouteImport } from './routes/erp'
 import { Route as MediaHouseRouteImport } from './routes/media-house'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as TdmMindsetRouteImport } from './routes/tdm-mindset'
 import { Route as WebsitesRouteImport } from './routes/websites'
 
 const IndexRoute = IndexRouteImport.update({
@@ -45,6 +47,11 @@ const AutomationRoute = AutomationRouteImport.update({
   path: '/automation',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CrmRoute = CrmRouteImport.update({
   id: '/crm',
   path: '/crm',
@@ -65,6 +72,11 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TdmMindsetRoute = TdmMindsetRouteImport.update({
+  id: '/tdm-mindset',
+  path: '/tdm-mindset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WebsitesRoute = WebsitesRouteImport.update({
   id: '/websites',
   path: '/websites',
@@ -77,10 +89,12 @@ export interface FileRoutesByFullPath {
   '/ads': typeof AdsRoute
   '/ai-agents': typeof AiAgentsRoute
   '/automation': typeof AutomationRoute
+  '/contact': typeof ContactRoute
   '/crm': typeof CrmRoute
   '/erp': typeof ErpRoute
   '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/tdm-mindset': typeof TdmMindsetRoute
   '/websites': typeof WebsitesRoute
 }
 export interface FileRoutesByTo {
@@ -89,10 +103,12 @@ export interface FileRoutesByTo {
   '/ads': typeof AdsRoute
   '/ai-agents': typeof AiAgentsRoute
   '/automation': typeof AutomationRoute
+  '/contact': typeof ContactRoute
   '/crm': typeof CrmRoute
   '/erp': typeof ErpRoute
   '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/tdm-mindset': typeof TdmMindsetRoute
   '/websites': typeof WebsitesRoute
 }
 export interface FileRoutesById {
@@ -102,10 +118,12 @@ export interface FileRoutesById {
   '/ads': typeof AdsRoute
   '/ai-agents': typeof AiAgentsRoute
   '/automation': typeof AutomationRoute
+  '/contact': typeof ContactRoute
   '/crm': typeof CrmRoute
   '/erp': typeof ErpRoute
   '/media-house': typeof MediaHouseRoute
   '/services': typeof ServicesRoute
+  '/tdm-mindset': typeof TdmMindsetRoute
   '/websites': typeof WebsitesRoute
 }
 export interface FileRouteTypes {
@@ -116,10 +134,12 @@ export interface FileRouteTypes {
     | '/ads'
     | '/ai-agents'
     | '/automation'
+    | '/contact'
     | '/crm'
     | '/erp'
     | '/media-house'
     | '/services'
+    | '/tdm-mindset'
     | '/websites'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,10 +148,12 @@ export interface FileRouteTypes {
     | '/ads'
     | '/ai-agents'
     | '/automation'
+    | '/contact'
     | '/crm'
     | '/erp'
     | '/media-house'
     | '/services'
+    | '/tdm-mindset'
     | '/websites'
   id:
     | '__root__'
@@ -140,10 +162,12 @@ export interface FileRouteTypes {
     | '/ads'
     | '/ai-agents'
     | '/automation'
+    | '/contact'
     | '/crm'
     | '/erp'
     | '/media-house'
     | '/services'
+    | '/tdm-mindset'
     | '/websites'
   fileRoutesById: FileRoutesById
 }
@@ -153,10 +177,12 @@ export interface RootRouteChildren {
   AdsRoute: typeof AdsRoute
   AiAgentsRoute: typeof AiAgentsRoute
   AutomationRoute: typeof AutomationRoute
+  ContactRoute: typeof ContactRoute
   CrmRoute: typeof CrmRoute
   ErpRoute: typeof ErpRoute
   MediaHouseRoute: typeof MediaHouseRoute
   ServicesRoute: typeof ServicesRoute
+  TdmMindsetRoute: typeof TdmMindsetRoute
   WebsitesRoute: typeof WebsitesRoute
 }
 
@@ -197,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/crm': {
       id: '/crm'
       path: '/crm'
@@ -225,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tdm-mindset': {
+      id: '/tdm-mindset'
+      path: '/tdm-mindset'
+      fullPath: '/tdm-mindset'
+      preLoaderRoute: typeof TdmMindsetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/websites': {
       id: '/websites'
       path: '/websites'
@@ -241,10 +281,12 @@ const rootRouteChildren: RootRouteChildren = {
   AdsRoute: AdsRoute,
   AiAgentsRoute: AiAgentsRoute,
   AutomationRoute: AutomationRoute,
+  ContactRoute: ContactRoute,
   CrmRoute: CrmRoute,
   ErpRoute: ErpRoute,
   MediaHouseRoute: MediaHouseRoute,
   ServicesRoute: ServicesRoute,
+  TdmMindsetRoute: TdmMindsetRoute,
   WebsitesRoute: WebsitesRoute,
 }
 export const routeTree = rootRouteImport

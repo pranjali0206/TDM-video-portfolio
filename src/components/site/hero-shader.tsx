@@ -1,6 +1,7 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 import { readTokenColor } from "@/lib/color";
+import { prefersReducedMotion } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 export type HeroShaderState = { intro: number; scroll: number };
@@ -10,8 +11,10 @@ attribute vec2 aPosition;
 void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
 `;
 
-// Domain-warped fbm "light on paper": bright ivory with slow ribbons of teal,
-// lime and coral that bend around the pointer, with a faint pink rim on the fog.
+// Moving clouds on a light ground, like the light spilling behind the Contact
+// headline: big blurred pools of teal (the lead colour) with a little lime and
+// coral, a faint drifting blush of magenta pink, and two layers of bright cloud billows drifting fast across them (the
+// far layer slower than the near one, for depth).
 const fragmentSource = `
 precision highp float;
 uniform vec2 uRes;
@@ -20,10 +23,12 @@ uniform vec2 uMouse;
 uniform float uIntro;
 uniform float uScroll;
 uniform vec3 uBase;
-uniform vec3 uMint;
-uniform vec3 uAccent;
+uniform vec3 uDeep;
+uniform vec3 uTeal;
+uniform vec3 uAqua;
 uniform vec3 uLime;
-uniform vec3 uGlow;
+uniform vec3 uCoral;
+uniform vec3 uMagenta;
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
 
@@ -47,40 +52,60 @@ float fbm(vec2 p) {
   return v;
 }
 
+// A soft pool of colour centred on c, radius r.
+float pool(vec2 p, vec2 c, float r) {
+  vec2 d = p - c;
+  return exp(-dot(d, d) / (r * r));
+}
+
 void main() {
-  vec2 uv = gl_FragCoord.xy / uRes;
   vec2 p = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
-  float t = uTime * 0.05;
+  float t = uTime * 1.5;
 
+  // The pointer gently parts the clouds.
   float md = length(p - uMouse);
-  p += (p - uMouse) * 0.18 * exp(-md * md * 3.5);
+  p += (p - uMouse) * 0.12 * exp(-md * md * 4.0);
 
-  vec2 q = vec2(fbm(p * 1.1 + vec2(0.0, t)), fbm(p * 1.1 + vec2(5.2, 1.3) - t));
-  vec2 r = vec2(fbm(p * 1.4 + 3.4 * q + vec2(1.7, 9.2) + t * 1.3),
-                fbm(p * 1.4 + 3.4 * q + vec2(8.3, 2.8) - t * 1.1));
-  float f = fbm(p * 1.1 + 3.0 * r);
+  // Cloud wisps: a fast-moving warp field bends every pool's edge.
+  vec2 wind = vec2(t * 0.22, t * 0.06);
+  vec2 warp = vec2(fbm(p * 1.3 + wind), fbm(p * 1.3 + vec2(5.2, 1.3) - wind * 0.8)) - 0.5;
+  vec2 w = p + warp * 0.55;
+
+  float aspect = uRes.x / uRes.y;
+  float sx = aspect * 0.5;
+
+  // Pools sweep across on their own loops. Teal leads; lime and coral are accents.
+  vec2 c1 = vec2(sin(t * 0.21) * sx * 0.9 - sx * 0.25, cos(t * 0.17) * 0.28 + 0.12);
+  vec2 c2 = vec2(cos(t * 0.18 + 1.7) * sx * 0.85 + sx * 0.3, sin(t * 0.23 + 0.6) * 0.3 - 0.05);
+  vec2 c3 = vec2(sin(t * 0.15 + 3.1) * sx * 0.7, cos(t * 0.2 + 2.2) * 0.32 - 0.22);
+  vec2 c4 = vec2(cos(t * 0.24 + 4.0) * sx * 0.8 + sx * 0.35, sin(t * 0.19 + 1.1) * 0.3 + 0.2);
+  vec2 c5 = vec2(sin(t * 0.27 + 5.3) * sx * 0.6, cos(t * 0.21 + 3.7) * 0.25 - 0.05);
+  vec2 c6 = vec2(cos(t * 0.2 + 2.4) * sx * 0.75, sin(t * 0.25 + 4.6) * 0.3 + 0.1);
 
   vec3 col = uBase;
-  col = mix(col, uMint, smoothstep(0.25, 0.6, f));
-  // Teal leads; lime and coral are only faint hints.
-  col = mix(col, uAccent, smoothstep(0.34, 0.7, f) * clamp(length(q) * 1.6, 0.0, 1.0));
-  col = mix(col, uLime, smoothstep(0.58, 0.82, r.x) * 0.2);
-  col = mix(col, uGlow, smoothstep(0.62, 0.86, r.y) * 0.14);
-  // Faint pink rim light: a thin line along the edge of the teal fog, where
-  // the fog value crosses into the ribbons — never inside them.
-  // Pushing red up and green down tints toward pink (blending pink over teal
-  // would just turn it grey).
-  float rim = exp(-pow((f - 0.52) / 0.016, 2.0)) * clamp(length(q) * 1.6, 0.0, 1.0);
-  col = clamp(col + vec3(0.26, -0.08, -0.06) * rim, 0.0, 1.0);
-  col = mix(col, uAccent, 0.35 * exp(-md * md * 5.0));
+  col = mix(col, uAqua, pool(w, c1, 0.55) * 0.85);
+  col = mix(col, uTeal, pool(w, c2, 0.5) * 0.8);
+  col = mix(col, uDeep, pool(w, c3, 0.34) * 0.45);
+  col = mix(col, uLime, pool(w, c4, 0.36) * 0.6);
+  // Coral is lifted toward white first, so it blooms as a peach blush instead
+  // of muddying the teal underneath.
+  col = mix(col, mix(uCoral, vec3(1.0), 0.5), pool(w, c5, 0.3) * 0.5);
+  // Magenta pink: just an essence, lifted toward white like the coral.
+  col = mix(col, mix(uMagenta, vec3(1.0), 0.45), pool(w, c6, 0.26) * 0.32);
 
-  // Keep the lower-left calm, where the copy sits.
-  float calm = smoothstep(0.75, 0.0, length((uv - vec2(0.15, 0.1)) * vec2(1.2, 1.6)));
-  col = mix(col, uBase, calm * 0.55);
+  // Bright cloud billows: a big, slower far layer and a denser, faster near
+  // layer, each with a soft shaded underside so they read as clouds.
+  float far = fbm(p * vec2(1.1, 1.8) + wind * 1.4 + warp * 0.9);
+  float near = fbm(p * vec2(2.0, 3.2) - vec2(wind.x * 2.6, wind.y) + warp * 1.4);
+  float clouds = smoothstep(0.46, 0.76, far) * 0.6 + smoothstep(0.5, 0.8, near) * 0.45;
+  float shade = smoothstep(0.42, 0.6, far) - smoothstep(0.5, 0.7, far);
+  col = mix(col, uDeep, shade * 0.05);
+  col = mix(col, vec3(1.0), clamp(clouds, 0.0, 0.78));
 
   col = mix(uBase, col, uIntro);
-  col = mix(col, uBase, clamp(uScroll, 0.0, 1.0) * 0.9);
-  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * (3.0 / 255.0);
+  col = mix(col, uBase, clamp(uScroll, 0.0, 1.0) * 0.85);
+  // Fine grain keeps the gradient from banding.
+  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * (4.0 / 255.0);
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -145,14 +170,16 @@ export function HeroShader({
     const uScroll = uniform("uScroll");
     const tokens: [string, string][] = [
       ["uBase", "--ivory"],
-      ["uMint", "--secondary"],
-      ["uAccent", "--accent"],
+      ["uDeep", "--deep-teal"],
+      ["uTeal", "--accent"],
+      ["uAqua", "--interactive"],
       ["uLime", "--teal"],
-      ["uGlow", "--glow"],
+      ["uCoral", "--glow"],
+      ["uMagenta", "--magenta"],
     ];
     for (const [name, token] of tokens) gl.uniform3fv(uniform(name), readTokenColor(token));
 
-    const mouse = { x: 0.25, y: 0.1, tx: 0.25, ty: 0.1 };
+    const mouse = { x: 0.4, y: 0, tx: 0.4, ty: 0 };
     const onPointer = (event: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouse.tx = (event.clientX - rect.left - rect.width / 2) / rect.height;
@@ -177,21 +204,24 @@ export function HeroShader({
     });
     intersection.observe(canvas);
 
+    const still = prefersReducedMotion();
     const start = performance.now();
     let frame = 0;
     const draw = () => {
-      frame = requestAnimationFrame(draw);
-      if (!visible) return;
       mouse.x += (mouse.tx - mouse.x) * 0.05;
       mouse.y += (mouse.ty - mouse.y) * 0.05;
       const state = stateRef.current;
-      gl.uniform1f(uTime, (performance.now() - start) / 1000);
+      gl.uniform1f(uTime, still ? 8 : (performance.now() - start) / 1000);
       gl.uniform2f(uMouse, mouse.x, mouse.y);
       gl.uniform1f(uIntro, state?.intro ?? 1);
       gl.uniform1f(uScroll, state?.scroll ?? 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
-    draw();
+    const loop = () => {
+      frame = requestAnimationFrame(loop);
+      if (visible) draw();
+    };
+    loop();
 
     return () => {
       cancelAnimationFrame(frame);

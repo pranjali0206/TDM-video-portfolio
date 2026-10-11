@@ -332,8 +332,7 @@ export function DetailCta({
             </span>
           </h2>
           <Link
-            to="/"
-            hash="contact"
+            to="/contact"
             className="group relative mt-10 inline-flex h-14 items-center gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink transition-colors hover:bg-glow"
           >
             Start a project

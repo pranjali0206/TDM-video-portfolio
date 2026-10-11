@@ -1,32 +1,20 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Brain, Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import { problemSolutions } from "./content";
 import { useExperience } from "./experience";
-import { Corners, Marker, Reveal } from "./primitives";
-import { VIDEO_BASE } from "./reels";
-import { servicePath } from "./service-links";
-import { markerOf, toneOf } from "./service-orbit";
-
-// Services that show a looping film (on R2, in `service-section/`) instead of their
-// coloured title card.
-const serviceVideos: Partial<Record<string, string>> = {
-  mediahouse: `${VIDEO_BASE}/service-section/mediahouse`,
-  ads: `${VIDEO_BASE}/service-section/ads`,
-  crm: `${VIDEO_BASE}/service-section/crm`,
-  erp: `${VIDEO_BASE}/service-section/erp`,
-  // The robot "AI agents" film shows automation at work.
-  automations: `${VIDEO_BASE}/service-section/ai-agents`,
-  websites: `${VIDEO_BASE}/service-section/websites`,
-  "ai-agents": `${VIDEO_BASE}/service-section/ai-agents-chat`,
-};
-
-// Videos with a watermark in the bottom-right corner, zoomed in so it's cropped out.
-const logoCropSlugs = ["mediahouse", "erp", "automations"];
+import { Reveal } from "./primitives";
+import { logoCropSlugs, servicePath, serviceVideo } from "./service-links";
+import { toneOf } from "./service-orbit";
 
 type Service = (typeof problemSolutions)[number];
+
+const pillClass =
+  "group inline-flex h-14 items-center gap-4 rounded-full pl-7 pr-2 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive";
+const pillIconClass =
+  "grid size-10 place-items-center rounded-full transition-transform duration-500 group-hover:rotate-45";
 
 function ServicesHeader() {
   const { scrollTo } = useExperience();
@@ -53,25 +41,38 @@ function ServicesHeader() {
             className="text-teal-gradient mt-6 max-w-5xl text-[clamp(2.6rem,7.2vw,7rem)] leading-[0.92] tracking-[-0.02em]"
             style={{ fontStretch: "108%" }}
           >
-            Everything your business needs to{" "}
+            We’re here to help your business{" "}
             <span
               className="font-serif font-normal italic tracking-normal text-glow"
               style={{ fontStretch: "100%" }}
             >
-              grow.
+              grow and thrive.
             </span>
           </h1>
         </Reveal>
         <Reveal delay={160}>
           <p className="mt-6 max-w-2xl text-base font-medium leading-relaxed text-ink sm:mt-8 sm:text-lg md:text-xl">
-            Creative, marketing and technology under one roof — from the content that wins attention
-            to the systems that turn it into sales. Pick a service to see exactly what’s included.
+            Every service we offer has one goal: your growth. Start with what you need today and add
+            more as you scale. Together, they work even better.
+          </p>
+        </Reveal>
+
+        {/* The people behind every service. */}
+        <Reveal delay={200}>
+          <p className="mt-8 flex max-w-2xl items-start gap-4 rounded-[1.25rem] bg-ink px-5 py-4 text-ivory sm:items-center sm:px-6">
+            <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-ink">
+              <Brain className="size-5" strokeWidth={1.8} />
+            </span>
+            <span className="text-base font-medium leading-snug">
+              <strong className="font-semibold text-accent">Real thinking brains behind it.</strong>{" "}
+              Strategists, creators and engineers who treat your growth like their own.
+            </span>
           </p>
         </Reveal>
 
         {/* Jump links to each service below, all visible at once (wrapping onto
             a few lines on phones). */}
-        <Reveal delay={220}>
+        <Reveal delay={240}>
           <nav
             aria-label="Services on this page"
             className="mt-8 flex flex-wrap gap-2 sm:mt-10 sm:gap-2.5"
@@ -106,12 +107,12 @@ function ServicesHeader() {
   );
 }
 
-/** One service: a coloured title card beside what's included and what it delivers. */
+/** One service: its film beside a bold promise, what's included and what it delivers. */
 function ServiceSection({ service, index }: { service: Service; index: number }) {
   const colors = toneOf(index);
   const Icon = service.icon;
   const flipped = index % 2 === 1;
-  const video = serviceVideos[service.slug];
+  const video = serviceVideo(service.slug);
 
   return (
     <section
@@ -121,69 +122,55 @@ function ServiceSection({ service, index }: { service: Service; index: number })
       className="scroll-mt-28 border-t border-ink/10 px-6 pb-16 pt-24 md:px-14 md:py-28 lg:px-20"
     >
       <div className="mx-auto grid max-w-[1400px] items-start gap-8 md:gap-10 lg:grid-cols-2 lg:gap-16">
-        <Reveal className={cn(flipped && "lg:order-2")}>
-          {video ? (
-            <div className="relative min-h-[17rem] overflow-hidden rounded-[1.5rem] bg-ink shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] md:min-h-[26rem]">
-              <h2 id={`${service.slug}-title`} className="sr-only">
-                {service.service}
-              </h2>
-              <video
-                src={`${video}.mp4`}
-                poster={`${video}.jpg`}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-hidden="true"
-                // MediaHouse, ERP and Automations: zoom in from the top-left so
-                // the bottom-right (Gemini logo) is pushed outside the box and
-                // clipped by `overflow-hidden` on the wrapper. Raise the scale
-                // (e.g. `scale-[1.2]`) if any of the logo is still visible.
-                className={cn(
-                  "absolute inset-0 size-full object-cover",
-                  logoCropSlugs.includes(service.slug) && "origin-top-left scale-[1.15]",
-                )}
-              />
-            </div>
-          ) : (
-            <div
-              className="relative flex min-h-[17rem] flex-col overflow-hidden rounded-[1.5rem] p-6 shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] sm:p-8 md:min-h-[26rem] md:p-12"
+        <Reveal className={cn("lg:sticky lg:top-28", flipped && "lg:order-2")}>
+          <div className="relative min-h-[17rem] overflow-hidden rounded-[1.5rem] bg-ink shadow-[0_40px_90px_-45px_rgba(0,40,40,0.6)] sm:min-h-[22rem] sm:rounded-[2rem] md:min-h-[28rem]">
+            <video
+              src={`${video}.mp4`}
+              poster={`${video}.jpg`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              // Zoom in from the top-left so a watermark in the bottom-right is
+              // pushed outside the box and clipped by `overflow-hidden`.
+              className={cn(
+                "absolute inset-0 size-full object-cover",
+                logoCropSlugs.includes(service.slug) && "origin-top-left scale-[1.15]",
+              )}
+            />
+            {/* The service's name, stamped on the film. */}
+            <span
+              className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-bold shadow-lg sm:bottom-6 sm:left-6"
               style={{ background: colors.bg, color: colors.fg }}
             >
-              <Corners className="inset-3 text-current opacity-40 sm:inset-4" size="size-4" />
-              <div className="relative flex items-start justify-between gap-4">
-                <span className="grid size-12 shrink-0 -rotate-6 place-items-center rounded-2xl bg-white/90 text-ink shadow-lg sm:size-16">
-                  <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
-                </span>
-                <span className="min-w-0 pt-1 text-right font-mono text-[10px] font-medium uppercase leading-relaxed tracking-[0.18em] sm:text-[11px] sm:tracking-[0.25em]">
-                  {service.tagline}
-                </span>
-              </div>
-              <h2
-                id={`${service.slug}-title`}
-                className="relative mt-auto break-words pt-10 font-display text-[clamp(2.1rem,9vw,6rem)] font-extrabold leading-[0.92] tracking-[-0.02em] sm:pt-12"
-                style={{ fontStretch: "110%" }}
-              >
-                {service.service}
-              </h2>
-              <p className="relative mt-4 max-w-md text-base font-semibold leading-snug sm:mt-5 sm:text-lg md:text-xl">
-                {service.question}
-              </p>
-            </div>
-          )}
+              <span className="grid size-7 place-items-center rounded-full bg-white/90 text-ink">
+                <Icon className="size-3.5" strokeWidth={2} />
+              </span>
+              {service.service}
+            </span>
+          </div>
         </Reveal>
 
         <Reveal delay={120} className={cn(flipped && "lg:order-1")}>
-          <p
-            className="font-display text-xl font-bold leading-snug sm:text-2xl md:text-3xl"
-            style={{ fontStretch: "105%" }}
-          >
-            {/* A thick marker that sweeps in across the lines as it scrolls into view. */}
-            <Marker color={markerOf(index)}>{service.answer}</Marker>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal">
+            {String(index + 1).padStart(2, "0")} · {service.service}
           </p>
-          <p className="mt-5 text-base font-medium leading-relaxed text-ink sm:mt-6 sm:text-lg">
-            {service.summary}
+          <h2
+            id={`${service.slug}-title`}
+            className="mt-4 font-display text-[clamp(2rem,4.2vw,3.6rem)] font-extrabold leading-[0.98] tracking-[-0.02em] text-ink"
+            style={{ fontStretch: "108%" }}
+          >
+            {service.headline}
+          </h2>
+          <p className="mt-5 max-w-xl text-lg font-medium leading-relaxed text-ink sm:mt-6 sm:text-xl">
+            {service.serve}
+          </p>
+
+          <p className="mt-6 flex max-w-xl items-start gap-3 border-l-2 border-accent pl-4 text-[15px] font-medium leading-relaxed text-ink/80 sm:text-base">
+            <Brain className="mt-0.5 size-5 shrink-0 text-deep-teal" strokeWidth={1.8} />
+            {service.brains}
           </p>
 
           <h3 className="mt-8 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-deep-teal sm:mt-10">
@@ -223,11 +210,63 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             to={servicePath(service.slug)}
             className="group mt-8 flex h-14 w-full items-center justify-between gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink shadow-[0_14px_34px_-14px_var(--accent)] transition-colors hover:bg-glow sm:mt-10 sm:inline-flex sm:w-auto sm:justify-start"
           >
-            Start with {service.service}
+            Explore {service.service}
             <span className="grid size-10 place-items-center rounded-full bg-ink text-accent transition-transform duration-500 group-hover:rotate-45">
               <ArrowUpRight className="size-5" />
             </span>
           </Link>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/** Who's behind the services, and how we think. */
+function ServicesKnowUs() {
+  return (
+    <section className="border-t border-ink/10 px-6 py-20 md:px-14 md:py-28 lg:px-20">
+      <div className="mx-auto grid max-w-[1400px] gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-12">
+        <Reveal>
+          <p className="inline-flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-deep-teal">
+            <span className="h-px w-8 bg-current" />
+            Behind the work
+          </p>
+          <h2
+            className="text-teal-gradient mt-5 text-[clamp(2.2rem,5.5vw,5rem)] leading-[0.95] tracking-[-0.02em]"
+            style={{ fontStretch: "108%" }}
+          >
+            Know the people and the{" "}
+            <span
+              className="font-serif font-normal italic tracking-normal text-glow"
+              style={{ fontStretch: "100%" }}
+            >
+              thinking
+            </span>{" "}
+            behind it.
+          </h2>
+        </Reveal>
+        <Reveal delay={120}>
+          <p className="max-w-md text-base font-medium leading-relaxed text-ink sm:text-lg">
+            Every service runs on the same strategy and the same team. See who we are and how we
+            plan your growth.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link to="/about" className={cn(pillClass, "bg-ink text-ivory hover:bg-deep-teal")}>
+              Know more about us
+              <span className={cn(pillIconClass, "bg-accent text-ink")}>
+                <ArrowUpRight className="size-5" />
+              </span>
+            </Link>
+            <Link
+              to="/tdm-mindset"
+              className={cn(pillClass, "border border-ink/25 text-ink hover:border-ink")}
+            >
+              Our marketing strategies
+              <span className={cn(pillIconClass, "bg-ink/10")}>
+                <ArrowUpRight className="size-5" />
+              </span>
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -244,13 +283,13 @@ function ServicesCta() {
             <div className="orb -bottom-24 -right-16 size-[22rem] bg-glow/25 [animation-delay:-7s]" />
           </div>
           <p className="relative font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-accent">
-            Not sure where to start?
+            Let’s connect
           </p>
           <h2
             className="relative mx-auto mt-5 max-w-3xl text-balance text-[clamp(2rem,8.5vw,2.25rem)] leading-[1] sm:mt-6 md:text-6xl"
             style={{ fontStretch: "105%" }}
           >
-            Tell us the goal. We’ll build the{" "}
+            Tell us your goal. We’ll build the{" "}
             <span
               className="font-serif font-normal italic tracking-normal text-glow"
               style={{ fontStretch: "100%" }}
@@ -258,13 +297,16 @@ function ServicesCta() {
               plan.
             </span>
           </h2>
+          <p className="relative mx-auto mt-6 max-w-xl text-base font-medium leading-relaxed text-ivory/80 sm:text-lg">
+            Not sure which service fits? Talk to us. We’ll listen first, then show you the simplest
+            way to grow.
+          </p>
           <Link
-            to="/"
-            hash="contact"
-            className="group relative mt-10 inline-flex h-14 items-center gap-4 rounded-full bg-accent pl-7 pr-2 text-base font-semibold text-ink transition-colors hover:bg-glow"
+            to="/contact"
+            className={cn(pillClass, "relative mt-10 bg-accent text-ink hover:bg-glow")}
           >
-            Start a project
-            <span className="grid size-10 place-items-center rounded-full bg-ink text-accent transition-transform duration-500 group-hover:rotate-45">
+            Contact us
+            <span className={cn(pillIconClass, "bg-ink text-accent")}>
               <ArrowUpRight className="size-5" />
             </span>
           </Link>
@@ -282,6 +324,7 @@ export function ServicesPage() {
       {problemSolutions.map((service, index) => (
         <ServiceSection key={service.slug} service={service} index={index} />
       ))}
+      <ServicesKnowUs />
       <ServicesCta />
     </>
   );

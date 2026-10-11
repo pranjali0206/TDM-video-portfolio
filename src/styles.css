@@ -21,7 +21,7 @@
  *   font-display — big kinetic headlines (Archivo, variable width axis)
  *   font-sans    — body copy (Inter Tight)
  *   font-serif   — italic editorial accents inside headlines (Instrument Serif)
- *   font-hero    — the hero statement: heavy, wide geometric sans (Unbounded)
+ *   font-hero    — the hero statement: soft editorial serif with a calligraphic italic (Fraunces)
  *   font-mono    — editing-suite HUD: timecodes, labels, counters (JetBrains Mono)
  */
 
@@ -29,7 +29,7 @@
   --font-sans: "Inter Tight", "Hind", sans-serif;
   --font-display: "Archivo", "Archivo Black", sans-serif;
   --font-serif: "Instrument Serif", Georgia, serif;
-  --font-hero: "Unbounded", "Archivo", sans-serif;
+  --font-hero: "Fraunces", "Instrument Serif", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -80,6 +80,7 @@
   --color-interactive: var(--interactive);
   --color-teal: var(--teal);
   --color-glow: var(--glow);
+  --color-magenta: var(--magenta);
 }
 
 :root {
@@ -115,6 +116,8 @@
   --teal: oklch(0.905 0.131 117);
   /* Joyful coral — the warm contrast to teal. Display sizes and fills only. */
   --glow: oklch(0.68 0.17 38);
+  /* Magenta pink: a faint blush in the hero's colour clouds only. */
+  --magenta: oklch(0.66 0.24 350);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -164,6 +167,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
   --deep-teal: oklch(0.5 0.1 190);
+  --magenta: oklch(0.66 0.24 350);
 }
 
 @layer base {
@@ -262,13 +266,19 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    /* The gradient only paints inside the box, so give descenders (g, y, p) room. */
+    padding-bottom: 0.26em;
+    margin-bottom: -0.26em;
   }
+  /* Same for the unsplit heading (before JS runs, or headings never split). */
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 /* SplitText mask wrappers: pad so tight display leading never clips glyphs. */
 .split-line-mask {
-  padding-block: 0.06em 0.14em;
-  margin-block: -0.06em -0.14em;
+  padding-block: 0.06em 0.26em;
+  margin-block: -0.06em -0.26em;
 }
 
 /* Mouse-tracked spotlight for cards: set --mx / --my from JS; tint with --spot. */
@@ -441,4 +451,17 @@
   [data-reveal] { animation: none !important; }
   /* One near-instant iteration: infinite loops (pulse, ping) must not strobe. */
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Hero type (font-hero / Fraunces): large optical size and soft corners for the
+   roman rows; the italic row leans fully calligraphic. */
+.hero-display {
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 50;
+}
+.hero-italic {
+  font-style: italic;
+  font-weight: 400;
+  font-variation-settings: "SOFT" 100;
+  letter-spacing: -0.02em;
 }

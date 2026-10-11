@@ -1,3 +1,5 @@
+import { VIDEO_BASE } from "./reels";
+
 /** Where each service's "Start with …" button leads, keyed by service slug. */
 export const servicePaths = {
   mediahouse: "/media-house",
@@ -25,3 +27,25 @@ export const contactDetails = {
   phone: "",
   email: "",
 };
+
+/**
+ * Each service's looping film on R2 (`service-section/`): `<path>.mp4` plus a
+ * `<path>.jpg` poster.
+ */
+export const serviceVideos: Record<ServiceSlug, string> = {
+  mediahouse: `${VIDEO_BASE}/service-section/mediahouse`,
+  ads: `${VIDEO_BASE}/service-section/ads`,
+  websites: `${VIDEO_BASE}/service-section/websites`,
+  crm: `${VIDEO_BASE}/service-section/crm`,
+  erp: `${VIDEO_BASE}/service-section/erp`,
+  // The robot "AI agents" film shows automation at work.
+  automations: `${VIDEO_BASE}/service-section/ai-agents`,
+  "ai-agents": `${VIDEO_BASE}/service-section/ai-agents-chat`,
+};
+
+/** A service's film by slug; unknown slugs fall back to the MediaHouse film. */
+export const serviceVideo = (slug: string) =>
+  slug in serviceVideos ? serviceVideos[slug as ServiceSlug] : serviceVideos.mediahouse;
+
+/** Films with a watermark bottom-right, zoomed from the top-left to crop it out. */
+export const logoCropSlugs: string[] = ["mediahouse", "erp", "automations"];

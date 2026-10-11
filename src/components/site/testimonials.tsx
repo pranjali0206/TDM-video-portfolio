@@ -153,14 +153,6 @@ export function Testimonials() {
       });
 
       const headline = { trigger: "[data-reviews-head]", start: "top 80%" };
-      gsap.from("[data-marker]", {
-        scaleX: 0,
-        transformOrigin: "left center",
-        duration: 1.3,
-        delay: 0.3,
-        ease: "expo.inOut",
-        scrollTrigger: headline,
-      });
       gsap.from("[data-sticky-note]", {
         rotate: -22,
         scale: 0.6,
@@ -179,11 +171,7 @@ export function Testimonials() {
     <section
       ref={rootRef}
       id="reviews"
-      className="relative overflow-hidden py-28 text-ink md:py-40"
-      style={{
-        background:
-          "linear-gradient(180deg, color-mix(in oklab, var(--accent) 32%, var(--ivory)) 0%, color-mix(in oklab, var(--accent) 14%, var(--ivory)) 100%)",
-      }}
+      className="relative overflow-hidden py-16 text-ink md:py-20"
     >
       {/* Soft white clouds drifting across a teal sky. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
@@ -200,20 +188,13 @@ export function Testimonials() {
         >
           Straight from the fanbase
         </p>
-        <h2 className="mt-8 max-w-5xl text-balance text-[clamp(1.9rem,8.4vw,2.25rem)] leading-[1.02] md:text-6xl lg:text-7xl">
+        <h2 className="text-teal-gradient mt-8 max-w-5xl text-balance text-[clamp(1.9rem,8.4vw,2.25rem)] leading-[1.02] md:text-6xl lg:text-7xl">
           The internet’s favorite kind of flex —{" "}
-          <span className="relative isolate inline-block">
-            <span
-              data-marker
-              aria-hidden="true"
-              className="absolute inset-x-[-0.1em] bottom-[0.06em] -z-10 h-[0.38em] -rotate-1 rounded-sm bg-teal"
-            />
-            <span
-              className="font-serif font-normal italic tracking-normal"
-              style={{ fontStretch: "100%" }}
-            >
-              other people’s words
-            </span>
+          <span
+            className="font-serif font-normal italic tracking-normal text-glow"
+            style={{ fontStretch: "100%" }}
+          >
+            other people’s words
           </span>
         </h2>
       </div>

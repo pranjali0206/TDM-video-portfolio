@@ -185,6 +185,14 @@ export const expertise = [
       "CRM, ERP, HRMS and custom AI tools that bring every lead, deal, team and process into one system that scales with you.",
   },
   {
+    short: "CRM",
+    title: "CRM That Closes Deals",
+    icon: Users,
+    highlights: ["Lead capture", "Pipelines", "Follow-ups"],
+    description:
+      "One place for every lead, call and deal — captured from ads, website and WhatsApp, assigned instantly and followed up on time, so no enquiry slips away.",
+  },
+  {
     short: "Ad Reels",
     title: "Conversion-Crafted Ad Reels",
     icon: Clapperboard,
@@ -389,6 +397,36 @@ export const aboutPillars = [
   },
 ];
 
+// "Same question in your mind?" on About: what people ask about TDM itself
+// (the service questions live on the home page and /services).
+export const aboutQuestions = [
+  {
+    question: "Who’s actually behind TDM Groups?",
+    answer:
+      "A team of strategists, creators, marketers and developers who have spent 10+ years growing brands across India.",
+  },
+  {
+    question: "Why one team instead of separate agencies?",
+    answer:
+      "Because your content, ads, website and CRM should work as one system. With a single team, nothing gets lost between vendors.",
+  },
+  {
+    question: "Do you only work with big brands?",
+    answer:
+      "No. We work with founders, family businesses and growing companies, and every client gets the same attention.",
+  },
+  {
+    question: "How do we know it’s working?",
+    answer:
+      "You get clear goals at the start and honest reports throughout. Every rupee and every lead is tracked.",
+  },
+  {
+    question: "What happens after we sign?",
+    answer:
+      "We start with discovery into your market, audience and numbers, then share a plan before anything is built.",
+  },
+];
+
 // How a project moves through the studio.
 export const aboutProcess = [
   {
@@ -397,7 +435,7 @@ export const aboutProcess = [
   },
   {
     step: "Create",
-    body: "Strategy, creative, websites and automations — designed and built together under one roof.",
+    body: "Strategists, designers, marketers and developers shape the work side by side, so nothing gets lost in a handover.",
   },
   {
     step: "Launch",
@@ -457,16 +495,26 @@ export const industries = [
   },
 ];
 
-// The seven services. Each drives an orbit bubble on the home-page globe, the
-// rotating "Same question in your mind?" card on About, and a full section on
-// the /services page (anchored at `slug`).
+// The seven services. Each drives an orbit bubble on the home-page globe
+// (`question` + `answer`) and a full section on the /services page, anchored at
+// `slug`: a bold `headline`, a plain-spoken `serve` line and `brains`, the people
+// thinking behind it. `goodThing` closes each service's own page ("That's the
+// good thing about Ads: …") before the cards for the other services.
 export const problemSolutions = [
   {
     service: "MediaHouse",
     slug: "mediahouse",
+    headline: "Content that makes people stop, remember and buy.",
+    serve:
+      "We’re your in-house creative studio. We plan, shoot and design the reels, posts and ads your brand runs on, so it looks like nobody else.",
+    brains:
+      "Strategists, scriptwriters, designers and editors decide what your customer needs to see before a single frame is shot.",
+    goodThing: "every reel, post and ad starts with what makes your customer stop and buy.",
     icon: Clapperboard,
     question: "Your content looks like everyone else’s?",
     answer: "Our MediaHouse crafts a look competitors can’t copy.",
+    pitch:
+      "Every reel, post and creative starts from one question: what makes your customer stop, remember and buy?",
     tagline: "Content & creative studio",
     summary:
       "Our in-house creative studio produces the content your brand runs on — ad reels, social content, brand graphics and real estate visuals, all planned around what makes people stop, remember and buy.",
@@ -483,9 +531,17 @@ export const problemSolutions = [
   {
     service: "Ads",
     slug: "ads",
+    headline: "Ads that bring customers, not just clicks.",
+    serve:
+      "We run your Google and Meta ads like it’s our own money. Every week we move budget to what sells and cut what doesn’t.",
+    brains:
+      "Media buyers and analysts check your numbers every week and decide where each rupee should go next.",
+    goodThing: "every rupee is tracked, tested and moved to the ads that actually sell.",
     icon: Megaphone,
     question: "Burning budget on ads that don’t convert?",
     answer: "Our Ads team turns spend into signal, not noise.",
+    pitch:
+      "We test, measure and reallocate every week, so your budget keeps flowing to the ads that actually sell.",
     tagline: "Performance marketing",
     summary:
       "Over a decade of running Google and Meta campaigns that pay for themselves. We plan, launch and optimise every campaign around one thing — profitable leads and sales, with clear reporting on where every rupee goes.",
@@ -502,9 +558,17 @@ export const problemSolutions = [
   {
     service: "Websites",
     slug: "websites",
+    headline: "Websites that turn visitors into customers.",
+    serve:
+      "We build websites that truly reflect your brand’s identity. Each one is fast, beautiful and designed around one goal: getting people to call, book or buy.",
+    brains:
+      "Designers, copywriters and developers plan every page around what your visitor needs to take the next step.",
+    goodThing: "every page is built for one thing: turning a visitor into a customer.",
     icon: Globe,
     question: "A website that looks pretty but does nothing?",
     answer: "We build Websites engineered to convert, not just impress.",
+    pitch:
+      "Each page is planned around one action, whether that’s a call, a booking or a sale, and built to load in a blink.",
     tagline: "Websites & landing pages",
     summary:
       "Fast, immersive websites and landing pages designed around your customer. Every page is built to load quickly, rank well on Google and guide visitors toward one clear action.",
@@ -521,9 +585,17 @@ export const problemSolutions = [
   {
     service: "CRM",
     slug: "crm",
+    headline: "Never lose a lead again.",
+    serve:
+      "We set up a CRM around how your team already sells, so every enquiry is captured, followed up and closed on time.",
+    brains:
+      "Sales and systems specialists study how your team sells, then shape the CRM to fit, not the other way round.",
+    goodThing: "every lead is captured, followed up and never forgotten.",
     icon: Users,
     question: "Leads slipping through the cracks?",
     answer: "Our CRM keeps every lead tracked and every deal alive.",
+    pitch:
+      "We shape the CRM around how your sales team already works, so they adopt it from day one.",
     tagline: "Customer relationship management",
     summary:
       "One place for every lead, call and deal. We set up and customise a CRM around how your sales team actually works — so no enquiry is forgotten and every follow-up happens on time.",
@@ -540,9 +612,17 @@ export const problemSolutions = [
   {
     service: "ERP",
     slug: "erp",
+    headline: "Run your whole business from one place.",
+    serve:
+      "Stock, billing, accounts and HR in one connected system built around your process, not a template.",
+    brains:
+      "Business analysts and engineers map how your company really works before they build a single screen.",
+    goodThing: "your whole business finally runs from one place.",
     icon: Boxes,
     question: "Operations held together by spreadsheets and duct tape?",
     answer: "We build ERP systems that actually scale as you grow.",
+    pitch:
+      "Inventory, accounts, HR and operations in one connected system, designed around your process instead of a template.",
     tagline: "ERP, HRMS & business systems",
     summary:
       "Replace scattered spreadsheets with one connected system. We build ERP and HRMS solutions that bring inventory, accounts, HR and operations together — tailored to your business, not the other way round.",
@@ -559,9 +639,17 @@ export const problemSolutions = [
   {
     service: "Automations",
     slug: "automations",
+    headline: "Give your team their hours back.",
+    serve:
+      "We hand the repetitive work to automated workflows, so messages, reports and data move on their own.",
+    brains:
+      "Process experts find where your team’s hours go, then build workflows that never miss a step.",
+    goodThing: "the busywork runs itself, so your team can focus on growth.",
     icon: Bot,
     question: "Your team drowning in repetitive busywork?",
     answer: "We automate the grind so your team can focus on growth.",
+    pitch:
+      "We map where your team’s hours go, then hand the repetitive parts to workflows that never forget a step.",
     tagline: "Workflow automation",
     summary:
       "We find the repetitive tasks slowing your team down and automate them — connecting your tools so data moves on its own, messages go out on time and reports build themselves.",
@@ -578,9 +666,17 @@ export const problemSolutions = [
   {
     service: "AI Agents",
     slug: "ai-agents",
+    headline: "An extra team that never sleeps.",
+    serve:
+      "AI agents trained on your business reply to customers, qualify leads and book appointments, day and night.",
+    brains:
+      "AI engineers train every agent on your business, your tone and your customers’ real questions.",
+    goodThing: "your customers get a helpful reply in seconds, day or night.",
     icon: Sparkles,
     question: "Wish you had more hands, without more headcount?",
     answer: "Our AI Agents work around the clock like a full extra team.",
+    pitch:
+      "Trained on your business and speaking in your tone, our agents reply, qualify and book appointments 24/7.",
     tagline: "AI agents & AI tools",
     summary:
       "Custom AI agents trained on your business that answer customers, qualify leads and handle routine work 24/7 — on your website, WhatsApp and internal tools.",

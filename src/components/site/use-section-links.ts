@@ -5,7 +5,8 @@ import { useExperience } from "./experience";
 /**
  * Links to home-page sections that work from any page: on "/" they
  * smooth-scroll in place; anywhere else they navigate to "/#section" and the
- * router lands on it once the page's scroll pins are in place.
+ * router lands on it once the page’s scroll pins are in place. Contact always
+ * opens its own page.
  */
 export function useSectionLinks() {
   const { scrollTo } = useExperience();
@@ -13,11 +14,17 @@ export function useSectionLinks() {
   const onHome = useLocation({ select: (location) => location.pathname === "/" });
 
   const hrefFor = (id: string) => {
+    // Contact has a page of its own.
+    if (id === "contact") return "/contact";
     if (onHome) return `#${id}`;
     return id === "top" ? "/" : `/#${id}`;
   };
 
   const goTo = (id: string) => {
+    if (id === "contact") {
+      void navigate({ to: "/contact" });
+      return;
+    }
     if (onHome) {
       // Contact's headline is a full screen tall on its own, so land on the
       // headline itself, just clear of the fixed nav bar: the whole
