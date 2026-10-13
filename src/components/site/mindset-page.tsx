@@ -60,13 +60,10 @@ const steps = [
   },
 ];
 
-/** A serif-italic accent inside a display heading, as on every other page. */
+/** A bold colour accent inside a display heading, as on every other page. */
 function Accent({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <span
-      className={cn("font-serif font-normal italic tracking-normal text-glow", className)}
-      style={{ fontStretch: "100%" }}
-    >
+    <span className={cn("font-extrabold text-glow", className)} style={{ fontStretch: "100%" }}>
       {children}
     </span>
   );
@@ -79,11 +76,6 @@ function MindsetHeader() {
       id="top"
       className="relative overflow-hidden px-6 pb-16 pt-32 md:px-14 md:pb-24 md:pt-44 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-[8%] top-[8%] size-[26rem] bg-accent/40" />
-        <div className="orb -right-[6%] top-[20%] size-[22rem] bg-glow/20 [animation-delay:-8s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1400px]">
         <Reveal>
           <p className="inline-flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-deep-teal">
@@ -201,7 +193,7 @@ function Chapter({
           >
             {title}
           </h2>
-          <p className="mt-4 font-serif text-[clamp(1.5rem,2.6vw,2.2rem)] italic leading-tight text-ink">
+          <p className="mt-4 font-display font-bold text-[clamp(1.5rem,2.6vw,2.2rem)] leading-tight text-ink">
             {kicker}
           </p>
           <div className="mt-8 space-y-5 text-base font-medium leading-relaxed text-ink sm:text-lg">

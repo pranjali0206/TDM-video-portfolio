@@ -4,47 +4,33 @@ import { useRef } from "react";
 
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
-import { DOT_MATRIX_HEIGHT, DotMatrixText, type DotWord } from "./dot-matrix-text";
-import { HeroShader, type HeroShaderState } from "./hero-shader";
 import { ServicePills } from "./service-pills";
 
-// The hero statement, drawn as a dot matrix in Fraunces Black (loaded in
-// __root.tsx): roman words, one italic word for rhythm, "mean" in coral.
-const headline: DotWord[][] = [
-  [{ text: "make" }, { text: "attention", italic: true }],
-  [{ text: "mean", em: true }, { text: "something." }],
-];
+// The hero statement, one line per row, in bold Fraunces (loaded in
+// __root.tsx) filled with the teal gradient.
+const headline = ["4x your business with", "Digital Marketing"];
 
 /**
  * Hero layout rules (nothing is placed by eye):
  *  - Everything sits on one centre line: headline, the services as colour
  *    pills, the intro and the two buttons.
- *  - Two centred rows at every size: "make attention" / "mean something.".
- *  - Everything scales from one variable, --fs, so proportions hold at any size.
+ *  - Plain, pure white ground.
  */
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
-  const shaderState = useRef<HeroShaderState>({ intro: 0, scroll: 0 });
 
   useGSAP(
     () => {
       const root = rootRef.current;
-      if (!root) return;
-      if (prefersReducedMotion()) {
-        shaderState.current.intro = 1;
-        return;
-      }
-
-      gsap.to(shaderState.current, { intro: 1, duration: 2.4, ease: "power2.out" });
+      if (!root || prefersReducedMotion()) return;
 
       gsap
         .timeline({
           scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
           defaults: { ease: "none" },
         })
-        .to("[data-hero-dots]", { yPercent: -12, opacity: 0.4 }, 0)
-        .to("[data-hero-bottom]", { yPercent: 40, opacity: 0 }, 0)
-        .to(shaderState.current, { scroll: 1 }, 0);
+        .to("[data-hero-title]", { yPercent: -12, opacity: 0.4 }, 0)
+        .to("[data-hero-bottom]", { yPercent: 40, opacity: 0 }, 0);
     },
     { scope: rootRef },
   );
@@ -53,30 +39,28 @@ export function Hero() {
     <section
       ref={rootRef}
       id="top"
-      className="relative min-h-[max(100svh,680px)] overflow-hidden bg-ivory text-ink"
+      className="relative min-h-[max(100svh,680px)] overflow-hidden bg-white text-ink"
     >
-      <HeroShader stateRef={shaderState} className="absolute inset-0" />
-
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ivory/30 via-transparent to-ivory/60" />
-
-      <div className="relative z-10 flex min-h-[max(100svh,680px)] flex-col items-center justify-center px-5 pb-14 pt-24 text-center md:px-[2vw] md:pb-16 md:pt-24">
-        {/*
-          --fs is the one number to tune: the dot matrix takes its font size
-          from this box's height (DOT_MATRIX_HEIGHT × --fs) and shrinks to fit
-          the width.
-        */}
-        <h1 className="w-full">
-          <span className="sr-only">Make attention mean something.</span>
-          <DotMatrixText
-            data-hero-dots
-            lines={headline}
-            className="w-full [--fs:14vw] md:[--fs:min(14vw,22svh)]"
-            style={{ height: `calc(var(--fs) * ${DOT_MATRIX_HEIGHT})` }}
-          />
+      <div className="relative z-10 flex min-h-[max(100svh,680px)] flex-col items-center justify-center px-5 pb-14 pt-28 text-center md:px-[2vw] md:pb-16 md:pt-28">
+        {/* Each line rises out of its own mask; the sheen sweeps both together. */}
+        <h1
+          data-hero-title
+          className="w-full font-hero text-[clamp(2.5rem,11vw,9rem)] font-black leading-[0.98] tracking-[-0.025em] [font-variation-settings:'SOFT'_100] md:text-[min(7.4vw,15svh)]"
+        >
+          {headline.map((line, index) => (
+            <span key={line} className="block overflow-hidden pb-[0.1em]">
+              <span
+                className="hero-rise block text-balance"
+                style={{ ["--d" as string]: `${0.1 + index * 0.12}s` }}
+              >
+                <span className="text-teal-gradient teal-sheen px-[0.08em] [--d:1.6s]">{line}</span>
+              </span>
+            </span>
+          ))}
         </h1>
 
         {/* All the services, right above the promise they add up to. */}
-        <div data-hero-bottom className="mt-6 w-full md:mt-8">
+        <div data-hero-bottom className="mt-8 w-full md:mt-10">
           <ServicePills />
         </div>
 

@@ -91,14 +91,8 @@ function ReelsSection() {
   return (
     <section
       id="reels"
-      className="relative scroll-mt-20 overflow-hidden border-t border-ink/10 bg-gradient-to-b from-ivory via-secondary/50 to-ivory pb-24 text-ink md:pb-32"
+      className="relative scroll-mt-20 overflow-hidden border-t border-ink/10 bg-ivory pb-24 text-ink md:pb-32"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-[10%] top-[8%] size-[34rem] bg-accent/35" />
-        <div className="orb -right-[8%] top-[40%] size-[30rem] bg-teal/45 [animation-delay:-7s]" />
-        <div className="orb bottom-0 left-[35%] size-[26rem] bg-glow/15 [animation-delay:-13s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1400px] px-6 pt-20 md:px-14 md:pt-28 lg:px-20">
         <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-12">
           <Reveal>
@@ -112,12 +106,7 @@ function ReelsSection() {
               style={{ fontStretch: "108%" }}
             >
               Reels that made people{" "}
-              <span
-                className="font-serif font-normal italic tracking-normal text-glow"
-                style={{ fontStretch: "100%" }}
-              >
-                stop scrolling.
-              </span>
+              <span className="font-extrabold text-glow">stop scrolling.</span>
             </h2>
           </Reveal>
           <Reveal delay={120}>

@@ -1,7 +1,6 @@
 import { ArrowUpRight, Check, ChevronDown } from "lucide-react";
 import { useId, useRef, useState } from "react";
 
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 import { useExperience } from "./experience";
@@ -113,40 +112,12 @@ export function Contact() {
   const [domain, setDomain] = useState("");
   const rootRef = useRef<HTMLElement>(null);
 
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      // Opacity only: the orbs' CSS drift animation owns their transform.
-      gsap.from("[data-orb]", {
-        opacity: 0,
-        duration: 2.2,
-        stagger: 0.2,
-        ease: "expo.out",
-        scrollTrigger: { trigger: rootRef.current, start: "top 75%" },
-      });
-    },
-    { scope: rootRef },
-  );
-
   return (
     <section
       ref={rootRef}
       id="contact"
       className="relative overflow-hidden px-6 pb-24 pt-16 text-ink md:px-14 md:pt-24 lg:px-20"
     >
-      {/* Drifting colour orbs — teal, lime and coral light spilling behind the headline. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div data-orb className="orb left-[8%] top-[6%] size-[28rem] bg-accent/55" />
-        <div
-          data-orb
-          className="orb right-[6%] top-[14%] size-[24rem] bg-teal/70 [animation-delay:-6s]"
-        />
-        <div
-          data-orb
-          className="orb left-[38%] top-[30%] size-[20rem] bg-glow/35 [animation-delay:-12s]"
-        />
-      </div>
-
       <div className="relative mx-auto max-w-[1500px]">
         <div className="flex flex-col items-center text-center">
           <SectionLabel>Start a project</SectionLabel>
@@ -160,7 +131,7 @@ export function Contact() {
           </h2>
           <p
             data-fade
-            className="font-serif text-[15vw] italic leading-[0.9] text-glow md:text-[9vw]"
+            className="font-display font-bold text-[15vw] leading-[0.9] text-glow md:text-[9vw]"
           >
             Let’s grow.
           </p>

@@ -40,12 +40,6 @@ export function DetailHero({
       id="top"
       className="relative overflow-hidden px-6 pb-16 pt-32 md:px-14 md:pb-24 md:pt-44 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-[8%] top-[10%] size-[26rem] bg-accent/45" />
-        <div className="orb -right-[6%] top-0 size-[24rem] bg-teal/55 [animation-delay:-6s]" />
-        <div className="orb left-[45%] top-[45%] size-[18rem] bg-glow/20 [animation-delay:-12s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1400px]">
         <Reveal>
           <Link
@@ -68,13 +62,7 @@ export function DetailHero({
             className="text-teal-gradient mt-6 max-w-5xl text-[clamp(2.6rem,7.2vw,7rem)] leading-[0.92] tracking-[-0.02em]"
             style={{ fontStretch: "108%" }}
           >
-            {title}{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              {accent}
-            </span>
+            {title} <span className="font-extrabold text-glow">{accent}</span>
           </h1>
         </Reveal>
         <Reveal delay={180}>
@@ -122,14 +110,21 @@ export function DetailSection({
   dark?: boolean;
 }) {
   return (
+    // The page stays white: a dark band is a dark rounded panel on it.
     <section
       id={id}
       className={cn(
         "scroll-mt-28 px-6 py-20 md:px-14 md:py-28 lg:px-20",
-        dark ? "bg-ink text-ivory" : "border-t border-ink/10",
+        dark ? "px-4 py-6 sm:px-6 md:px-8 md:py-10" : "border-t border-ink/10",
       )}
     >
-      <div className="mx-auto max-w-[1400px]">
+      <div
+        className={cn(
+          "mx-auto max-w-[1400px]",
+          dark &&
+            "rounded-[1.75rem] bg-ink px-6 py-16 text-ivory sm:rounded-[2.5rem] sm:px-10 md:px-14 md:py-24",
+        )}
+      >
         <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] md:items-end md:gap-12">
           <Reveal>
             <p
@@ -323,13 +318,7 @@ export function DetailCta({
             className="relative mx-auto mt-5 max-w-3xl text-balance text-[clamp(2rem,8.5vw,2.25rem)] leading-[1] sm:mt-6 md:text-6xl"
             style={{ fontStretch: "105%" }}
           >
-            {title}{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              {accent}
-            </span>
+            {title} <span className="font-extrabold text-glow">{accent}</span>
           </h2>
           <Link
             to="/contact"

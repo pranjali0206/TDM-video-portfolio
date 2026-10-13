@@ -41,11 +41,6 @@ export function AboutIntro() {
       aria-labelledby="about-intro-title"
       className="relative overflow-hidden px-6 pb-20 pt-36 text-center md:px-14 md:pb-28 md:pt-44 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -right-[8%] top-[6%] size-[28rem] bg-accent/35" />
-        <div className="orb -left-[10%] top-[40%] size-[24rem] bg-teal/45 [animation-delay:-9s]" />
-      </div>
-
       <div className="relative mx-auto flex max-w-5xl flex-col items-center">
         <Reveal>
           <Eyebrow centered>About TDM Groups</Eyebrow>
@@ -56,13 +51,7 @@ export function AboutIntro() {
             className="text-teal-gradient mt-6 text-[clamp(2.8rem,8.5vw,8rem)] leading-[0.9] tracking-[-0.02em]"
             style={{ fontStretch: "108%" }}
           >
-            Where clicks become{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              growth.
-            </span>
+            Where clicks become <span className="font-extrabold text-glow">growth.</span>
           </h1>
         </Reveal>
         <Reveal delay={160}>
@@ -106,12 +95,7 @@ export function AboutThinking() {
             style={{ fontStretch: "105%" }}
           >
             Stand out. Sharpen every small step.{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-deep-teal"
-              style={{ fontStretch: "100%" }}
-            >
-              Connect it all.
-            </span>
+            <span className="font-extrabold text-deep-teal">Connect it all.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-base font-medium leading-relaxed sm:text-lg">
             Three ideas sit behind every brand we grow: the Purple Cow, the Butterfly Effect and the
@@ -156,13 +140,7 @@ export function AboutExpertise() {
               className="text-teal-gradient mt-5 text-[clamp(2.2rem,5.5vw,5rem)] leading-[0.95] tracking-[-0.02em]"
               style={{ fontStretch: "108%" }}
             >
-              We hold expertise in{" "}
-              <span
-                className="font-serif font-normal italic tracking-normal text-glow"
-                style={{ fontStretch: "100%" }}
-              >
-                world-class
-              </span>{" "}
+              We hold expertise in <span className="font-extrabold text-glow">world-class</span>{" "}
               marketing strategies.
             </h2>
           </Reveal>
@@ -303,13 +281,7 @@ export function AboutConnect() {
             style={{ fontStretch: "105%" }}
           >
             Let’s connect to make something{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-accent"
-              style={{ fontStretch: "100%" }}
-            >
-              outstanding
-            </span>{" "}
-            for you.
+            <span className="font-extrabold text-accent">outstanding</span> for you.
           </h2>
           <Link
             to="/contact"

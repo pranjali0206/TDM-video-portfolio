@@ -56,12 +56,12 @@ export function Footer() {
       id="site-footer"
       className="relative md:h-[40rem] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
     >
-      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden bg-accent px-6 pb-28 pt-14 text-ink md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
+      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden border-t border-ink/10 bg-ivory px-6 pb-28 pt-14 text-ink md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
         <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr] md:gap-12">
           <div>
             {/* The logo file has empty space on its left; pull it back to the edge. */}
             <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-12 w-auto brightness-0" />
-            <p className="mt-5 max-w-sm font-serif text-[1.75rem] italic leading-tight text-ink md:mt-6 md:text-3xl">
+            <p className="mt-5 max-w-sm font-display font-bold text-[1.75rem] leading-tight text-ink md:mt-6 md:text-3xl">
               Click by click, we make attention mean something.
             </p>
           </div>

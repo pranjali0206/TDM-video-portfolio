@@ -23,12 +23,6 @@ function ServicesHeader() {
       id="top"
       className="relative overflow-hidden px-6 pb-12 pt-32 md:px-14 md:pb-24 md:pt-44 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-[8%] top-[10%] size-[26rem] bg-accent/45" />
-        <div className="orb -right-[6%] top-0 size-[24rem] bg-teal/55 [animation-delay:-6s]" />
-        <div className="orb left-[45%] top-[45%] size-[18rem] bg-glow/20 [animation-delay:-12s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1400px]">
         <Reveal>
           <p className="inline-flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.28em] text-deep-teal">
@@ -42,12 +36,7 @@ function ServicesHeader() {
             style={{ fontStretch: "108%" }}
           >
             We’re here to help your business{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              grow and thrive.
-            </span>
+            <span className="font-extrabold text-glow">grow and thrive.</span>
           </h1>
         </Reveal>
         <Reveal delay={160}>
@@ -235,13 +224,7 @@ function ServicesKnowUs() {
             className="text-teal-gradient mt-5 text-[clamp(2.2rem,5.5vw,5rem)] leading-[0.95] tracking-[-0.02em]"
             style={{ fontStretch: "108%" }}
           >
-            Know the people and the{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              thinking
-            </span>{" "}
+            Know the people and the <span className="font-extrabold text-glow">thinking</span>{" "}
             behind it.
           </h2>
         </Reveal>
@@ -290,12 +273,7 @@ function ServicesCta() {
             style={{ fontStretch: "105%" }}
           >
             Tell us your goal. We’ll build the{" "}
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              plan.
-            </span>
+            <span className="font-extrabold text-glow">plan.</span>
           </h2>
           <p className="relative mx-auto mt-6 max-w-xl text-base font-medium leading-relaxed text-ivory/80 sm:text-lg">
             Not sure which service fits? Talk to us. We’ll listen first, then show you the simplest

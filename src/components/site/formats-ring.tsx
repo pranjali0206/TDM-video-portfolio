@@ -136,26 +136,10 @@ export function FormatsRing() {
       id="formats"
       className="relative flex min-h-[100svh] flex-col overflow-hidden py-16 text-ink md:py-20"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[55%] size-[80vmax] -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent), transparent 55%)",
-        }}
-      />
-
       <div className="relative flex flex-col items-center px-6 text-center">
         <SectionLabel>Formats</SectionLabel>
         <h2 className="text-teal-gradient mt-5 text-4xl leading-[0.95] md:text-6xl">
-          One idea.{" "}
-          <span
-            className="font-serif font-normal italic tracking-normal text-glow"
-            style={{ fontStretch: "100%" }}
-          >
-            Infinite
-          </span>{" "}
-          momentum.
+          One idea. <span className="font-extrabold text-glow">Infinite</span> momentum.
         </h2>
       </div>
 

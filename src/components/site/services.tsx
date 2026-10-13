@@ -73,7 +73,7 @@ function ExpertisePicker() {
         </p>
         <p
           data-fade
-          className="mt-5 max-w-sm font-serif text-2xl italic leading-tight text-deep-teal"
+          className="mt-5 max-w-sm font-display font-bold text-2xl leading-tight text-deep-teal"
         >
           10+ years of ad expertise. ₹230 Cr+ in client sales.
         </p>
@@ -119,7 +119,7 @@ function ExpertisePicker() {
       >
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-40 -right-4 select-none font-serif text-[24rem] leading-none opacity-10"
+          className="pointer-events-none absolute -bottom-40 -right-4 select-none font-display font-bold text-[24rem] leading-none opacity-10"
         >
           ”
         </span>
@@ -182,11 +182,6 @@ export function Services() {
       id="services"
       className="relative z-10 overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-24 top-40 size-[26rem] bg-accent/25" />
-        <div className="orb -right-24 top-[45%] size-[24rem] bg-teal/35 [animation-delay:-8s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1500px] py-6 text-center">
         <div className="flex flex-col items-center">
           <SectionLabel>Services</SectionLabel>
@@ -196,13 +191,7 @@ export function Services() {
           >
             Every craft.
             <br />
-            <span
-              className="font-serif font-normal italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              Built
-            </span>{" "}
-            to perform.
+            <span className="font-extrabold text-glow">Built</span> to perform.
           </h2>
           <p data-fade className="mt-8 max-w-xl text-lg leading-relaxed font-medium text-ink">
             Performance marketing, SEO, websites, CRM and AI automation — deep expertise across
@@ -223,10 +212,6 @@ export function Expertise() {
       id="expertise"
       className="relative overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -right-24 top-24 size-[24rem] bg-accent/25" />
-        <div className="orb -left-24 bottom-10 size-[22rem] bg-teal/35 [animation-delay:-8s]" />
-      </div>
       <div className="relative">
         <ExpertisePicker />
       </div>

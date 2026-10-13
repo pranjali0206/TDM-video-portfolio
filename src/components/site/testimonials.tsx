@@ -69,7 +69,10 @@ function ReviewCard({
       </div>
 
       <blockquote className="mt-6 flex gap-3">
-        <span aria-hidden="true" className="font-serif text-5xl leading-[0.75] opacity-50">
+        <span
+          aria-hidden="true"
+          className="font-display font-bold text-5xl leading-[0.75] opacity-50"
+        >
           “
         </span>
         <p className="text-base font-medium leading-relaxed md:text-lg">{review.quote}</p>
@@ -173,29 +176,17 @@ export function Testimonials() {
       id="reviews"
       className="relative overflow-hidden py-16 text-ink md:py-20"
     >
-      {/* Soft white clouds drifting across a teal sky. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb left-[4%] top-[10%] h-36 w-[28rem] bg-white/80" />
-        <div className="orb right-[6%] top-[30%] h-32 w-[24rem] bg-white/70 [animation-delay:-7s]" />
-        <div className="orb bottom-[8%] left-[30%] h-40 w-[34rem] bg-white/60 [animation-delay:-13s]" />
-      </div>
-
       <div data-reviews-head className="relative flex flex-col items-center px-6 text-center">
         <SectionLabel>Reviews</SectionLabel>
         <p
           data-sticky-note
-          className="mt-8 inline-block -rotate-3 bg-teal px-4 py-2.5 font-serif text-xl italic text-ink shadow-[0_18px_30px_-18px_rgba(0,40,40,0.6)] sm:px-5 sm:py-3 sm:text-2xl"
+          className="mt-8 inline-block -rotate-3 bg-teal px-4 py-2.5 font-display font-bold text-xl text-ink shadow-[0_18px_30px_-18px_rgba(0,40,40,0.6)] sm:px-5 sm:py-3 sm:text-2xl"
         >
           Straight from the fanbase
         </p>
         <h2 className="text-teal-gradient mt-8 max-w-5xl text-balance text-[clamp(1.9rem,8.4vw,2.25rem)] leading-[1.02] md:text-6xl lg:text-7xl">
           The internet’s favorite kind of flex —{" "}
-          <span
-            className="font-serif font-normal italic tracking-normal text-glow"
-            style={{ fontStretch: "100%" }}
-          >
-            other people’s words
-          </span>
+          <span className="font-extrabold text-glow">other people’s words</span>
         </h2>
       </div>
 

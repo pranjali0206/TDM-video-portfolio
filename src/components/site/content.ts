@@ -43,7 +43,6 @@ export const images = {
 // Sections the nav, menu, and bottom scrub-bar can jump to.
 export const chapters = [
   { id: "top", label: "Intro" },
-  { id: "impact", label: "Impact" },
   { id: "services", label: "Services" },
   { id: "formats", label: "Formats" },
   { id: "reviews", label: "Reviews" },

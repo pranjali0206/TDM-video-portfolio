@@ -83,7 +83,7 @@ export function MetaAiSection() {
   return (
     <section
       id="meta-ai"
-      className="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-accent/45 via-secondary to-ivory px-6 py-24 md:px-14 md:py-32 lg:px-20"
+      className="relative scroll-mt-28 overflow-hidden bg-ivory px-6 py-24 md:px-14 md:py-32 lg:px-20"
     >
       {/* Drifting clouds */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
@@ -121,12 +121,7 @@ export function MetaAiSection() {
               style={{ fontStretch: "105%" }}
             >
               Facebook’s AI does the heavy lifting.{" "}
-              <span
-                className="font-serif font-normal italic tracking-normal text-glow"
-                style={{ fontStretch: "100%" }}
-              >
-                We steer it.
-              </span>
+              <span className="font-extrabold text-glow">We steer it.</span>
             </h2>
           </Reveal>
           <Reveal delay={100}>

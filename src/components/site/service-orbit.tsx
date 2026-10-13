@@ -15,7 +15,6 @@ const TAU = Math.PI * 2;
 const FRONT = Math.PI / 2; // straight down the screen = nearest the viewer
 const STEP = TAU / COUNT;
 const MERIDIANS = 7;
-const SATELLITES = 3;
 const ADVANCE_MS = 3200;
 // The ring turns non-stop, one service per ADVANCE_MS, so the next service
 // reaches the front just as the detail panel moves on to it.
@@ -144,12 +143,10 @@ function ServiceOrbit({
   const tiltRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<SVGEllipseElement>(null);
-  const outerRingRef = useRef<SVGEllipseElement>(null);
   const frontArcRef = useRef<SVGPathElement>(null);
   const beamRef = useRef<SVGLineElement>(null);
   const beamDotRef = useRef<SVGCircleElement>(null);
   const nodeRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  const satelliteRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const meridianRefs = useRef<(SVGEllipseElement | null)[]>([]);
   const activeRef = useRef(active);
   const onFrontRef = useRef(onFront);
@@ -231,15 +228,11 @@ function ServiceOrbit({
           m.nodeHalf[i] = node ? node.offsetWidth / 2 : 0;
         });
         const { cx, cy, rx, ry } = geometry();
-        for (const [el, scale] of [
-          [ringRef.current, 1],
-          [outerRingRef.current, 1.16],
-        ] as const) {
-          el?.setAttribute("cx", String(cx));
-          el?.setAttribute("cy", String(cy));
-          el?.setAttribute("rx", String(rx * scale));
-          el?.setAttribute("ry", String(ry * scale * 1.12));
-        }
+        const ring = ringRef.current;
+        ring?.setAttribute("cx", String(cx));
+        ring?.setAttribute("cy", String(cy));
+        ring?.setAttribute("rx", String(rx));
+        ring?.setAttribute("ry", String(ry * 1.12));
         // Lower half of the ring passes in front of the globe.
         frontArcRef.current?.setAttribute(
           "d",
@@ -301,16 +294,6 @@ function ServiceOrbit({
           beam.style.opacity = show;
           dot.style.opacity = show;
         }
-
-        satelliteRefs.current.forEach((sat, k) => {
-          if (!sat) return;
-          const theta = -m.time * 0.32 + (k * TAU) / SATELLITES;
-          const depth = (Math.sin(theta) + 1) / 2;
-          const x = cx + Math.cos(theta) * rx * 1.16;
-          const y = cy + Math.sin(theta) * ry * 1.3;
-          sat.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${0.6 + 0.5 * depth})`;
-          sat.style.zIndex = depth > 0.5 ? "18" : "2";
-        });
 
         meridianRefs.current.forEach((el, k) => {
           el?.setAttribute(
@@ -426,7 +409,7 @@ function ServiceOrbit({
 
       if (!reduced) {
         // Entrance: the rings draw themselves, the globe pops, services burst outward.
-        const rings = [ringRef.current, outerRingRef.current, frontArcRef.current];
+        const rings = [ringRef.current, frontArcRef.current];
         m.spread.forEach((s) => (s.v = 0));
         gsap.set(rings, { strokeDasharray: 1, strokeDashoffset: 1 });
         gsap.set(globe, { scale: 0.45, opacity: 0, rotation: -25 });
@@ -511,24 +494,15 @@ function ServiceOrbit({
           }}
         />
 
-        {/* Back of the ring + a dotted outer ring (behind the globe). */}
+        {/* Back of the ring (behind the globe), in dark teal. */}
         <svg aria-hidden="true" className="absolute inset-0 z-0 size-full overflow-visible">
-          <ellipse
-            ref={outerRingRef}
-            pathLength={1}
-            fill="none"
-            stroke="var(--deep-teal)"
-            strokeOpacity="0.28"
-            strokeWidth="1"
-            strokeDasharray="0.004 0.012"
-          />
           <ellipse
             ref={ringRef}
             pathLength={1}
             fill="none"
-            stroke="var(--deep-teal)"
-            strokeOpacity="0.35"
-            strokeWidth="1.5"
+            stroke="var(--night)"
+            strokeOpacity="0.55"
+            strokeWidth="1.75"
           />
         </svg>
 
@@ -543,9 +517,9 @@ function ServiceOrbit({
             ref={frontArcRef}
             pathLength={1}
             fill="none"
-            stroke="var(--deep-teal)"
-            strokeOpacity="0.45"
-            strokeWidth="1.5"
+            stroke="var(--night)"
+            strokeOpacity="0.8"
+            strokeWidth="1.75"
           />
           <line
             ref={beamRef}
@@ -557,18 +531,6 @@ function ServiceOrbit({
           />
           <circle ref={beamDotRef} r="4.5" fill="var(--glow)" style={{ opacity: 0 }} />
         </svg>
-
-        {Array.from({ length: SATELLITES }, (_, k) => (
-          <span
-            key={k}
-            aria-hidden="true"
-            ref={(el) => {
-              satelliteRefs.current[k] = el;
-            }}
-            className="absolute left-0 top-0 size-3 rounded-full shadow-[0_4px_10px_-2px_rgba(0,60,60,0.5)]"
-            style={{ background: ["var(--glow)", "var(--teal)", "var(--accent)"][k] }}
-          />
-        ))}
 
         {problemSolutions.map((service, index) => {
           const colors = toneOf(index);
@@ -694,15 +656,15 @@ export function ServiceUniverse() {
           </p>
           <div data-detail-line className="mt-6 flex items-center gap-3 sm:gap-4">
             <span
-              className="grid size-12 shrink-0 -rotate-6 place-items-center rounded-2xl shadow-[0_14px_30px_-14px_rgba(0,50,50,0.6)] sm:size-16"
+              className="grid size-12 shrink-0 place-items-center rounded-2xl shadow-[0_14px_30px_-14px_rgba(0,50,50,0.6)] sm:size-16"
               style={{ background: colors.bg, color: colors.fg }}
             >
               <Icon className="size-6 sm:size-7" strokeWidth={1.8} />
             </span>
-            {/* The service name as a tilted colour sticker. */}
+            {/* The service name as a straight colour label. */}
             <h3 className="min-w-0 break-words text-[clamp(2rem,9.5vw,3rem)] leading-[0.95] md:text-6xl">
               <span
-                className="inline-block -rotate-2 rounded-xl px-[0.22em] pb-[0.12em] pt-[0.06em] shadow-[0_16px_30px_-16px_rgba(0,40,40,0.55)]"
+                className="inline-block rounded-xl px-[0.22em] pb-[0.12em] pt-[0.06em] shadow-[0_16px_30px_-16px_rgba(0,40,40,0.55)]"
                 style={{ background: colors.bg, color: colors.fg }}
               >
                 {service.service}
@@ -721,7 +683,6 @@ export function ServiceUniverse() {
           <blockquote
             data-detail-line
             className="mt-7 max-w-xl font-display text-[clamp(1.5rem,6.8vw,1.875rem)] font-extrabold leading-[1.1] text-ink md:text-[2.5rem]"
-            style={{ fontStretch: "100%" }}
           >
             <span className="text-glow">“</span>
             {service.answer}

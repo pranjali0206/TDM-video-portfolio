@@ -63,7 +63,7 @@ export function Manifesto() {
           </p>
           <blockquote
             data-fade
-            className="mt-10 max-w-md border-l border-glow pl-6 font-serif text-3xl italic leading-tight text-glow"
+            className="mt-10 max-w-md border-l border-glow pl-6 font-display font-bold text-3xl leading-tight text-glow"
           >
             “If it does not grow the business, it does not count as a result.”
           </blockquote>

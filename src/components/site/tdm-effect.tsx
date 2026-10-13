@@ -196,7 +196,7 @@ function IdeaCard() {
         y="462"
         textAnchor="middle"
         fill="#2b2b2b"
-        style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: 54 }}
+        style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 54 }}
       >
         idea
       </text>
@@ -456,11 +456,6 @@ export function TdmEffect() {
       id="effect"
       className="relative overflow-hidden bg-ivory px-6 py-24 text-ink md:px-14 md:py-32 lg:px-20"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-24 top-24 size-[26rem] bg-accent/30" />
-        <div className="orb -right-20 bottom-10 size-[24rem] bg-teal/40 [animation-delay:-8s]" />
-      </div>
-
       <div className="relative mx-auto max-w-[1400px]">
         <div className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] md:items-end md:gap-12">
           <div>
@@ -470,14 +465,7 @@ export function TdmEffect() {
               className="mt-6 text-[clamp(2.4rem,6vw,5.5rem)] leading-[0.92] tracking-[-0.02em]"
               style={{ fontStretch: "108%" }}
             >
-              Ideas in.{" "}
-              <span
-                className="font-serif font-normal italic tracking-normal text-glow"
-                style={{ fontStretch: "100%" }}
-              >
-                Brands
-              </span>{" "}
-              out.
+              Ideas in. <span className="font-extrabold text-glow">Brands</span> out.
             </h2>
           </div>
           <p

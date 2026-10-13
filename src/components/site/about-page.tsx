@@ -10,6 +10,7 @@ import {
   AboutMission,
   AboutThinking,
 } from "./about-intro";
+import { GrowthNumbers } from "./growth-numbers";
 import { aboutCapabilities, aboutQuestions, industries, testimonials } from "./content";
 import { Corners, Reveal, VideoSlot } from "./primitives";
 import { VIDEO_BASE } from "./reels";
@@ -363,7 +364,7 @@ function TestimonialCard() {
           visible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0",
         )}
       >
-        <blockquote className="mt-4 font-serif text-2xl italic leading-snug md:text-[1.75rem]">
+        <blockquote className="mt-4 font-display font-bold text-2xl leading-snug md:text-[1.75rem]">
           “{current.quote}”
         </blockquote>
         <figcaption className="mt-6 flex items-center gap-3 border-t border-ink/10 pt-5">
@@ -388,7 +389,7 @@ function StatementCard() {
     <Card label="statement.txt">
       <span
         aria-hidden="true"
-        className="mt-5 block h-12 font-serif text-8xl leading-none text-glow"
+        className="mt-5 block h-12 font-display font-bold text-8xl leading-none text-glow"
       >
         “
       </span>
@@ -397,12 +398,7 @@ function StatementCard() {
         style={{ fontStretch: "105%" }}
       >
         We make people stop and ask,{" "}
-        <span
-          className="font-serif font-normal italic tracking-normal text-deep-teal"
-          style={{ fontStretch: "100%" }}
-        >
-          who made that?
-        </span>
+        <span className="font-extrabold text-deep-teal">who made that?</span>
       </h2>
       <p className="mt-6 max-w-2xl text-base leading-relaxed font-medium text-ink md:text-lg">
         We’re a marketing and technology team that cares about your business like it’s our own. We
@@ -516,13 +512,6 @@ function AboutHeader() {
       id="whats-up"
       className="relative overflow-hidden px-6 pb-16 pt-24 text-center md:pb-20 md:pt-32"
     >
-      {/* Drifting colour orbs — teal, lime and coral light behind the title. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="orb -left-[6%] top-[12%] size-[26rem] bg-accent/45" />
-        <div className="orb -right-[4%] top-0 size-[22rem] bg-teal/60 [animation-delay:-6s]" />
-        <div className="orb left-[42%] top-[38%] size-[18rem] bg-glow/25 [animation-delay:-12s]" />
-      </div>
-
       {/* Corner frame, as on the home page. */}
       <div
         aria-hidden="true"
@@ -543,13 +532,7 @@ function AboutHeader() {
             className="text-teal-gradient mt-6 text-[19vw] uppercase leading-[0.85] md:text-[12vw]"
             style={{ fontStretch: "118%" }}
           >
-            What’s{" "}
-            <span
-              className="font-serif font-normal normal-case italic tracking-normal text-glow"
-              style={{ fontStretch: "100%" }}
-            >
-              up
-            </span>
+            What’s <span className="normal-case font-extrabold text-glow">up</span>
           </h2>
         </Reveal>
       </div>
@@ -561,6 +544,7 @@ export function AboutPage() {
   return (
     <>
       <AboutIntro />
+      <GrowthNumbers />
       <AboutHeader />
 
       <section

@@ -176,7 +176,9 @@ function MediaScene() {
             <p className="mt-[2cqw] font-display text-[6cqw] font-black leading-none text-ink">
               Aa
             </p>
-            <p className="font-serif text-[2.6cqw] italic text-deep-teal">Bold &amp; memorable</p>
+            <p className="font-display font-bold text-[2.6cqw] text-deep-teal">
+              Bold &amp; memorable
+            </p>
             <div className="mt-[2cqw] flex gap-[1cqw]">
               {["var(--accent)", "var(--teal)", "var(--glow)", "var(--ink)"].map((color) => (
                 <span

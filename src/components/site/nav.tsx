@@ -6,9 +6,9 @@ import tdmLogo from "@/assets/tdm-logo.webp";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-import { BrainLink } from "./brain-link";
 import { chapters, problemSolutions } from "./content";
 import { useExperience } from "./experience";
+import { ShowreelLink } from "./showreel-link";
 import { RollText } from "./primitives";
 import { servicePath } from "./service-links";
 import { useSectionLinks } from "./use-section-links";
@@ -142,8 +142,8 @@ export function Nav() {
                   </Link>
                 ),
               )}
-              {/* MediaHouse: an icon-only brain that lights up. */}
-              <BrainLink className="mx-1" />
+              {/* MediaHouse: a tiny round showreel of our own reels. */}
+              <ShowreelLink className="mx-1" />
               <a
                 href={hrefFor("reviews")}
                 onClick={(event) => {
@@ -168,7 +168,7 @@ export function Nav() {
                 </a>
               ))}
             </nav>
-            <BrainLink className="lg:hidden" onClick={() => setMenuOpen(false)} />
+            <ShowreelLink className="lg:hidden" onClick={() => setMenuOpen(false)} />
             <a
               href={hrefFor("contact")}
               onClick={(event) => {

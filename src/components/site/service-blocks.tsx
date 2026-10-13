@@ -122,7 +122,7 @@ export function MoreServices({ current }: { current: ServiceSlug }) {
           </h2>
           <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-ink sm:text-xl">
             And we have{" "}
-            <span className="font-serif text-[1.15em] italic text-deep-teal">
+            <span className="font-display font-bold text-[1.15em] text-deep-teal">
               more to serve you
             </span>
             , in different ways. Pick what your business needs next.
@@ -316,13 +316,7 @@ export function ServiceContact({
                 className="mt-5 text-balance text-[clamp(2rem,4.6vw,3.8rem)] leading-[0.98] tracking-[-0.02em]"
                 style={{ fontStretch: "105%" }}
               >
-                {title}{" "}
-                <span
-                  className="font-serif font-normal italic tracking-normal text-glow"
-                  style={{ fontStretch: "100%" }}
-                >
-                  {accent}
-                </span>
+                {title} <span className="font-extrabold text-glow">{accent}</span>
               </h2>
               <p className="mt-6 max-w-md text-base font-medium leading-relaxed text-ivory/80 sm:text-lg">
                 {intro}
