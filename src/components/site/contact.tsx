@@ -1,4 +1,4 @@
-import { ArrowUpRight, Check, ChevronDown, Mail, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, Check, Mail, MessageCircle, Phone } from "lucide-react";
 import { useId, useRef, useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
@@ -6,23 +6,6 @@ import { cn } from "@/lib/utils";
 import { useExperience } from "./experience";
 import { Magnetic, RollText, SectionLabel } from "./primitives";
 import { contactDetails } from "./service-links";
-
-const businessDomains = [
-  "Real Estate & Construction",
-  "Architecture & Interior Design",
-  "Healthcare & Biotech",
-  "Education & Coaching",
-  "Retail & E-commerce",
-  "Trading & Distribution",
-  "Manufacturing",
-  "IT & Software",
-  "Hospitality & Travel",
-  "Finance & Insurance",
-  "Food & Beverage",
-  "Fashion & Lifestyle",
-  "Startup",
-];
-const OTHER_DOMAIN = "Other";
 
 const services = [
   "MediaHouse — videos & creative",
@@ -33,8 +16,6 @@ const services = [
   "Automation",
   "AI agents",
 ];
-
-const budgets = ["Under ₹50,000", "₹50,000 – ₹1 lakh", "₹1 – 3 lakh", "₹3 lakh +", "Not sure yet"];
 
 const nextSteps = [
   {
@@ -48,20 +29,10 @@ const nextSteps = [
   },
 ];
 
-type FieldName =
-  | "name"
-  | "email"
-  | "phone"
-  | "company"
-  | "domain"
-  | "otherDomain"
-  | "services"
-  | "budget"
-  | "message";
+type FieldName = "name" | "email" | "phone" | "services";
 type Errors = Partial<Record<FieldName, string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const MESSAGE_MAX = 1000;
 
 /** Checks the enquiry and returns a message for each field that needs fixing. */
 function validate(form: FormData): Errors {
@@ -71,12 +42,7 @@ function validate(form: FormData): Errors {
   if (!EMAIL.test(text("email"))) errors.email = "Please enter a valid email address.";
   if (text("phone").replace(/\D/g, "").length < 10)
     errors.phone = "Please enter a phone number with at least 10 digits.";
-  if (!text("domain")) errors.domain = "Please choose your industry.";
-  if (text("domain") === OTHER_DOMAIN && !text("otherDomain"))
-    errors.otherDomain = "Please tell us your industry.";
   if (form.getAll("services").length === 0) errors.services = "Pick at least one service.";
-  if (text("message").length < 10)
-    errors.message = "Please tell us a little about your goal (at least 10 characters).";
   return errors;
 }
 
@@ -85,12 +51,11 @@ const control =
 const controlState = (error?: string) =>
   error ? "border-red-600/70 focus:border-red-600 focus:ring-red-600/15" : "border-ink/15";
 
-/** A labelled control with its hint and error text, wired up for screen readers. */
+/** A labelled control with its error text, wired up for screen readers. */
 function FieldShell({
   id,
   label,
   required,
-  hint,
   error,
   className,
   children,
@@ -98,7 +63,6 @@ function FieldShell({
   id: string;
   label: string;
   required?: boolean;
-  hint?: ReactNode;
   error?: string | undefined;
   className?: string | undefined;
   children: ReactNode;
@@ -116,23 +80,14 @@ function FieldShell({
         )}
       </label>
       {children}
-      {error ? (
+      {error && (
         <p id={`${id}-error`} className="text-sm font-medium text-red-700">
           {error}
         </p>
-      ) : (
-        hint && (
-          <p id={`${id}-hint`} className="text-sm text-ink/55">
-            {hint}
-          </p>
-        )
       )}
     </div>
   );
 }
-
-const describedBy = (id: string, error?: string, hint?: boolean) =>
-  error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
 function TextField({
   name,
@@ -167,65 +122,9 @@ function TextField({
         placeholder={placeholder}
         required={required}
         aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy(id, error)}
+        aria-describedby={error ? `${id}-error` : undefined}
         className={cn(control, controlState(error), "h-12")}
       />
-    </FieldShell>
-  );
-}
-
-function SelectField({
-  name,
-  label,
-  placeholder,
-  options,
-  value,
-  onChange,
-  required = false,
-  error,
-}: {
-  name: FieldName;
-  label: string;
-  placeholder: string;
-  options: string[];
-  value: string;
-  onChange: (value: string) => void;
-  required?: boolean;
-  error?: string | undefined;
-}) {
-  const id = useId();
-  return (
-    <FieldShell id={id} label={label} required={required} error={error}>
-      <div className="relative">
-        <select
-          id={id}
-          name={name}
-          required={required}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={describedBy(id, error)}
-          className={cn(
-            control,
-            controlState(error),
-            "h-12 cursor-pointer appearance-none pr-10",
-            !value && "text-ink/45",
-          )}
-        >
-          <option value="" disabled={required}>
-            {placeholder}
-          </option>
-          {options.map((option) => (
-            <option key={option} value={option} className="text-ink">
-              {option}
-            </option>
-          ))}
-        </select>
-        <ChevronDown
-          aria-hidden="true"
-          className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-ink/60"
-        />
-      </div>
     </FieldShell>
   );
 }
@@ -290,55 +189,6 @@ function ServicesField({ error }: { error?: string | undefined }) {
   );
 }
 
-function MessageField({ error }: { error?: string | undefined }) {
-  const id = useId();
-  const [length, setLength] = useState(0);
-  return (
-    <FieldShell
-      id={id}
-      label="Tell us about your project"
-      required
-      error={error}
-      hint={
-        <span className="flex justify-between gap-4">
-          <span>Your goal, where things stand today and any timeline you’re working to.</span>
-          <span className="shrink-0 tabular-nums">
-            {length}/{MESSAGE_MAX}
-          </span>
-        </span>
-      }
-      className="md:col-span-2"
-    >
-      <textarea
-        id={id}
-        name="message"
-        required
-        rows={5}
-        maxLength={MESSAGE_MAX}
-        placeholder="e.g. We sell plots in Indore and want more qualified site-visit bookings from Meta ads."
-        onChange={(event) => setLength(event.target.value.length)}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy(id, error, true)}
-        className={cn(control, controlState(error), "resize-y py-3 leading-relaxed")}
-      />
-    </FieldShell>
-  );
-}
-
-/** A numbered group heading inside the form card. */
-function FormGroup({ num, title, children }: { num: string; title: string; children: ReactNode }) {
-  return (
-    <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
-      <p className="flex items-center gap-3 font-mono text-[11px] font-medium uppercase tracking-[0.22em] text-deep-teal md:col-span-2">
-        <span>{num}</span>
-        <span className="h-px w-6 bg-deep-teal/30" />
-        {title}
-      </p>
-      {children}
-    </div>
-  );
-}
-
 /** Shown in place of the form once an enquiry is in. */
 function Confirmation({
   name,
@@ -382,8 +232,6 @@ export function Contact() {
   const { scrollTo } = useExperience();
   const [sent, setSent] = useState<{ name: string; email: string } | null>(null);
   const [errors, setErrors] = useState<Errors>({});
-  const [domain, setDomain] = useState("");
-  const [budget, setBudget] = useState("");
   const rootRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -405,8 +253,6 @@ export function Contact() {
   const reset = () => {
     setSent(null);
     setErrors({});
-    setDomain("");
-    setBudget("");
   };
 
   return (
@@ -544,33 +390,22 @@ export function Contact() {
                   <h3 className="font-display text-2xl font-bold text-ink md:text-3xl">
                     Project enquiry
                   </h3>
-                  <p className="text-[15px] text-ink/60">
-                    Takes about two minutes. Fields marked{" "}
-                    <span aria-hidden="true" className="text-glow">
-                      *
-                    </span>
-                    <span className="sr-only">with an asterisk</span> are required.
-                  </p>
+                  <p className="text-[15px] text-ink/60">Takes under a minute.</p>
                 </div>
 
-                <FormGroup num="01" title="About you">
+                <div className="grid gap-x-6 gap-y-5 md:grid-cols-2">
                   <TextField
                     name="name"
-                    label="Full name"
+                    label="Name"
                     autoComplete="name"
                     placeholder="Your name"
                     required
                     error={errors.name}
-                  />
-                  <TextField
-                    name="company"
-                    label="Company or website"
-                    autoComplete="organization"
-                    placeholder="Company name or URL"
+                    className="md:col-span-2"
                   />
                   <TextField
                     name="email"
-                    label="Work email"
+                    label="Email"
                     type="email"
                     autoComplete="email"
                     inputMode="email"
@@ -580,7 +415,7 @@ export function Contact() {
                   />
                   <TextField
                     name="phone"
-                    label="Phone / WhatsApp"
+                    label="Contact number"
                     type="tel"
                     autoComplete="tel"
                     inputMode="tel"
@@ -588,40 +423,8 @@ export function Contact() {
                     required
                     error={errors.phone}
                   />
-                </FormGroup>
-
-                <FormGroup num="02" title="About the project">
-                  <SelectField
-                    name="domain"
-                    label="Industry"
-                    placeholder="Choose your industry"
-                    options={[...businessDomains, OTHER_DOMAIN]}
-                    value={domain}
-                    onChange={setDomain}
-                    required
-                    error={errors.domain}
-                  />
-                  <SelectField
-                    name="budget"
-                    label="Monthly budget"
-                    placeholder="Select a range"
-                    options={budgets}
-                    value={budget}
-                    onChange={setBudget}
-                  />
-                  {domain === OTHER_DOMAIN && (
-                    <TextField
-                      name="otherDomain"
-                      label="Your industry"
-                      placeholder="e.g. Logistics"
-                      required
-                      error={errors.otherDomain}
-                      className="md:col-span-2"
-                    />
-                  )}
                   <ServicesField error={errors.services} />
-                  <MessageField error={errors.message} />
-                </FormGroup>
+                </div>
 
                 <div className="flex flex-col gap-5 border-t border-ink/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
                   <p className="max-w-sm text-sm leading-relaxed text-ink/55">
