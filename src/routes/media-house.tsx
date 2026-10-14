@@ -4,9 +4,12 @@ import { SiteShell } from "@/components/site/site-shell";
 import { MediaHousePage } from "@/components/site/work-pages";
 
 export const Route = createFileRoute("/media-house")({
-  // ?tab=<industry> opens the reels on that industry (e.g. from the home ring).
-  validateSearch: (search: Record<string, unknown>): { tab?: string } =>
-    typeof search["tab"] === "string" ? { tab: search["tab"] } : {},
+  // ?tab=<industry> opens the reels on that industry (e.g. from the home ring),
+  // and &kind=<kind> narrows it to one of that industry's sub-categories.
+  validateSearch: (search: Record<string, unknown>): { tab?: string; kind?: string } => ({
+    ...(typeof search["tab"] === "string" ? { tab: search["tab"] } : {}),
+    ...(typeof search["kind"] === "string" ? { kind: search["kind"] } : {}),
+  }),
   head: () => ({
     meta: [
       { title: "MediaHouse — Brand & Digital Creative — TDM Groups" },

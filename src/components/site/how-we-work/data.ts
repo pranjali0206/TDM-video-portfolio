@@ -1,5 +1,6 @@
 import { companyStats, formatStat } from "../company-stats";
 import { reelUrls } from "../reels";
+import { servicePaths } from "../service-links";
 
 /**
  * Content for "How We Work — The Growth Engine". Copy and colours come from
@@ -19,6 +20,8 @@ export type GrowthStep = {
   color: string;
   ink: string;
   desc: string;
+  /** The service page this step opens (the mobile cards link to it). */
+  service: { to: (typeof servicePaths)[keyof typeof servicePaths]; label: string };
 };
 
 export const growthSteps: GrowthStep[] = [
@@ -30,6 +33,7 @@ export const growthSteps: GrowthStep[] = [
     color: "var(--glow)",
     ink: "#ffffff",
     desc: "Ad creatives and videos built on strong hooks and buyer psychology, made to stop the scroll and convert.",
+    service: { to: servicePaths.mediahouse, label: "MediaHouse" },
   },
   {
     id: "reach",
@@ -39,6 +43,7 @@ export const growthSteps: GrowthStep[] = [
     color: "var(--teal)",
     ink: "var(--hero-ink)",
     desc: "Campaigns on Google, Meta, Instagram, LinkedIn, YouTube and AI search bring the right customers to your business from every direction, so leads keep coming and revenue keeps climbing.",
+    service: { to: servicePaths.ads, label: "Ads" },
   },
   {
     id: "convince",
@@ -48,6 +53,7 @@ export const growthSteps: GrowthStep[] = [
     color: "var(--aqua-soft)",
     ink: "var(--hero-ink)",
     desc: "People search on Google, find you at the top, open a fast, animated website that builds trust, and enquire in seconds.",
+    service: { to: servicePaths.websites, label: "Websites" },
   },
   {
     id: "close",
@@ -57,6 +63,7 @@ export const growthSteps: GrowthStep[] = [
     color: "var(--hero-ink)",
     ink: "var(--aqua)",
     desc: "That enquiry lands in your CRM instantly, alongside leads from Meta, Instagram and WhatsApp, so your team calls within minutes. ERP keeps operations running smoothly.",
+    service: { to: servicePaths.crm, label: "CRM" },
   },
   {
     id: "automate",
@@ -66,6 +73,7 @@ export const growthSteps: GrowthStep[] = [
     color: "var(--hero-teal)",
     ink: "#ffffff",
     desc: "AI agents reply instantly, follow up on WhatsApp, book site visits and keep every lead tracked in your CRM, day and night, so no lead goes cold.",
+    service: { to: servicePaths["ai-agents"], label: "AI Agents" },
   },
 ];
 

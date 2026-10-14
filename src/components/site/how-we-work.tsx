@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import {
   Fragment,
@@ -444,18 +445,35 @@ function MobileCards({
   return (
     <ol aria-label="Process steps" className="flex flex-col gap-4">
       {growthSteps.map((item) => (
+        // The whole card opens the step's service page: the title's link
+        // stretches over the card, and the footer row says where it goes.
         <li
           key={item.id}
-          className="flex flex-col gap-3 rounded-[22px] border border-white/95 bg-white/80 p-4 shadow-[0_14px_36px_rgba(15,42,44,0.1)]"
+          className="group/card relative flex flex-col gap-3 rounded-[22px] border border-white/95 bg-white/80 p-4 shadow-[0_14px_36px_rgba(15,42,44,0.1)] transition-transform duration-200 has-[a:active]:scale-[0.985] has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-hero-teal"
         >
           <div className="flex items-center gap-3">
             <StepNumber step={item} active />
             <h3 className="font-hero text-2xl font-semibold leading-tight tracking-[-0.02em] [font-stretch:normal]">
-              {item.title}
+              <Link
+                to={item.service.to}
+                aria-label={`${item.title}: explore ${item.service.label}`}
+                className="outline-none after:absolute after:inset-0 after:z-[1] after:rounded-[22px]"
+              >
+                {item.title}
+              </Link>
             </h3>
           </div>
           <p className="text-[15px] leading-[1.55] text-hero-muted">{item.desc}</p>
           <MobileVisual id={item.id} reduced={reduced} reachVideoUrl={reachVideoUrl} />
+          <span
+            aria-hidden="true"
+            className="mt-1 flex min-h-12 items-center justify-between rounded-full bg-hero-ink py-1.5 pl-5 pr-1.5 text-[15px] font-bold text-white"
+          >
+            Explore {item.service.label}
+            <span className="grid size-9 place-items-center rounded-full bg-teal text-hero-ink">
+              <ArrowUpRight className="size-4" strokeWidth={2.4} />
+            </span>
+          </span>
         </li>
       ))}
     </ol>

@@ -315,7 +315,15 @@ function ReelStrip() {
                   aria-hidden={copy === 1 || undefined}
                   className="w-[calc((100vw-24px)/3)] shrink-0 pr-2"
                 >
-                  <div className="relative h-40 overflow-hidden rounded-2xl bg-hero-ink shadow-[0_10px_24px_rgba(15,42,44,0.16)]">
+                  {/* Tapping a reel opens MediaHouse on that industry and kind. */}
+                  <Link
+                    to="/media-house"
+                    search={{ tab: reel.industry, kind: reel.kind }}
+                    hash="reels"
+                    tabIndex={copy === 1 ? -1 : undefined}
+                    aria-label={`See all ${reel.alt.toLowerCase()}s`}
+                    className="relative block h-40 overflow-hidden rounded-2xl bg-hero-ink shadow-[0_10px_24px_rgba(15,42,44,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal"
+                  >
                     <video
                       src={urls.preview}
                       poster={urls.poster}
@@ -323,13 +331,13 @@ function ReelStrip() {
                       loop
                       playsInline
                       preload="none"
-                      aria-label={copy === 0 ? reel.alt : undefined}
-                      className="size-full object-cover"
+                      aria-hidden="true"
+                      className="pointer-events-none size-full object-cover"
                     />
                     <span className="absolute bottom-2 left-2 max-w-[calc(100%-16px)] truncate rounded-full bg-hero-ink/82 px-2 py-1 text-[11px] font-semibold text-white">
                       {reel.caption.split(" · ")[0]}
                     </span>
-                  </div>
+                  </Link>
                 </div>
               );
             }),

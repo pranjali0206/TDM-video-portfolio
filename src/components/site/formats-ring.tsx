@@ -218,7 +218,7 @@ export function FormatsRing() {
         >
           {/* Shortened on phones so the pill fits between the arrows. */}
           <span className="whitespace-nowrap">
-            <span className="hidden sm:inline">Welcome to </span>TDM MediaHouse World
+            <span className="hidden sm:inline">Welcome to </span>TDM Media-House World
           </span>
           <span className="grid size-9 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-10">
             <ArrowUpRight className="size-5" />

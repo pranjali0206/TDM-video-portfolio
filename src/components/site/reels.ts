@@ -172,42 +172,49 @@ export const ringReels = [
 /**
  * Reels for the home hero's moving showcase: vertical clips that aren't in
  * `ringReels`, so the hero and the Formats ring never show the same film.
- * `caption` is the chip on the card, `alt` describes the clip.
+ * `caption` is the chip on the card, `alt` describes the clip, and
+ * `industry` + `kind` pick the MediaHouse tab (and sub-category) it opens.
  */
 export const heroReels = [
   {
     industry: "real-estate",
     slug: "real-estate-reel-05",
+    kind: "ad",
     caption: "Real estate · Ad reel",
     alt: "Real estate ad reel",
   },
   {
     industry: "real-estate",
     slug: "real-estate-reel-01",
+    kind: "ad",
     caption: "Real estate · Ad reel",
     alt: "Real estate ad reel",
   },
   {
     industry: "real-estate",
     slug: "real-estate-reel-06",
+    kind: "plotting",
     caption: "Real estate · Plotting",
     alt: "Real estate plotting walkthrough reel",
   },
   {
     industry: "real-estate",
     slug: "real-estate-reel-02",
+    kind: "ad",
     caption: "Real estate · Ad reel",
     alt: "Real estate ad reel",
   },
   {
     industry: "real-estate",
     slug: "real-estate-reel-08",
+    kind: "plotting",
     caption: "Real estate · Plotting",
     alt: "Real estate plotting walkthrough reel",
   },
   {
     industry: "real-estate",
     slug: "real-estate-reel-04",
+    kind: "ad",
     caption: "Real estate · Ad reel",
     alt: "Real estate ad reel",
   },

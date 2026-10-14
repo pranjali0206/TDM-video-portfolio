@@ -421,20 +421,21 @@ function ComingSoon({ label }: { label: string }) {
 export function ReelShowcase() {
   const industries = showcase;
   const [showAll, setShowAll] = useState(false);
-  const [kindId, setKindId] = useState<string | null>(null);
-  // A link like /media-house?tab=architecture#reels opens on that industry.
-  const { tab } = useSearch({ strict: false }) as { tab?: string };
-  const [activeId, setActiveId] = useState(
-    industries.find((industry) => industry.id === tab)?.id ?? industries[0]?.id ?? "",
-  );
+  // A link like /media-house?tab=architecture#reels opens on that industry;
+  // adding &kind=interior opens it on that sub-category.
+  const { tab, kind: kindParam } = useSearch({ strict: false }) as { tab?: string; kind?: string };
+  const linked = industries.find((industry) => industry.id === tab);
+  const linkedKind = linked?.kinds?.some((item) => item.id === kindParam) ? kindParam! : null;
+  const [kindId, setKindId] = useState<string | null>(linkedKind);
+  const [activeId, setActiveId] = useState(linked?.id ?? industries[0]?.id ?? "");
   useEffect(() => {
-    if (tab && industries.some((industry) => industry.id === tab)) {
-      setActiveId(tab);
-      setKindId(null);
+    if (linked) {
+      setActiveId(linked.id);
+      setKindId(linkedKind);
       setShowAll(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- industries is static data
-  }, [tab]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- derived from tab and kindParam
+  }, [tab, kindParam]);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 

@@ -47,7 +47,14 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
     let lenis: Lenis | null = null;
     const tick = (time: number) => lenis?.raf(time * 1000);
     if (!prefersReducedMotion()) {
-      lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.9 });
+      // Long, gliding wheel scroll: each notch travels further than native and
+      // eases out over a long expo tail, so one flick carries across a section.
+      lenis = new Lenis({
+        smoothWheel: true,
+        wheelMultiplier: 1.6,
+        duration: 1.5,
+        easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+      });
       lenisRef.current = lenis;
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(tick);
