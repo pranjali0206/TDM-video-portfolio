@@ -168,3 +168,47 @@ export const ringReels = [
   { industry: "real-estate", slug: "cybercity-micromitti", title: "Cybercity by Micromitti" },
   { industry: "medical", slug: "medical-03", title: "Denture consultation" },
 ];
+
+/**
+ * Reels for the home hero's moving showcase: vertical clips that aren't in
+ * `ringReels`, so the hero and the Formats ring never show the same film.
+ * `caption` is the chip on the card, `alt` describes the clip.
+ */
+export const heroReels = [
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-05",
+    caption: "Real estate · Ad reel",
+    alt: "Real estate ad reel",
+  },
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-01",
+    caption: "Real estate · Ad reel",
+    alt: "Real estate ad reel",
+  },
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-06",
+    caption: "Real estate · Plotting",
+    alt: "Real estate plotting walkthrough reel",
+  },
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-02",
+    caption: "Real estate · Ad reel",
+    alt: "Real estate ad reel",
+  },
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-08",
+    caption: "Real estate · Plotting",
+    alt: "Real estate plotting walkthrough reel",
+  },
+  {
+    industry: "real-estate",
+    slug: "real-estate-reel-04",
+    caption: "Real estate · Ad reel",
+    alt: "Real estate ad reel",
+  },
+];

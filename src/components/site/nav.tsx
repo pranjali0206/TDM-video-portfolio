@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 
 import { chapters, problemSolutions } from "./content";
 import { useExperience } from "./experience";
-import { ShowreelLink } from "./showreel-link";
 import { RollText } from "./primitives";
 import { servicePath } from "./service-links";
 import { useSectionLinks } from "./use-section-links";
@@ -18,14 +17,18 @@ const pageLinks = [
   { to: "/about", label: "About us" },
   { to: "/services", label: "Services" },
 ] as const;
-// Formats stays on the home page but isn't linked from the nav.
+// The mobile menu skips the hero, Services and Formats (the bar links Formats as "Work").
 const hiddenSections = ["top", "services", "formats"];
-const sectionLinks = chapters.filter((chapter) => chapter.id === "contact");
+// The bar's home-page links: the reels (Formats) as "Work", then Reviews and Contact.
+const barSectionLinks = [
+  { id: "formats", label: "Work" },
+  ...chapters.filter((chapter) => chapter.id === "reviews" || chapter.id === "contact"),
+];
 // The mobile menu also lists the other home-page sections worth jumping to.
 const menuSectionLinks = chapters.filter((chapter) => !hiddenSections.includes(chapter.id));
 
 const barLinkClass =
-  "group flex items-center gap-2 rounded-full px-3 py-2 font-display text-sm font-bold uppercase tracking-[0.08em] text-ink transition-colors hover:text-deep-teal xl:px-4 xl:text-[15px]";
+  "group flex items-center gap-2 py-2 font-ui text-[15px] font-medium text-hero-ink transition-colors hover:text-hero-teal";
 
 const menuLinkClass =
   "group flex items-baseline gap-4 py-2 font-display text-[9.5vw] uppercase leading-none sm:text-[8vw] lg:text-[6vw]";
@@ -99,62 +102,36 @@ export function Nav() {
 
   return (
     <>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-8 md:pt-6">
+      {/* Transparent at the top so the hero's gradient runs behind it; frosted
+          once the page has scrolled. */}
+      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50">
         <div
           ref={barRef}
           data-scrolled="false"
-          className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 rounded-full border border-transparent py-2 pl-4 pr-2 transition-[background-color,border-color,backdrop-filter] duration-500 data-[scrolled=true]:border-ink/10 data-[scrolled=true]:bg-white/70 data-[scrolled=true]:shadow-[0_10px_40px_-20px_rgba(0,40,40,0.35)] data-[scrolled=true]:backdrop-blur-xl md:pl-6"
+          className="border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-500 data-[scrolled=true]:border-hero-ink/10 data-[scrolled=true]:bg-white/75 data-[scrolled=true]:backdrop-blur-xl"
         >
-          <a
-            href={hrefFor("top")}
-            onClick={(event) => {
-              event.preventDefault();
-              go("top");
-            }}
-            className="shrink-0"
-            aria-label="TDM Groups — home"
-          >
-            {/* Negative margins let the larger logo overhang the bar's padding
-                instead of making the whole nav bar taller. The image file has
-                transparent space either side of the mark, so on phones it is
-                pulled left to sit the visible logo in the corner. */}
-            <img
-              src={tdmLogo}
-              alt="TDM Groups"
-              className="-my-3 -ml-11 h-16 w-auto md:-my-5 md:ml-0 md:h-20"
-            />
-          </a>
+          <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-5 px-5 py-4 md:px-10 md:py-[22px]">
+            <a
+              href={hrefFor("top")}
+              onClick={(event) => {
+                event.preventDefault();
+                go("top");
+              }}
+              className="shrink-0"
+              aria-label="TDM Groups — home"
+            >
+              {/* The image file has transparent space either side of the mark,
+                  so on phones it is pulled left to sit the visible logo in the corner. */}
+              <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-[46px] w-auto md:ml-0" />
+            </a>
 
-          {/* Links sit on the right, grouped with the call to action. */}
-          <div className="flex items-center gap-2">
-            <nav aria-label="Primary" className="mr-3 hidden items-center gap-0.5 lg:flex xl:mr-5">
-              {pageLinks.map((page) =>
-                page.to === "/services" ? (
-                  <ServicesMenu key={page.to} label={page.label} />
-                ) : (
-                  <Link
-                    key={page.to}
-                    to={page.to}
-                    className={cn(barLinkClass, "data-[status=active]:text-deep-teal")}
-                  >
-                    <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
-                    <RollText>{page.label}</RollText>
-                  </Link>
-                ),
-              )}
-              {/* MediaHouse: a tiny round showreel of our own reels. */}
-              <ShowreelLink className="mx-1" />
-              <a
-                href={hrefFor("reviews")}
-                onClick={(event) => {
-                  event.preventDefault();
-                  go("reviews");
-                }}
-                className={barLinkClass}
-              >
-                <RollText>Reviews</RollText>
-              </a>
-              {sectionLinks.map((link) => (
+            <nav aria-label="Primary" className="hidden items-center gap-[34px] lg:flex">
+              <Link to="/about" className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}>
+                <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
+                <RollText>About</RollText>
+              </Link>
+              <ServicesMenu label="Services" />
+              {barSectionLinks.map((link) => (
                 <a
                   key={link.id}
                   href={hrefFor(link.id)}
@@ -168,39 +145,41 @@ export function Nav() {
                 </a>
               ))}
             </nav>
-            <ShowreelLink className="lg:hidden" onClick={() => setMenuOpen(false)} />
-            <a
-              href={hrefFor("contact")}
-              onClick={(event) => {
-                event.preventDefault();
-                go("contact");
-              }}
-              className="group hidden h-11 items-center gap-2 rounded-full bg-jet pl-5 pr-4 text-sm font-semibold text-ivory transition-colors hover:bg-deep-teal sm:inline-flex"
-            >
-              <RollText>Start a project</RollText>
-              <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
-            </a>
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-expanded={menuOpen}
-              aria-controls="site-menu"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="relative z-[60] grid size-11 place-items-center rounded-full border border-ink/15 bg-white/70 backdrop-blur-md lg:hidden"
-            >
-              <span
-                className={cn(
-                  "absolute h-px w-5 bg-ink transition-transform duration-500",
-                  menuOpen ? "rotate-45" : "-translate-y-[4px]",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute h-px w-5 bg-ink transition-transform duration-500",
-                  menuOpen ? "-rotate-45" : "translate-y-[4px]",
-                )}
-              />
-            </button>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={hrefFor("contact")}
+                onClick={(event) => {
+                  event.preventDefault();
+                  go("contact");
+                }}
+                className="group hidden min-h-11 items-center gap-2 rounded-full bg-hero-ink px-[22px] font-ui text-[15px] font-semibold text-white transition-colors hover:bg-hero-teal sm:inline-flex"
+              >
+                <RollText>Start a project</RollText>
+                <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
+              </a>
+              <button
+                type="button"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-expanded={menuOpen}
+                aria-controls="site-menu"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                className="relative z-[60] grid size-11 place-items-center rounded-full border border-hero-ink/15 bg-white/70 backdrop-blur-md lg:hidden"
+              >
+                <span
+                  className={cn(
+                    "absolute h-px w-5 bg-hero-ink transition-transform duration-500",
+                    menuOpen ? "rotate-45" : "-translate-y-[4px]",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute h-px w-5 bg-hero-ink transition-transform duration-500",
+                    menuOpen ? "-rotate-45" : "translate-y-[4px]",
+                  )}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -325,7 +304,7 @@ function ServicesMenu({ label }: { label: string }) {
       <Link
         to="/services"
         onClick={() => setOpen(false)}
-        className={cn(barLinkClass, "pr-1 data-[status=active]:text-deep-teal xl:pr-1")}
+        className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}
       >
         <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
         <RollText>{label}</RollText>
@@ -336,10 +315,10 @@ function ServicesMenu({ label }: { label: string }) {
         aria-expanded={open}
         aria-controls="services-menu"
         aria-label={open ? "Hide services" : "Show services"}
-        className="grid size-7 place-items-center rounded-full text-ink transition-colors hover:text-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
+        className="-mr-2 grid size-7 place-items-center rounded-full text-hero-ink transition-colors hover:text-hero-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
       >
         <ChevronDown
-          className={cn("size-4 transition-transform duration-300", open && "rotate-180")}
+          className={cn("size-3.5 transition-transform duration-300", open && "rotate-180")}
         />
       </button>
 

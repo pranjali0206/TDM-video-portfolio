@@ -1,36 +1,97 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
-import { useRef } from "react";
+import {
+  ArrowDown,
+  ArrowUpRight,
+  Clapperboard,
+  Globe,
+  Layers,
+  Megaphone,
+  Sparkles,
+  Users,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
+import { Fragment, useRef } from "react";
 
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
+import { cn } from "@/lib/utils";
 
-import { ServicePills } from "./service-pills";
+import { HeroReels, PlayIcon } from "./hero-reels";
+import { servicePaths } from "./service-links";
+import { useSectionLinks } from "./use-section-links";
 
-// The hero statement, one line per row, in bold Fraunces (loaded in
-// __root.tsx) filled with the teal gradient.
-const headline = ["4x your business with", "Digital Marketing"];
+/** Every service as a pill: `tone` fills the icon circle (or the dot on phones). */
+const services: { label: string; to: string; Icon: LucideIcon; tone: string; icon: string }[] = [
+  {
+    label: "MediaHouse",
+    to: servicePaths.mediahouse,
+    Icon: Clapperboard,
+    tone: "bg-glow",
+    icon: "text-white",
+  },
+  { label: "Ads", to: servicePaths.ads, Icon: Megaphone, tone: "bg-teal", icon: "text-hero-ink" },
+  {
+    label: "Websites",
+    to: servicePaths.websites,
+    Icon: Globe,
+    tone: "bg-aqua-soft",
+    icon: "text-hero-ink",
+  },
+  { label: "CRM", to: servicePaths.crm, Icon: Users, tone: "bg-hero-ink", icon: "text-aqua" },
+  { label: "ERP", to: servicePaths.erp, Icon: Layers, tone: "bg-peach", icon: "text-hero-ink" },
+  {
+    label: "Automations",
+    to: servicePaths.automations,
+    Icon: Zap,
+    tone: "bg-hero-teal",
+    icon: "text-white",
+  },
+  {
+    label: "AI Agents",
+    to: servicePaths["ai-agents"],
+    Icon: Sparkles,
+    tone: "bg-mint",
+    icon: "text-hero-ink",
+  },
+];
+
+const stats = [
+  { value: "10+ yrs", label: "of ad expertise" },
+  { value: "₹230 Cr+", label: "in client sales" },
+  { value: "7 services", label: "one accountable team" },
+];
+
+// The nav is fixed over the hero; this keeps the content clear of it.
+const NAV_SPACE = "h-[78px] md:h-[90px]";
 
 /**
- * Hero layout rules (nothing is placed by eye):
- *  - Everything sits on one centre line: headline, the services as colour
- *    pills, the intro and the two buttons.
- *  - Plain, pure white ground.
+ * Home hero: the promise, every service as a pill, two calls to action and the
+ * proof on the left; a moving fan of MediaHouse reels on the right. The whole
+ * section, nav included, sits on one mesh gradient.
  */
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
+  const { hrefFor, goTo } = useSectionLinks();
 
   useGSAP(
     () => {
-      const root = rootRef.current;
-      if (!root || prefersReducedMotion()) return;
-
-      gsap
-        .timeline({
-          scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
-          defaults: { ease: "none" },
-        })
-        .to("[data-hero-title]", { yPercent: -12, opacity: 0.4 }, 0)
-        .to("[data-hero-bottom]", { yPercent: 40, opacity: 0 }, 0);
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from("[data-hero-item]", {
+          y: 16,
+          opacity: 0,
+          duration: 0.6,
+          stagger: 0.06,
+          ease: "power2.out",
+        });
+        gsap.from("[data-hero-showcase]", {
+          opacity: 0,
+          scale: 0.96,
+          duration: 0.8,
+          delay: 0.15,
+          ease: "power2.out",
+        });
+      });
     },
     { scope: rootRef },
   );
@@ -39,59 +100,121 @@ export function Hero() {
     <section
       ref={rootRef}
       id="top"
-      className="relative min-h-[max(100svh,680px)] overflow-hidden bg-white text-ink"
+      data-hero
+      className="hero-mesh relative flex flex-col overflow-hidden font-ui text-hero-ink lg:min-h-[900px]"
     >
-      <div className="relative z-10 flex min-h-[max(100svh,680px)] flex-col items-center justify-center px-5 pb-14 pt-28 text-center md:px-[2vw] md:pb-16 md:pt-28">
-        {/* Each line rises out of its own mask; the sheen sweeps both together. */}
-        <h1
-          data-hero-title
-          className="w-full font-hero text-[clamp(2.5rem,11vw,9rem)] font-black leading-[0.98] tracking-[-0.025em] [font-variation-settings:'SOFT'_100] md:text-[min(7.4vw,15svh)]"
-        >
-          {headline.map((line, index) => (
-            <span key={line} className="block overflow-hidden pb-[0.1em]">
-              <span
-                className="hero-rise block text-balance"
-                style={{ ["--d" as string]: `${0.1 + index * 0.12}s` }}
-              >
-                <span className="text-teal-gradient teal-sheen px-[0.08em] [--d:1.6s]">{line}</span>
-              </span>
+      <div aria-hidden="true" className={cn("shrink-0", NAV_SPACE)} />
+
+      <div className="mx-auto flex w-full max-w-[1320px] flex-1 flex-col gap-10 px-5 pb-10 pt-6 md:px-10 md:pb-7 md:pt-9 lg:flex-row lg:items-center">
+        <div className="flex min-w-0 flex-col gap-6 md:gap-7 lg:flex-[1_1_720px]">
+          <p
+            data-hero-item
+            className="font-mono text-[11px] uppercase tracking-[0.08em] text-hero-muted md:text-[13px]"
+          >
+            Consultation x Digital Marketing × Technology
+          </p>
+
+          <h1
+            data-hero-item
+            className="font-hero text-[40px] font-semibold leading-[1.04] tracking-[-0.03em] text-hero-ink [font-stretch:normal] [font-variation-settings:'opsz'_144] md:text-[44px] md:leading-[1.08] lg:text-[clamp(40px,3.6vw,52px)] xl:text-[52px]"
+          >
+            <span className="block md:whitespace-nowrap">Marketing that brings leads.</span>
+            <span className="block md:whitespace-nowrap">
+              Systems that <em className="font-medium italic text-hero-teal">close them.</em>
             </span>
-          ))}
-        </h1>
+          </h1>
 
-        {/* All the services, right above the promise they add up to. */}
-        <div data-hero-bottom className="mt-8 w-full md:mt-10">
-          <ServicePills />
+          <p
+            data-hero-item
+            className="max-w-[540px] text-base leading-[1.55] text-hero-muted md:text-[19px]"
+          >
+            We find the insight, build the strategy and engineer the systems — ads, websites, CRM,
+            ERP and AI automation — that turn attention into revenue.
+          </p>
+
+          <nav
+            data-hero-item
+            aria-label="Services"
+            className="flex max-w-[640px] flex-wrap gap-[5px] min-[390px]:gap-1.5 md:gap-2.5"
+          >
+            {services.map(({ label, to, Icon, tone, icon }, index) => (
+              <Fragment key={label}>
+                {/* Phones: four pills, then three — never a lone pill on its own row. */}
+                {index === 4 && <span aria-hidden="true" className="basis-full md:hidden" />}
+                <Link
+                  to={to}
+                  className="inline-flex min-h-[38px] flex-auto items-center justify-center gap-[5px] whitespace-nowrap rounded-full border border-white/95 bg-white/72 px-[7px] text-xs font-semibold text-hero-ink shadow-[0_4px_14px_rgba(15,42,44,0.07)] transition-[transform,box-shadow] duration-300 hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(15,42,44,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal min-[390px]:gap-1.5 min-[390px]:px-2.5 min-[390px]:text-[13px] md:min-h-11 md:flex-none md:gap-[9px] md:pl-2 md:pr-4 md:text-sm"
+                >
+                  <span aria-hidden="true" className={cn("size-2 rounded-full md:hidden", tone)} />
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "hidden size-7 place-items-center rounded-full md:grid",
+                      tone,
+                      icon,
+                    )}
+                  >
+                    <Icon className="size-3.5" />
+                  </span>
+                  {label}
+                </Link>
+              </Fragment>
+            ))}
+          </nav>
+
+          <div data-hero-item className="flex items-center gap-2.5 md:flex-wrap md:gap-3.5">
+            <Link
+              to="/contact"
+              className="group inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-hero-ink px-3 text-sm font-semibold text-white transition-colors hover:bg-hero-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal focus-visible:ring-offset-2 min-[390px]:px-4 min-[390px]:text-[15px] md:min-h-14 md:flex-none md:gap-2.5 md:px-[30px] md:text-[17px]"
+            >
+              Start a project
+              <ArrowUpRight
+                aria-hidden="true"
+                className="size-4 transition-transform duration-500 group-hover:rotate-45 md:size-[18px]"
+              />
+            </Link>
+            <a
+              href={hrefFor("formats")}
+              onClick={(event) => {
+                event.preventDefault();
+                goTo("formats");
+              }}
+              className="inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-outline pl-1.5 pr-3 text-sm font-semibold text-hero-ink transition-colors hover:border-hero-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal min-[390px]:pr-3.5 min-[390px]:text-[15px] md:min-h-14 md:flex-none md:gap-3 md:pl-2.5 md:pr-[26px] md:text-[17px]"
+            >
+              <span className="grid size-8 place-items-center rounded-full bg-chip md:size-[38px]">
+                <PlayIcon className="size-3.5" />
+              </span>
+              See our work
+            </a>
+          </div>
+
+          <div data-hero-item className="pt-2">
+            <div className="flex border-t border-hairline pt-[22px]">
+              {stats.map((stat, index) => (
+                <div
+                  key={stat.label}
+                  className={cn(
+                    "flex min-w-0 flex-auto flex-col gap-1 md:box-content md:flex-[1_1_140px]",
+                    index > 0 && "border-l border-hairline pl-2.5 md:pl-5",
+                    index < stats.length - 1 && "pr-2.5 md:pr-5",
+                  )}
+                >
+                  <span className="whitespace-nowrap font-hero text-[22px] font-semibold leading-[normal] tracking-[-0.02em] md:text-[34px]">
+                    {stat.value}
+                  </span>
+                  <span className="text-xs text-hero-muted md:text-sm">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Archivo (font-display), bold: the promise, in quotes, reads as a statement. */}
-        <p
-          data-hero-bottom
-          className="hero-fade mx-auto mt-4 max-w-[46rem] text-balance font-display text-[1.15rem] font-bold leading-[1.3] tracking-[-0.01em] text-ink [--d:0.8s] md:mt-5 md:text-[clamp(1.2rem,1.55vw,1.6rem)]"
-        >
-          <span className="text-deep-teal">“</span>Every business has a different problem. We find
-          the insight, build the strategy, create the campaign, and engineer the systems that{" "}
-          <span className="text-deep-teal">turn growth into reality.”</span>
-        </p>
+        <HeroReels />
+      </div>
 
-        <div
-          data-hero-bottom
-          className="hero-fade mt-8 flex flex-wrap items-center justify-center gap-3 [--d:0.95s] md:mt-10"
-        >
-          <Link
-            to="/contact"
-            className="group inline-flex h-14 items-center gap-2 rounded-full bg-jet px-8 text-base font-semibold text-ivory transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
-          >
-            Start a project
-            <ArrowUpRight className="size-4 transition-transform duration-500 group-hover:rotate-45" />
-          </Link>
-          <Link
-            to="/media-house"
-            className="inline-flex h-14 items-center rounded-full border border-ink/15 bg-white px-8 text-base font-semibold text-ink transition-colors hover:border-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive"
-          >
-            See our work
-          </Link>
-        </div>
+      <div className="mx-auto hidden w-full max-w-[1320px] items-center gap-2.5 px-10 pb-[26px] font-mono text-xs uppercase tracking-[0.08em] text-hero-muted md:flex">
+        <ArrowDown aria-hidden="true" className="size-4" />
+        Scroll to explore
       </div>
     </section>
   );

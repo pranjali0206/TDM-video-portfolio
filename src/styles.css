@@ -22,6 +22,7 @@
  *   font-sans    — body copy (Inter Tight)
  *   font-hero    — the hero statement: soft editorial serif with a calligraphic italic (Fraunces)
  *   font-mono    — editing-suite HUD: timecodes, labels, counters (JetBrains Mono)
+ *   font-ui      — home hero and nav: body, pills, buttons (Archivo at normal width)
  */
 
 @theme inline {
@@ -29,6 +30,7 @@
   --font-display: "Archivo", "Archivo Black", sans-serif;
   --font-hero: "Fraunces", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-ui: "Archivo", system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -79,6 +81,21 @@
   --color-teal: var(--teal);
   --color-glow: var(--glow);
   --color-magenta: var(--magenta);
+  --color-hero-ink: var(--hero-ink);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-teal: var(--hero-teal);
+  --color-aqua: var(--aqua);
+  --color-aqua-soft: var(--aqua-soft);
+  --color-peach: var(--peach);
+  --color-mint: var(--mint);
+  --color-hairline: var(--hairline);
+  --color-outline: var(--outline);
+  --color-chip: var(--chip);
+  --color-hero-teal-2: var(--hero-teal-2);
+  --color-hero-soft: var(--hero-soft);
+  --color-hero-base: var(--hero-base);
+  --color-lime-ink: var(--lime-ink);
+  --color-track: var(--track);
 }
 
 :root {
@@ -117,6 +134,24 @@
   --glow: oklch(0.68 0.17 38);
   /* Magenta pink: a faint blush in the hero's colour clouds only. */
   --magenta: oklch(0.66 0.24 350);
+  /* Home hero palette (approved design). Orange is --glow, lime is --teal. */
+  --hero-ink: oklch(0.265 0.033 201.9);
+  --hero-muted: oklch(0.461 0.037 198.4);
+  --hero-teal: oklch(0.525 0.087 192.8);
+  --aqua: oklch(0.846 0.092 191.2);
+  --aqua-soft: oklch(0.821 0.084 192.8);
+  --peach: oklch(0.867 0.054 45.7);
+  --mint: oklch(0.908 0.034 157.6);
+  --hairline: oklch(0.918 0.014 169.2);
+  --outline: oklch(0.879 0.022 174.9);
+  --chip: oklch(0.946 0.013 159.9);
+  /* How We Work (Growth Engine) palette. Soft text is a touch darker than the
+     design's #6b8584 so small labels clear 4.5:1 on the section's mint base. */
+  --hero-teal-2: oklch(0.649 0.106 190);
+  --hero-soft: oklch(0.548 0.03 193.4);
+  --hero-base: oklch(0.979 0.008 157.1);
+  --lime-ink: oklch(0.414 0.095 125.6);
+  --track: oklch(0.935 0.011 167.8);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -434,6 +469,17 @@
   .teal-sheen { animation: none; }
 }
 
+/* The home hero's mesh: aqua top right, lime top left, a warm corner and a
+   teal pool at the bottom, over a mint-to-white wash. */
+@utility hero-mesh {
+  background:
+    radial-gradient(55% 75% at 88% 28%, oklch(0.786 0.112 192.2 / 0.55) 0%, oklch(0.786 0.112 192.2 / 0) 70%),
+    radial-gradient(40% 55% at 100% 100%, oklch(0.668 0.169 39.9 / 0.28) 0%, oklch(0.668 0.169 39.9 / 0) 70%),
+    radial-gradient(45% 60% at 4% 0%, oklch(0.9 0.121 117.7 / 0.65) 0%, oklch(0.9 0.121 117.7 / 0) 70%),
+    radial-gradient(35% 45% at 40% 100%, oklch(0.525 0.087 192.8 / 0.14) 0%, oklch(0.525 0.087 192.8 / 0) 70%),
+    linear-gradient(180deg, oklch(0.979 0.008 157.1) 0%, oklch(1 0 0) 100%);
+}
+
 /* Endless horizontal ribbon: render the content twice, side by side. */
 @keyframes marquee-x {
   to { transform: translateX(-50%); }
@@ -478,3 +524,94 @@
   font-variation-settings: "SOFT" 100;
   letter-spacing: -0.02em;
 }
+
+/* ---------------------------------------------------------------------------
+ * How We Work — The Growth Engine (home). Keyframes and timings are ported
+ * 1:1 from the approved prototype (src/docs/how-we-work-reference.dc.html).
+ * ------------------------------------------------------------------------- */
+@keyframes tdmIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes tdmFill { from { width: 0; } to { width: 100%; } }
+@keyframes tdmFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes tdmPop { 0% { opacity: 0; transform: scale(0.85); } 100% { opacity: 1; transform: none; } }
+@keyframes tdmDash { to { stroke-dashoffset: -24; } }
+@keyframes tdmDots { to { stroke-dashoffset: -28; } }
+@keyframes tdmRing { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.9); opacity: 0; } }
+@keyframes tdmCycle {
+  0% { opacity: 0; transform: translateY(8px); }
+  5%, 28% { opacity: 1; transform: none; }
+  33%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes tdmDraw { from { stroke-dashoffset: 420; } to { stroke-dashoffset: 0; } }
+@keyframes tdmFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tdmType { from { width: 0; } }
+@keyframes tdmSlideUp { from { opacity: 0; transform: translateY(40px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes tdmClick { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.93); } }
+@keyframes tdmBlink { 50% { opacity: 0; } }
+@keyframes tdmMeter { from { width: 0; } }
+@keyframes tdmCursor {
+  0% { opacity: 0; transform: translate(640px, 470px); }
+  8% { opacity: 1; }
+  27% { transform: translate(215px, 108px); }
+  30% { transform: translate(215px, 108px) scale(0.82); }
+  34% { transform: translate(215px, 108px) scale(1); }
+  45% { transform: translate(215px, 108px); }
+  90% { opacity: 1; transform: translate(614px, 402px); }
+  94% { transform: translate(614px, 402px) scale(0.82); }
+  100% { opacity: 1; transform: translate(614px, 402px) scale(1); }
+}
+
+.tdm-in { animation: tdmIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.tdm-pop { animation: tdmPop 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.tdm-d1 { animation-delay: 0.08s; }
+.tdm-d2 { animation-delay: 0.16s; }
+.tdm-d3 { animation-delay: 0.24s; }
+.tdm-d4 { animation-delay: 0.32s; }
+.tdm-d5 { animation-delay: 0.4s; }
+.tdm-d6 { animation-delay: 0.5s; }
+.tdm-float { animation: tdmFloat 3.2s ease-in-out infinite; }
+.tdm-flow { stroke-dasharray: 6 6; animation: tdmDash 1s linear infinite; }
+.tdm-ring { animation: tdmRing 2.6s ease-out infinite; }
+.tdm-dots { stroke-dasharray: 0.1 14; stroke-linecap: round; animation: tdmDots 1.1s linear infinite; }
+.tdm-cycle { opacity: 0; animation: tdmCycle 6s ease-in-out infinite; }
+.tdm-draw { stroke-dasharray: 420; animation: tdmDraw 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both; }
+.tdm-fade { animation: tdmFade 1s ease 1.2s both; }
+.tdm-caret { animation: tdmBlink 1s step-end infinite; }
+.tdm-swap { animation: tdmFade 0.25s ease both; }
+/* Typing reveal: set --type-dur, --type-steps and --type-delay inline. */
+.tdm-type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: tdmType var(--type-dur) steps(var(--type-steps)) var(--type-delay) both;
+}
+
+/* Off screen: freeze every loop (and pending entrance) until it scrolls back. */
+[data-hww-offscreen] *,
+[data-hww-offscreen] *::before,
+[data-hww-offscreen] *::after { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Final states, at once: entrances jump to their end frame (the global rule
+     above shortens them), delays are dropped and loops are stilled. */
+  .hww *, .hww *::before, .hww *::after { animation-delay: 0s !important; }
+  .hww .tdm-cycle { animation: none !important; }
+  .hww .tdm-cycle:first-child { opacity: 1; }
+  .hww .tdm-ring, .hww .tdm-cursor, .hww .tdm-caret { display: none; }
+  .hww .tdm-float, .hww .tdm-flow, .hww .tdm-dots { animation: none !important; }
+}
+
+/* TDM MediaHouse World (reels viewer): the double-tap heart and the like pop. */
+@keyframes reel-heart {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(-12deg); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.15) rotate(-12deg); }
+  35% { transform: translate(-50%, -50%) scale(0.95) rotate(-12deg); }
+  70% { opacity: 1; transform: translate(-50%, -60%) scale(1) rotate(-12deg); }
+  100% { opacity: 0; transform: translate(-50%, -140%) scale(0.9) rotate(-12deg); }
+}
+@keyframes reel-like-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.reel-heart { animation: reel-heart 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.reel-like-pop { animation: reel-like-pop 0.35s ease-out; }

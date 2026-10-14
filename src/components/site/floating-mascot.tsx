@@ -1,13 +1,29 @@
+import { useEffect, useState } from "react";
+
 import tdmMascot from "@/assets/tdm-mascot.webp";
+import { cn } from "@/lib/utils";
 
 import { useSectionLinks } from "./use-section-links";
 
 /**
  * The TDM mascot, floating in the bottom-right corner of every page. It bobs
  * gently, waves a "Let's talk!" bubble on hover and opens the contact form.
+ * On the home page it stays out of the way until you've scrolled past the hero.
  */
 export function FloatingMascot() {
   const { hrefFor, goTo } = useSectionLinks();
+  const [hidden, setHidden] = useState(true);
+
+  useEffect(() => {
+    const hero = document.querySelector("[data-hero]");
+    if (!hero) {
+      setHidden(false);
+      return;
+    }
+    const io = new IntersectionObserver(([entry]) => setHidden(entry?.isIntersecting ?? false));
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <a
@@ -17,7 +33,12 @@ export function FloatingMascot() {
         goTo("contact");
       }}
       aria-label="Let’s talk — start a project"
-      className="group fixed bottom-3 right-2 z-40 block w-16 sm:bottom-5 sm:right-4 sm:w-20 md:w-24"
+      aria-hidden={hidden || undefined}
+      tabIndex={hidden ? -1 : undefined}
+      className={cn(
+        "group fixed bottom-3 right-2 z-40 block w-16 transition-[opacity,translate] duration-500 sm:bottom-5 sm:right-4 sm:w-20 md:w-24",
+        hidden && "pointer-events-none translate-y-4 opacity-0",
+      )}
     >
       <span className="pointer-events-none absolute bottom-full right-1/2 mb-1 translate-x-1/2 translate-y-2 whitespace-nowrap rounded-full rounded-br-sm bg-ink px-3 py-1.5 text-xs font-semibold text-ivory opacity-0 shadow-lg transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
         Let’s talk!

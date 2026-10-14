@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
 import { SectionLabel } from "./primitives";
 import { ringReels, reelUrls } from "./reels";
+import { ReelsViewer } from "./reels-viewer";
 
 const COUNT = ringReels.length;
 const STEP = 360 / COUNT;
@@ -23,7 +24,11 @@ export function FormatsRing() {
   const ringRef = useRef<HTMLDivElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const motion = useRef({ angle: 0, nudge: 0, dragging: false, hover: false });
+  const motion = useRef({ angle: 0, nudge: 0, dragging: false, hover: false, viewer: false });
+  const [viewerOpen, setViewerOpen] = useState(false);
+  useEffect(() => {
+    motion.current.viewer = viewerOpen;
+  }, [viewerOpen]);
 
   const step = (direction: 1 | -1) => {
     const m = motion.current;
@@ -57,7 +62,8 @@ export function FormatsRing() {
         panel.style.opacity = String(Math.max(0, 0.25 + 0.75 * facing));
         const video = videoRefs.current[index];
         if (!video || reduced) return;
-        if (visible && facing > 0.35) {
+        // The reels viewer covers the ring: keep it quiet underneath.
+        if (visible && !m.viewer && facing > 0.35) {
           if (video.paused) video.play().catch(() => {});
         } else if (!video.paused) {
           video.pause();
@@ -204,19 +210,20 @@ export function FormatsRing() {
         >
           <ArrowLeft className="size-5" />
         </button>
-        <Link
-          to="/media-house"
-          hash="reels"
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => setViewerOpen(true)}
           className="group inline-flex h-12 items-center gap-3 rounded-full bg-ink pl-7 pr-2 text-base font-semibold text-ivory transition-colors hover:bg-deep-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive md:h-14"
         >
           {/* Shortened on phones so the pill fits between the arrows. */}
-          <span>
-            Explore <span className="hidden sm:inline">more of </span>our MediaHouse
+          <span className="whitespace-nowrap">
+            <span className="hidden sm:inline">Welcome to </span>TDM MediaHouse World
           </span>
           <span className="grid size-9 place-items-center rounded-full bg-accent text-ink transition-transform duration-500 group-hover:rotate-45 md:size-10">
             <ArrowUpRight className="size-5" />
           </span>
-        </Link>
+        </button>
         <button
           type="button"
           onClick={() => step(1)}
@@ -226,6 +233,7 @@ export function FormatsRing() {
           <ArrowRight className="size-5" />
         </button>
       </div>
+      <ReelsViewer open={viewerOpen} onOpenChange={setViewerOpen} />
     </section>
   );
 }

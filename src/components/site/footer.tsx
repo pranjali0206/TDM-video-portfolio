@@ -10,7 +10,7 @@ import { useExperience } from "./experience";
 import { RollText } from "./primitives";
 import { useSectionLinks } from "./use-section-links";
 
-const indexLinkClass = "group w-fit text-ink transition-colors hover:text-ink";
+const indexLinkClass = "group w-fit text-ivory/80 transition-colors hover:text-aqua";
 
 /**
  * Curtain footer: from tablet up it sits fixed beneath the page and is
@@ -56,12 +56,12 @@ export function Footer() {
       id="site-footer"
       className="relative md:h-[40rem] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
     >
-      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden border-t border-ink/10 bg-ivory px-6 pb-28 pt-14 text-ink md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
+      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden bg-night px-6 pb-28 pt-14 text-ivory md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
         <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr] md:gap-12">
           <div>
             {/* The logo file has empty space on its left; pull it back to the edge. */}
-            <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-12 w-auto brightness-0" />
-            <p className="mt-5 max-w-sm font-display font-bold text-[1.75rem] leading-tight text-ink md:mt-6 md:text-3xl">
+            <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-12 w-auto brightness-0 invert" />
+            <p className="mt-5 max-w-sm font-display font-bold text-[1.75rem] leading-tight text-ivory md:mt-6 md:text-3xl">
               Click by click, we make attention mean something.
             </p>
           </div>
@@ -69,7 +69,7 @@ export function Footer() {
             aria-label="Footer"
             className="grid grid-cols-2 content-start gap-x-6 gap-y-3 text-sm"
           >
-            <p className="col-span-2 mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-ink">
+            <p className="col-span-2 mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-aqua">
               Index
             </p>
             <Link to="/about" className={indexLinkClass}>
@@ -96,10 +96,10 @@ export function Footer() {
             <button
               type="button"
               onClick={() => scrollTo("#top")}
-              className="group inline-flex w-fit items-center gap-3 rounded-full border border-ink/25 py-2 pl-5 pr-2 text-sm font-semibold transition-colors hover:border-ink hover:bg-white/30"
+              className="group inline-flex w-fit items-center gap-3 rounded-full border border-ivory/25 py-2 pl-5 pr-2 text-sm font-semibold transition-colors hover:border-aqua hover:bg-white/10"
             >
               <RollText>Back to top</RollText>
-              <span className="grid size-8 place-items-center rounded-full bg-ink text-accent transition-transform duration-500 group-hover:-translate-y-0.5">
+              <span className="grid size-8 place-items-center rounded-full bg-aqua text-night transition-transform duration-500 group-hover:-translate-y-0.5">
                 <ArrowUp className="size-4" />
               </span>
             </button>
@@ -116,8 +116,8 @@ export function Footer() {
           >
             <defs>
               <linearGradient id="wordmark-fill" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0%" stopColor="var(--ink)" />
-                <stop offset="100%" stopColor="var(--deep-teal)" />
+                <stop offset="0%" stopColor="var(--aqua)" />
+                <stop offset="100%" stopColor="var(--hero-teal)" />
               </linearGradient>
             </defs>
             <text
@@ -138,7 +138,7 @@ export function Footer() {
           </svg>
         </div>
 
-        <div className="flex flex-col gap-2.5 border-t border-ink/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ink sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 sm:pr-24 md:pr-28">
+        <div className="flex flex-col gap-2.5 border-t border-ivory/15 pt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-ivory/70 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3 sm:pr-24 md:pr-28">
           <span>© {new Date().getFullYear()} TDM Groups</span>
           <span>Marketing · Technology · Growth</span>
           <span className="flex items-center gap-2">
