@@ -72,7 +72,7 @@ export function Footer() {
             <p className="col-span-2 mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-aqua">
               Index
             </p>
-            <Link to="/about" className={indexLinkClass}>
+            <Link to="/about-us" className={indexLinkClass}>
               <RollText>About us</RollText>
             </Link>
             <Link to="/services" className={indexLinkClass}>

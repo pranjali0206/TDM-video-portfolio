@@ -234,7 +234,7 @@ function ServicesKnowUs() {
             plan your growth.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/about" className={cn(pillClass, "bg-ink text-ivory hover:bg-deep-teal")}>
+            <Link to="/about-us" className={cn(pillClass, "bg-ink text-ivory hover:bg-deep-teal")}>
               Know more about us
               <span className={cn(pillIconClass, "bg-accent text-ink")}>
                 <ArrowUpRight className="size-5" />

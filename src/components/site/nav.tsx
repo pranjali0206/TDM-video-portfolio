@@ -14,7 +14,7 @@ import { useSectionLinks } from "./use-section-links";
 
 // Pages of their own, then links that scroll to home-page sections.
 const pageLinks = [
-  { to: "/about", label: "About us" },
+  { to: "/about-us", label: "About us" },
   { to: "/services", label: "Services" },
 ] as const;
 // The mobile menu skips the hero, Services and Formats (the bar links Formats as "Work").
@@ -126,7 +126,7 @@ export function Nav() {
             </a>
 
             <nav aria-label="Primary" className="hidden items-center gap-[34px] lg:flex">
-              <Link to="/about" className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}>
+              <Link to="/about-us" className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}>
                 <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
                 <RollText>About</RollText>
               </Link>
