@@ -210,7 +210,7 @@ export function Expertise() {
   return (
     <section
       id="expertise"
-      className="relative overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20"
+      className="relative overflow-hidden px-6 py-16 text-ink md:px-14 md:py-20 lg:px-20 lg:pb-12"
     >
       <div className="relative">
         <ExpertisePicker />

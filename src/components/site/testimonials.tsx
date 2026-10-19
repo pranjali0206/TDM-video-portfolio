@@ -174,7 +174,7 @@ export function Testimonials() {
     <section
       ref={rootRef}
       id="reviews"
-      className="relative overflow-hidden py-16 text-ink md:py-20"
+      className="relative overflow-hidden py-16 text-ink md:py-20 lg:pt-12"
     >
       <div data-reviews-head className="relative flex flex-col items-center px-6 text-center">
         <SectionLabel>Reviews</SectionLabel>

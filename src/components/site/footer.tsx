@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUp } from "lucide-react";
 import { useRef } from "react";
 
-import tdmLogo from "@/assets/tdm-logo.webp";
+import tdmLogoMark from "@/assets/tdm-logo-mark.webp";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
 import { chapters } from "./content";
@@ -15,8 +15,9 @@ const indexLinkClass = "group w-fit text-ivory/80 transition-colors hover:text-a
 /**
  * Curtain footer: from tablet up it sits fixed beneath the page and is
  * uncovered as the last section scrolls away, with the wordmark rising into
- * place. On phones it simply follows the page at its natural height, so
- * nothing gets squeezed.
+ * place. It is never taller than the screen, so on short laptops the logo at
+ * its top isn't pushed off-screen. On phones it simply follows the page at its
+ * natural height, so nothing gets squeezed.
  */
 export function Footer() {
   const { scrollTo } = useExperience();
@@ -54,13 +55,20 @@ export function Footer() {
     <div
       ref={rootRef}
       id="site-footer"
-      className="relative md:h-[40rem] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
+      className="relative md:h-[min(40rem,100svh)] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
     >
-      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden bg-night px-6 pb-28 pt-14 text-ivory md:fixed md:bottom-0 md:left-0 md:h-[40rem] md:gap-0 md:px-14 md:pb-6 md:pt-20 lg:px-20">
+      <footer className="relative flex w-full flex-col justify-between gap-10 overflow-hidden bg-night px-6 pb-28 pt-14 text-ivory md:fixed md:bottom-0 md:left-0 md:h-[min(40rem,100svh)] md:gap-0 md:px-14 md:pb-6 md:pt-[clamp(32px,8svh,80px)] lg:px-20">
         <div className="grid gap-10 md:grid-cols-[1.3fr_1fr_1fr] md:gap-12">
           <div>
-            {/* The logo file has empty space on its left; pull it back to the edge. */}
-            <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-12 w-auto brightness-0 invert" />
+            {/* The logo trimmed to its mark, in white so it reads on the dark
+                ground; big enough that GROUPS stays legible. */}
+            <img
+              src={tdmLogoMark}
+              alt="TDM Groups"
+              width={789}
+              height={451}
+              className="h-14 w-auto brightness-0 invert md:h-16"
+            />
             <p className="mt-5 max-w-sm font-display font-bold text-[1.75rem] leading-tight text-ivory md:mt-6 md:text-3xl">
               Click by click, we make attention mean something.
             </p>
