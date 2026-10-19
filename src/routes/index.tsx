@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Contact } from "@/components/site/contact";
 import { Hero } from "@/components/site/hero";
 import { HowWeWork } from "@/components/site/how-we-work";
+import { FormatsRing } from "@/components/site/formats-ring";
 import { Expertise, Services } from "@/components/site/services";
 import { SiteShell } from "@/components/site/site-shell";
 import { Testimonials } from "@/components/site/testimonials";
