@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { chapters, problemSolutions } from "./content";
 import { useExperience } from "./experience";
+import { frame } from "./frame";
 import { RollText } from "./primitives";
 import { servicePath } from "./service-links";
 import { useSectionLinks } from "./use-section-links";
@@ -110,7 +111,7 @@ export function Nav() {
           data-scrolled="false"
           className="border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-500 data-[scrolled=true]:border-hero-ink/10 data-[scrolled=true]:bg-white/75 data-[scrolled=true]:backdrop-blur-xl"
         >
-          <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-5 px-5 py-4 md:px-10 md:py-[22px]">
+          <div className={cn(frame, "flex items-center justify-between gap-5 py-4 md:py-[22px]")}>
             <a
               href={hrefFor("top")}
               onClick={(event) => {
@@ -121,12 +122,15 @@ export function Nav() {
               aria-label="TDM Groups — home"
             >
               {/* The image file has transparent space either side of the mark,
-                  so on phones it is pulled left to sit the visible logo in the corner. */}
-              <img src={tdmLogo} alt="TDM Groups" className="-ml-8 h-[46px] w-auto md:ml-0" />
+                  so it is pulled left to line the visible logo up with the page edge. */}
+              <img src={tdmLogo} alt="TDM Groups" className="-ml-[25px] h-[46px] w-auto" />
             </a>
 
             <nav aria-label="Primary" className="hidden items-center gap-[34px] lg:flex">
-              <Link to="/about-us" className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}>
+              <Link
+                to="/about-us"
+                className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}
+              >
                 <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
                 <RollText>About</RollText>
               </Link>

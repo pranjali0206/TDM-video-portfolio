@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import tdmLogo from "@/assets/tdm-logo.webp";
 import { finePointer, gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -11,17 +10,20 @@ import { servicePath } from "./service-links";
 import { tones, type Tone } from "./tones";
 
 const COUNT = problemSolutions.length;
+// The ring carries the building blocks (modules) of the service in focus.
+const NODES = 6;
 const TAU = Math.PI * 2;
 const FRONT = Math.PI / 2; // straight down the screen = nearest the viewer
-const STEP = TAU / COUNT;
+const STEP = TAU / NODES;
 const MERIDIANS = 7;
-const ADVANCE_MS = 3200;
-// The ring turns non-stop, one service per ADVANCE_MS, so the next service
-// reaches the front just as the detail panel moves on to it.
-const DRIFT = STEP / (ADVANCE_MS / 1000); // radians per second
-// Speed while hovered, and while a chosen service is held at the front.
+// Each service holds the stage this long, then the next one takes over.
+const ADVANCE_MS = 7000;
+// The ring turns non-stop, one module past the front every 2.6s.
+const DRIFT = STEP / 2.6; // radians per second
+// Speed while hovered.
 const SLOW = 0.2;
-const HOLD_MS = 9000;
+// After someone picks a service, it stays in focus this long.
+const HOLD_MS = 12000;
 
 // One colour per service, in content order:
 // MediaHouse, Ads, Websites, CRM, ERP, Automations, AI Agents.
@@ -48,11 +50,17 @@ const fallbackSpot = (index: number) => {
 function Globe({
   globeRef,
   meridianRefs,
+  coreRef,
+  service,
 }: {
   globeRef: React.RefObject<HTMLDivElement | null>;
   meridianRefs: React.RefObject<(SVGEllipseElement | null)[]>;
+  coreRef: React.RefObject<HTMLDivElement | null>;
+  service: number;
 }) {
   const latitudes = [-60, -30, 0, 30, 60];
+  const { service: name, icon: Icon } = problemSolutions[service] ?? problemSolutions[0]!;
+  const colors = toneOf(service);
   return (
     <div
       ref={globeRef}
@@ -100,18 +108,26 @@ function Globe({
             ))}
           </g>
         </svg>
-        <div className="absolute inset-0 grid place-items-center">
+        {/* The core: the service in focus, its modules circling it. Sized in
+            container units so it scales with the globe. */}
+        <div aria-hidden="true" className="@container absolute inset-0 grid place-items-center">
           <span
             className="absolute size-[62%] rounded-full"
             style={{
               background: "radial-gradient(circle, rgba(255,255,255,0.95) 30%, transparent 70%)",
             }}
           />
-          <img
-            src={tdmLogo}
-            alt="TDM Groups"
-            className="relative w-[52%] drop-shadow-[0_6px_10px_rgba(0,60,60,0.25)]"
-          />
+          <div ref={coreRef} className="relative flex flex-col items-center gap-[5cqw]">
+            <span
+              className="grid size-[34cqw] place-items-center rounded-full shadow-[0_14px_28px_-12px_rgba(0,50,50,0.6)] ring-[1.6cqw] ring-white"
+              style={{ background: colors.bg, color: colors.fg }}
+            >
+              <Icon className="size-[15cqw]" strokeWidth={1.8} />
+            </span>
+            <span className="font-display text-[10cqw] font-extrabold leading-none tracking-[-0.02em] text-ink [font-stretch:normal]">
+              {name}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -121,24 +137,14 @@ function Globe({
 // ─── The orbit stage ─────────────────────────────────────────────────────────
 
 /**
- * A tilted ring of seven service "planets" around the TDM globe. Positions
- * are driven from GSAP's ticker: nodes in front of the globe draw larger and
- * above it, nodes behind it smaller and underneath. Changing `active` swings
- * the ring so that service comes to the front, and a beam links it home.
+ * A tilted ring around the globe carrying the six modules of the service in
+ * focus (CRM: Lead Capture, Contacts, Deal Pipeline…), with the service itself
+ * at the core. Positions are driven from GSAP's ticker: nodes in front of the
+ * globe draw larger and above it, nodes behind it smaller and underneath, and
+ * a beam links the front module home. When `service` changes, the modules fall
+ * into the globe and the next service's modules burst back out.
  */
-function ServiceOrbit({
-  active,
-  auto,
-  slow,
-  onFront,
-  onDrag,
-}: {
-  active: number;
-  auto: boolean;
-  slow: boolean;
-  onFront: (index: number) => void;
-  onDrag: () => void;
-}) {
+function ServiceOrbit({ service, slow }: { service: number; slow: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const tiltRef = useRef<HTMLDivElement>(null);
   const globeRef = useRef<HTMLDivElement>(null);
@@ -146,46 +152,90 @@ function ServiceOrbit({
   const frontArcRef = useRef<SVGPathElement>(null);
   const beamRef = useRef<SVGLineElement>(null);
   const beamDotRef = useRef<SVGCircleElement>(null);
+  const coreRef = useRef<HTMLDivElement>(null);
   const nodeRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const meridianRefs = useRef<(SVGEllipseElement | null)[]>([]);
-  const activeRef = useRef(active);
-  const onFrontRef = useRef(onFront);
-  onFrontRef.current = onFront;
-  const onDragRef = useRef(onDrag);
-  onDragRef.current = onDrag;
+  const measureRef = useRef<() => void>(() => {});
+  // The service whose modules are on the ring; it trails `service` by one
+  // collapse while the ring swaps over.
+  const [shown, setShown] = useState(service);
+  const shownRef = useRef(shown);
+  const targetRef = useRef(service);
+  const swappingRef = useRef(false);
   const motion = useRef({
     angle: FRONT,
     drift: 0,
     speed: 1,
-    front: 0,
+    front: -1,
     dragging: false,
     time: 0,
     width: 0,
     height: 0,
     globeRadius: 0,
-    nodeHalf: Array.from({ length: COUNT }, () => 0),
-    spread: Array.from({ length: COUNT }, () => ({ v: 1 })),
+    nodeHalf: Array.from({ length: NODES }, () => 0),
+    spread: Array.from({ length: NODES }, () => ({ v: 1 })),
   });
 
-  useEffect(() => {
-    activeRef.current = active;
+  // Burst the ring's modules out of the globe and bring the core back.
+  const expand = () => {
     const m = motion.current;
-    // While rotating on its own, the drift already brings each service round;
-    // just re-sync the panel with whichever service is at the front now.
-    if (auto) {
-      if (m.front !== active) onFrontRef.current(m.front);
+    const reduced = prefersReducedMotion();
+    measureRef.current();
+    gsap.killTweensOf(m.spread);
+    gsap.to(m.spread, {
+      v: 1,
+      duration: reduced ? 0 : 1.1,
+      ease: "back.out(1.4)",
+      stagger: reduced ? 0 : 0.06,
+    });
+    gsap.to(coreRef.current, {
+      scale: 1,
+      opacity: 1,
+      duration: reduced ? 0 : 0.7,
+      ease: "back.out(1.8)",
+    });
+  };
+
+  // A new service: pull the current modules into the globe, then swap.
+  useEffect(() => {
+    targetRef.current = service;
+    if (service === shownRef.current) {
+      // Picked the shown service again mid-swap: bring its modules back out.
+      // (Never on mount, so the scroll-in entrance still plays.)
+      if (swappingRef.current) {
+        swappingRef.current = false;
+        expand();
+      }
       return;
     }
-    const target = FRONT - active * STEP - m.drift;
-    // Shortest way round, so the ring never spins the long way.
-    const diff = ((((target - m.angle) % TAU) + TAU + Math.PI) % TAU) - Math.PI;
-    gsap.to(m, {
-      angle: m.angle + diff,
-      duration: prefersReducedMotion() ? 0 : 1.4,
-      ease: "power3.inOut",
-      overwrite: "auto",
+    const m = motion.current;
+    const reduced = prefersReducedMotion();
+    swappingRef.current = true;
+    gsap.killTweensOf(m.spread);
+    const swap = gsap.timeline({ onComplete: () => setShown(targetRef.current) });
+    swap.to(m.spread, {
+      v: 0,
+      duration: reduced ? 0 : 0.45,
+      ease: "power3.in",
+      stagger: reduced ? 0 : 0.03,
     });
-  }, [active, auto]);
+    swap.to(
+      coreRef.current,
+      { scale: 0.5, opacity: 0, duration: reduced ? 0 : 0.3, ease: "power2.in" },
+      reduced ? 0 : 0.2,
+    );
+    return () => {
+      swap.kill();
+    };
+  }, [service]);
+
+  // The new modules are in the DOM (still collapsed): measure them, burst out.
+  useEffect(() => {
+    if (shown === shownRef.current) return;
+    shownRef.current = shown;
+    swappingRef.current = false;
+    expand();
+  }, [shown]);
 
   useEffect(() => {
     gsap.to(motion.current, {
@@ -239,6 +289,7 @@ function ServiceOrbit({
           `M ${cx - rx} ${cy} A ${rx} ${ry} 0 0 0 ${cx + rx} ${cy}`,
         );
       };
+      measureRef.current = measure;
       const resize = new ResizeObserver(measure);
       resize.observe(stage);
       measure();
@@ -254,6 +305,12 @@ function ServiceOrbit({
       const render = () => {
         const { cx, cy, rx, ry } = geometry();
         let beamTarget: { x: number; y: number; depth: number } | null = null;
+        // The module nearest the viewer gets the beam and a white ring.
+        const front = ((Math.round((FRONT - m.angle - m.drift) / STEP) % NODES) + NODES) % NODES;
+        if (front !== m.front) {
+          m.front = front;
+          nodeRefs.current.forEach((node, i) => node?.toggleAttribute("data-front", i === front));
+        }
 
         nodeRefs.current.forEach((node, i) => {
           if (!node) return;
@@ -272,7 +329,7 @@ function ServiceOrbit({
           node.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale})`;
           node.style.zIndex = depth > 0.5 ? "20" : "5";
           node.style.opacity = String((0.42 + 0.58 * depth) * Math.min(1, spread * 1.4));
-          if (i === activeRef.current) beamTarget = { x, y, depth };
+          if (i === front) beamTarget = { x, y, depth };
         });
 
         const beam = beamRef.current;
@@ -309,12 +366,6 @@ function ServiceOrbit({
           const dt = Math.min(deltaTime, 50) / 1000;
           m.time += dt;
           if (!m.dragging) m.drift -= DRIFT * m.speed * dt;
-          // Tell the panel which service is nearest the viewer.
-          const front = ((Math.round((FRONT - m.angle - m.drift) / STEP) % COUNT) + COUNT) % COUNT;
-          if (front !== m.front) {
-            m.front = front;
-            onFrontRef.current(front);
-          }
         }
         render();
       };
@@ -354,7 +405,6 @@ function ServiceOrbit({
             m.dragging = true;
             gsap.killTweensOf(m, "angle");
             stage.setPointerCapture(event.pointerId);
-            onDragRef.current();
           }
           if (!moved) return;
           const now = performance.now();
@@ -475,6 +525,9 @@ function ServiceOrbit({
     { scope: stageRef },
   );
 
+  const orbiting = problemSolutions[shown] ?? problemSolutions[0]!;
+  const colors = toneOf(shown);
+
   return (
     <div
       ref={stageRef}
@@ -506,7 +559,7 @@ function ServiceOrbit({
           />
         </svg>
 
-        <Globe globeRef={globeRef} meridianRefs={meridianRefs} />
+        <Globe globeRef={globeRef} meridianRefs={meridianRefs} coreRef={coreRef} service={shown} />
 
         {/* Front half of the ring and the beam, drawn over the globe. */}
         <svg
@@ -532,27 +585,22 @@ function ServiceOrbit({
           <circle ref={beamDotRef} r="4.5" fill="var(--glow)" style={{ opacity: 0 }} />
         </svg>
 
-        {problemSolutions.map((service, index) => {
-          const colors = toneOf(index);
-          const Icon = service.icon;
-          const isActive = index === active;
+        {orbiting.modules.map((module, index) => {
+          const ModuleIcon = module.icon;
           return (
-            // Each bubble opens its service's own page.
+            // Each module opens its service's page. Slots are keyed by position
+            // so the ring keeps its nodes while the labels swap.
             <Link
-              key={service.service}
+              key={index}
               ref={(el) => {
                 nodeRefs.current[index] = el;
               }}
-              to={servicePath(service.slug)}
+              to={servicePath(orbiting.slug)}
               tabIndex={-1}
               aria-hidden="true"
               data-cursor="view"
               data-cursor-label="Open"
-              className={cn(
-                "group absolute flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 font-semibold sm:gap-2 shadow-[0_14px_30px_-14px_rgba(0,50,50,0.6)] ring-1 ring-ink/10 transition-[box-shadow] duration-500 will-change-transform sm:py-1.5 sm:pl-1.5 sm:pr-4",
-                isActive &&
-                  "ring-2 ring-white sm:ring-4 shadow-[0_18px_40px_-10px_rgba(0,50,50,0.55)]",
-              )}
+              className="group absolute flex items-center gap-1.5 whitespace-nowrap rounded-full py-1 pl-1 pr-2.5 font-semibold shadow-[0_14px_30px_-14px_rgba(0,50,50,0.6)] ring-1 ring-ink/10 transition-[box-shadow] duration-500 will-change-transform data-[front]:shadow-[0_18px_40px_-10px_rgba(0,50,50,0.55)] data-[front]:ring-2 data-[front]:ring-white sm:gap-2 sm:py-1.5 sm:pl-1.5 sm:pr-4 sm:data-[front]:ring-4"
               style={{
                 background: colors.bg,
                 color: colors.fg,
@@ -560,10 +608,10 @@ function ServiceOrbit({
                 ...fallbackSpot(index),
               }}
             >
-              <span className="grid size-6 place-items-center sm:size-9 rounded-full bg-white/90 text-ink group-hover:animate-[wiggle_0.7s_ease-in-out]">
-                <Icon className="size-3 sm:size-4" strokeWidth={1.9} />
+              <span className="grid size-6 place-items-center rounded-full bg-white/90 text-ink group-hover:animate-[wiggle_0.7s_ease-in-out] sm:size-9">
+                <ModuleIcon className="size-3 sm:size-4" strokeWidth={1.9} />
               </span>
-              <span className="text-[11px] leading-none sm:text-sm">{service.service}</span>
+              <span className="text-[11px] leading-none sm:text-sm">{module.label}</span>
             </Link>
           );
         })}
@@ -575,19 +623,28 @@ function ServiceOrbit({
 // ─── Detail + legend ─────────────────────────────────────────────────────────
 
 /**
- * The services block: the orbiting globe, plus the selected service's name,
- * question and bold answer. It advances on its own until someone picks one.
+ * The services block: the selected service's name, question and bold answer,
+ * beside the globe with that service's modules in orbit. It moves on to the
+ * next service each time the progress bar fills (paused on hover and off
+ * screen), until someone picks one.
  */
 export function ServiceUniverse() {
+  const rootRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [auto, setAuto] = useState(true);
   const [paused, setPaused] = useState(false);
-  const autoRef = useRef(auto);
-  autoRef.current = auto;
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     if (prefersReducedMotion()) setAuto(false);
+    const root = rootRef.current;
+    if (!root) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry?.isIntersecting ?? false), {
+      threshold: 0.25,
+    });
+    io.observe(root);
+    return () => io.disconnect();
   }, []);
 
   // After someone picks a service, hold it at the front a while, then go back
@@ -620,21 +677,16 @@ export function ServiceUniverse() {
   const Icon = service.icon;
 
   return (
-    <div className="relative mx-auto mt-14 grid max-w-[1500px] grid-cols-[minmax(0,1fr)] items-center gap-6 md:mt-20 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-4">
+    <div
+      ref={rootRef}
+      className="relative mx-auto mt-14 grid max-w-[1500px] grid-cols-[minmax(0,1fr)] items-center gap-6 md:mt-20 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-4"
+    >
       <div
         className="-mx-6 min-w-0 md:mx-0 lg:order-2"
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
       >
-        <ServiceOrbit
-          active={active}
-          auto={auto}
-          slow={paused || !auto}
-          onDrag={() => setAuto(true)}
-          onFront={(index) => {
-            if (autoRef.current) setActive(index);
-          }}
-        />
+        <ServiceOrbit service={active} slow={paused} />
       </div>
 
       <div
@@ -688,6 +740,9 @@ export function ServiceUniverse() {
             {service.answer}
             <span className="text-glow">”</span>
           </blockquote>
+          <p className="sr-only">
+            Includes {service.modules.map((module) => module.label).join(", ")}.
+          </p>
           <Link
             data-detail-line
             to={servicePath(service.slug)}
@@ -727,9 +782,10 @@ export function ServiceUniverse() {
           {auto && (
             <span
               key={active}
+              onAnimationEnd={() => setActive((index) => (index + 1) % COUNT)}
               className={cn(
                 "block h-full origin-left animate-[grow-x_linear_forwards] rounded-full bg-deep-teal",
-                paused && "[animation-play-state:paused]",
+                (paused || !inView) && "[animation-play-state:paused]",
               )}
               style={{ animationDuration: `${ADVANCE_MS}ms` }}
             />

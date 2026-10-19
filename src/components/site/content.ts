@@ -1,20 +1,54 @@
 import {
   BarChart3,
+  BellRing,
+  BookOpen,
   Bot,
   Boxes,
   Building2,
+  Cable,
+  CalendarCheck,
+  CalendarDays,
+  Camera,
+  ChartColumn,
   Clapperboard,
+  ClipboardList,
+  Contact,
+  Drone,
+  Film,
+  FlaskConical,
+  Gauge,
   Globe,
+  Headset,
+  IdCard,
+  LayoutDashboard,
   Magnet,
   Megaphone,
+  MessageCircle,
+  MessagesSquare,
   MousePointerClick,
+  Package,
   Palette,
+  PanelsTopLeft,
+  PenLine,
   PenTool,
+  Plug,
+  ReceiptIndianRupee,
+  Repeat,
+  Route,
+  ScanText,
   Search,
   Share2,
+  ShieldCheck,
+  ShoppingCart,
+  Smartphone,
   Sparkles,
+  SquareKanban,
+  Stamp,
   TrendingUp,
+  UserCheck,
   Users,
+  Workflow,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -499,6 +533,9 @@ export const industries = [
 // `slug`: a bold `headline`, a plain-spoken `serve` line and `brains`, the people
 // thinking behind it. `goodThing` closes each service's own page ("That's the
 // good thing about Ads: …") before the cards for the other services.
+/** One building block of a service, shown on the services orbit. */
+export type ServiceModule = { label: string; icon: LucideIcon };
+
 export const problemSolutions = [
   {
     service: "MediaHouse",
@@ -526,6 +563,15 @@ export const problemSolutions = [
       "Scripts, hooks & creative direction",
     ],
     outcomes: ["Scroll-stopping creative", "One consistent brand look", "Content that converts"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Ad Reels", icon: Film },
+      { label: "Scripts & Hooks", icon: PenLine },
+      { label: "Content Calendar", icon: CalendarDays },
+      { label: "Brand Design", icon: Palette },
+      { label: "Product Shoots", icon: Camera },
+      { label: "Drone Shoots", icon: Drone },
+    ],
   },
   {
     service: "Ads",
@@ -553,6 +599,15 @@ export const problemSolutions = [
       "Weekly optimisation & clear reports",
     ],
     outcomes: ["10+ years of ad expertise", "₹230 Cr+ in client sales", "Lower cost per lead"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Google Ads", icon: Search },
+      { label: "Meta Ads", icon: Smartphone },
+      { label: "Lead Gen", icon: Magnet },
+      { label: "Retargeting", icon: Repeat },
+      { label: "A/B Testing", icon: FlaskConical },
+      { label: "Analytics", icon: ChartColumn },
+    ],
   },
   {
     service: "Websites",
@@ -580,6 +635,15 @@ export const problemSolutions = [
       "Hosting, security & ongoing support",
     ],
     outcomes: ["More enquiries from the same traffic", "Fast on every device", "Easy to update"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Web Design", icon: PenTool },
+      { label: "Landing Pages", icon: PanelsTopLeft },
+      { label: "E-commerce", icon: ShoppingCart },
+      { label: "SEO", icon: Search },
+      { label: "Page Speed", icon: Gauge },
+      { label: "Security", icon: ShieldCheck },
+    ],
   },
   {
     service: "CRM",
@@ -607,6 +671,15 @@ export const problemSolutions = [
       "Data migration & team training",
     ],
     outcomes: ["No lost leads", "Faster follow-ups", "Clear sales visibility"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Lead Capture", icon: Magnet },
+      { label: "Contacts", icon: Contact },
+      { label: "Deal Pipeline", icon: SquareKanban },
+      { label: "Follow-ups", icon: BellRing },
+      { label: "Integrations", icon: Plug },
+      { label: "Dashboards", icon: LayoutDashboard },
+    ],
   },
   {
     service: "ERP",
@@ -634,6 +707,15 @@ export const problemSolutions = [
       "Real-time business reports",
     ],
     outcomes: ["One source of truth", "Less manual work", "Systems that scale with you"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Inventory", icon: Package },
+      { label: "Orders", icon: ClipboardList },
+      { label: "GST Billing", icon: ReceiptIndianRupee },
+      { label: "HR & Payroll", icon: IdCard },
+      { label: "Approvals", icon: Stamp },
+      { label: "Live Reports", icon: ChartColumn },
+    ],
   },
   {
     service: "Automations",
@@ -661,6 +743,15 @@ export const problemSolutions = [
       "Document & data-entry automation",
     ],
     outcomes: ["Hours saved every week", "Fewer human errors", "Team focused on growth"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Workflows", icon: Workflow },
+      { label: "WhatsApp & Email", icon: MessageCircle },
+      { label: "App Integrations", icon: Cable },
+      { label: "Lead Routing", icon: Route },
+      { label: "Alerts & Reports", icon: BellRing },
+      { label: "Data Entry", icon: ScanText },
+    ],
   },
   {
     service: "AI Agents",
@@ -688,6 +779,15 @@ export const problemSolutions = [
       "Integration with your CRM & systems",
     ],
     outcomes: ["24/7 instant replies", "More leads handled", "Growth without extra headcount"],
+    // The building blocks that orbit the globe while this service is in focus.
+    modules: [
+      { label: "Chat Agents", icon: MessagesSquare },
+      { label: "Lead Qualifier", icon: UserCheck },
+      { label: "Appointments", icon: CalendarCheck },
+      { label: "24/7 Support", icon: Headset },
+      { label: "Knowledge Base", icon: BookOpen },
+      { label: "Custom AI Tools", icon: Wrench },
+    ],
   },
 ];
 
