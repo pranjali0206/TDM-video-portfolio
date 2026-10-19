@@ -682,7 +682,7 @@ export function ServiceUniverse() {
       className="relative mx-auto mt-14 grid max-w-[1500px] grid-cols-[minmax(0,1fr)] items-center gap-6 md:mt-20 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-4"
     >
       <div
-        className="-mx-6 min-w-0 md:mx-0 lg:order-2"
+        className="-mx-6 min-w-0 max-lg:-mb-16 md:mx-0 lg:order-2"
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
       >
@@ -692,8 +692,53 @@ export function ServiceUniverse() {
       <div
         onPointerEnter={() => setPaused(true)}
         onPointerLeave={() => setPaused(false)}
-        className="min-w-0 lg:order-1"
+        className="relative z-10 flex min-w-0 flex-col gap-8 lg:order-1"
       >
+        {/* The service picker and its progress bar. They come before the
+            description in the markup (controls, then the panel they change),
+            so phones read globe → services → description; from lg up they
+            sit under the description instead. Below lg the column tucks 64px
+            up into the orbit stage's empty foot (hence z-10, so the stage's
+            drag area can't swallow taps on the buttons). */}
+        <div className="lg:order-last">
+          <div role="group" aria-label="Choose a service" className="flex flex-wrap gap-2">
+            {problemSolutions.map((item, index) => {
+              const isActive = index === active;
+              return (
+                <button
+                  key={item.service}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => choose(index)}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive",
+                    isActive
+                      ? "border-ink bg-ink text-ivory"
+                      : "border-ink/15 text-ink hover:border-ink hover:text-ink",
+                  )}
+                >
+                  <span className="size-2 rounded-full" style={{ background: markOf(index) }} />
+                  {item.service}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 h-1 max-w-sm overflow-hidden rounded-full bg-ink/10">
+            {auto && (
+              <span
+                key={active}
+                onAnimationEnd={() => setActive((index) => (index + 1) % COUNT)}
+                className={cn(
+                  "block h-full origin-left animate-[grow-x_linear_forwards] rounded-full bg-deep-teal",
+                  (paused || !inView) && "[animation-play-state:paused]",
+                )}
+                style={{ animationDuration: `${ADVANCE_MS}ms` }}
+              />
+            )}
+          </div>
+        </div>
+
         <div
           ref={detailRef}
           aria-live={auto ? "off" : "polite"}
@@ -753,43 +798,6 @@ export function ServiceUniverse() {
               <ArrowUpRight className="size-5" />
             </span>
           </Link>
-        </div>
-
-        <div role="group" aria-label="Choose a service" className="mt-8 flex flex-wrap gap-2">
-          {problemSolutions.map((item, index) => {
-            const isActive = index === active;
-            return (
-              <button
-                key={item.service}
-                type="button"
-                aria-pressed={isActive}
-                onClick={() => choose(index)}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-interactive",
-                  isActive
-                    ? "border-ink bg-ink text-ivory"
-                    : "border-ink/15 text-ink hover:border-ink hover:text-ink",
-                )}
-              >
-                <span className="size-2 rounded-full" style={{ background: markOf(index) }} />
-                {item.service}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-6 h-1 max-w-sm overflow-hidden rounded-full bg-ink/10">
-          {auto && (
-            <span
-              key={active}
-              onAnimationEnd={() => setActive((index) => (index + 1) % COUNT)}
-              className={cn(
-                "block h-full origin-left animate-[grow-x_linear_forwards] rounded-full bg-deep-teal",
-                (paused || !inView) && "[animation-play-state:paused]",
-              )}
-              style={{ animationDuration: `${ADVANCE_MS}ms` }}
-            />
-          )}
         </div>
       </div>
     </div>
