@@ -9,6 +9,7 @@ import { useSectionLinks } from "./use-section-links";
  * The TDM mascot, floating in the bottom-right corner of every page. It bobs
  * gently, waves a "Let's talk!" bubble on hover and opens the contact form.
  * On the home page it stays out of the way until you've scrolled past the hero.
+ * During the home page's growth process it steps onto that stage instead.
  */
 export function FloatingMascot() {
   const { hrefFor, goTo } = useSectionLinks();
@@ -36,7 +37,7 @@ export function FloatingMascot() {
       aria-hidden={hidden || undefined}
       tabIndex={hidden ? -1 : undefined}
       className={cn(
-        "group fixed bottom-3 right-2 z-40 block w-16 transition-[opacity,translate] duration-500 sm:bottom-5 sm:right-4 sm:w-20 md:w-24",
+        "floating-mascot group fixed bottom-3 right-2 z-40 block w-16 transition-[opacity,translate] duration-500 sm:bottom-5 sm:right-4 sm:w-20 md:w-24",
         hidden && "pointer-events-none translate-y-4 opacity-0",
       )}
     >

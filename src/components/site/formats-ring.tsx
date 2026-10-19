@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
-import { SectionLabel } from "./primitives";
+import { FlowCard, Sticker } from "./process-flow";
 import { ringReels, reelUrls } from "./reels";
 import { ReelsViewer } from "./reels-viewer";
 
@@ -14,7 +14,8 @@ const STEP = 360 / COUNT;
 const DRIFT = 9;
 
 /**
- * "One idea. Infinite momentum." — real MediaHouse reels on a turning 3D ring
+ * The first card of the process flow ("Walk through our process of profit.",
+ * step Create): real MediaHouse reels on a turning 3D ring
  * (CSS 3D, plain <video>, so the clips play straight from the video host).
  * It turns on its own, can be dragged or stepped with the arrows, and only
  * the reels facing the viewer play.
@@ -138,15 +139,24 @@ export function FormatsRing() {
   }, []);
 
   return (
-    <section
+    <FlowCard
       id="formats"
-      className="relative flex min-h-[100svh] flex-col overflow-hidden py-16 text-ink md:py-20"
+      step="create"
+      label="Create: MediaHouse"
+      background="color-mix(in oklch, var(--secondary) 60%, white)"
     >
-      <div className="relative flex flex-col items-center px-6 text-center">
-        <SectionLabel>Formats</SectionLabel>
-        <h2 className="text-teal-gradient mt-5 text-4xl leading-[0.95] md:text-6xl">
-          One idea. <span className="font-extrabold text-glow">Infinite</span> momentum.
+      <div className="relative flex flex-col items-center text-center">
+        <h2
+          id="process-title"
+          className="text-teal-gradient text-balance text-[clamp(2.2rem,5vw,4.8rem)] leading-[0.92] tracking-[-0.02em]"
+          style={{ fontStretch: "108%" }}
+        >
+          Walk through our process of <span className="font-extrabold text-glow">profit.</span>
         </h2>
+        <p className="mt-4 max-w-xl text-balance text-base font-medium text-ink/70 md:text-lg">
+          It starts with content people can’t scroll past: reels, brand films and ads from our
+          MediaHouse.
+        </p>
       </div>
 
       {/* The ring */}
@@ -154,8 +164,15 @@ export function FormatsRing() {
         ref={stageRef}
         data-cursor="drag"
         data-cursor-label="Drag"
-        className="relative my-auto flex cursor-grab touch-pan-y select-none items-center justify-center py-10 [--panel:clamp(11rem,min(22vw,42svh),22rem)] [--radius:calc(var(--panel)*2.05)] [perspective:1800px] active:cursor-grabbing md:py-14"
+        className="relative my-auto flex cursor-grab touch-pan-y select-none items-center justify-center py-6 [--panel:clamp(10rem,min(16vw,27svh),19rem)] [--radius:calc(var(--panel)*2.05)] [perspective:1800px] active:cursor-grabbing md:py-8"
       >
+        {/* The mascot, amazed by the reels going round. */}
+        <Sticker
+          id="create"
+          say="Wowww! 🤩"
+          sayAlign="left"
+          className="bottom-2 left-0 w-20 sm:w-28 md:left-[6%] md:w-32"
+        />
         <div
           className="relative h-[calc(var(--panel)*1.25)] w-[var(--panel)] [transform-style:preserve-3d]"
           style={{ transform: "rotateX(-6deg)" }}
@@ -234,6 +251,6 @@ export function FormatsRing() {
         </button>
       </div>
       <ReelsViewer open={viewerOpen} onOpenChange={setViewerOpen} />
-    </section>
+    </FlowCard>
   );
 }

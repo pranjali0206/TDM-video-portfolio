@@ -219,3 +219,11 @@ export const heroReels = [
     alt: "Real estate ad reel",
   },
 ];
+
+/**
+ * The ring's reels without the ones carrying HM Realty branding (Alpine opens
+ * on the HM logo, hm-2 has its watermark), so no single client is promoted.
+ * Used by the nav showreel and the process section's phone.
+ */
+const HM_BRANDED = new Set(["alpine", "hm-2"]);
+export const showcaseReels = ringReels.filter((reel) => !HM_BRANDED.has(reel.slug));

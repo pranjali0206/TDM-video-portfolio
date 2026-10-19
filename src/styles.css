@@ -489,6 +489,17 @@
   animation: marquee-x var(--marquee-duration, 40s) linear infinite;
 }
 
+/* The floating mascot leaves its corner for the growth process
+   (html[data-mascot="away"], set by growth-process.tsx) and comes back after. */
+.floating-mascot {
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.5s ease;
+}
+html[data-mascot="away"] .floating-mascot {
+  transform: translate(-30vw, -30vh) scale(2);
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* The nav's showreel link: a story-style ring, a dark teal sweep that
    slowly turns, and spins faster on hover. */
 .reel-ring {

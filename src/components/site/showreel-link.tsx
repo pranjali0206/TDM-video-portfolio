@@ -5,21 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-import { reelUrls, ringReels } from "./reels";
+import { reelUrls, showcaseReels } from "./reels";
 
 // How long each reel shows before the next one fades in.
 const CLIP_SECONDS = 2.6;
 const FADE_MS = 500;
-// The home ring's reels minus the ones carrying HM Realty branding (Alpine
-// opens on the HM logo, hm-2 has its watermark), so no single client is
-// promoted here. Starts on Forum.
-const HIDDEN = new Set(["alpine", "hm-2"]);
-const navReels = ringReels.filter((reel) => !HIDDEN.has(reel.slug));
+// Starts on Forum.
 const start = Math.max(
   0,
-  navReels.findIndex((reel) => reel.slug === "forum"),
+  showcaseReels.findIndex((reel) => reel.slug === "forum"),
 );
-const clips = [...navReels.slice(start), ...navReels.slice(0, start)].map((reel) =>
+const clips = [...showcaseReels.slice(start), ...showcaseReels.slice(0, start)].map((reel) =>
   reelUrls(reel.industry, reel.slug),
 );
 const clipAt = (index: number) => clips[index % clips.length]!;
