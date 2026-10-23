@@ -74,8 +74,9 @@ export function ExperienceProvider({ children }: { children: ReactNode }) {
         if (cancelled || !target) return;
         ScrollTrigger.refresh();
         const navHeight = document.querySelector<HTMLElement>("header.fixed")?.offsetHeight ?? 0;
-        const top =
-          target.getBoundingClientRect().top + window.scrollY - (contactTitle ? navHeight + 48 : 0);
+        // The nav bar stays on screen, so sections land just below it.
+        const clearance = contactTitle ? navHeight + 48 : id === "top" ? 0 : navHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - clearance;
         if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
         else window.scrollTo(0, top);
       });

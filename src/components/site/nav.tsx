@@ -6,7 +6,7 @@ import tdmLogo from "@/assets/tdm-logo.webp";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-import { chapters, problemSolutions } from "./content";
+import { chapters, navSectionLinks, problemSolutions } from "./content";
 import { useExperience } from "./experience";
 import { frame } from "./frame";
 import { RollText } from "./primitives";
@@ -20,11 +20,6 @@ const pageLinks = [
 ] as const;
 // The mobile menu skips the hero, Services and Formats (the bar links Formats as "Work").
 const hiddenSections = ["top", "services", "formats"];
-// The bar's home-page links: the reels (Formats) as "Work", then Reviews and Contact.
-const barSectionLinks = [
-  { id: "formats", label: "Work" },
-  ...chapters.filter((chapter) => chapter.id === "reviews" || chapter.id === "contact"),
-];
 // The mobile menu also lists the other home-page sections worth jumping to.
 const menuSectionLinks = chapters.filter((chapter) => !hiddenSections.includes(chapter.id));
 
@@ -163,7 +158,7 @@ export function Nav() {
                 <RollText>About</RollText>
               </Link>
               <ServicesMenu label="Services" current={current === "services"} />
-              {barSectionLinks.map((link) => (
+              {navSectionLinks.map((link) => (
                 <a
                   key={link.id}
                   href={hrefFor(link.id)}

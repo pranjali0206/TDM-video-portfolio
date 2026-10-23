@@ -83,6 +83,16 @@ export const chapters = [
   { id: "contact", label: "Contact" },
 ] as const;
 
+/**
+ * The home-page sections linked from the navbar and the footer, in page order.
+ * The reels section (Formats) is listed as "Work".
+ */
+export const navSectionLinks = [
+  { id: "formats", label: "Work" },
+  { id: "reviews", label: "Reviews" },
+  { id: "contact", label: "Contact" },
+] as const;
+
 export const clients = [
   "AB Associates",
   "HM Realty",

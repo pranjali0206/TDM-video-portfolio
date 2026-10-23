@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import tdmLogoMark from "@/assets/tdm-logo-mark.webp";
 
-import { chapters } from "./content";
+import { navSectionLinks } from "./content";
 import { useExperience } from "./experience";
 import { RollText } from "./primitives";
 import { useSectionLinks } from "./use-section-links";
@@ -50,10 +50,6 @@ export function Footer() {
       active = false;
     };
   }, []);
-  // Services has its own page, linked separately below.
-  const links = chapters.filter(
-    (chapter) => !["top", "services", "formats", "reviews"].includes(chapter.id),
-  );
 
   return (
     <div
@@ -89,17 +85,18 @@ export function Footer() {
             <Link to="/services" className={indexLinkClass}>
               <RollText>Services</RollText>
             </Link>
-            {links.map((chapter) => (
+            {/* The same home-page links as the navbar: Work, Reviews, Contact. */}
+            {navSectionLinks.map((link) => (
               <a
-                key={chapter.id}
-                href={hrefFor(chapter.id)}
+                key={link.id}
+                href={hrefFor(link.id)}
                 onClick={(event) => {
                   event.preventDefault();
-                  goTo(chapter.id);
+                  goTo(link.id);
                 }}
                 className={indexLinkClass}
               >
-                <RollText>{chapter.label}</RollText>
+                <RollText>{link.label}</RollText>
               </a>
             ))}
           </nav>

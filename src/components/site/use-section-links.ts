@@ -26,14 +26,14 @@ export function useSectionLinks() {
       return;
     }
     if (onHome) {
+      // The nav bar stays on screen, so sections land just below it.
+      const navHeight = document.querySelector<HTMLElement>("header.fixed")?.offsetHeight ?? 0;
       // Contact's headline is a full screen tall on its own, so land on the
       // headline itself, just clear of the fixed nav bar: the whole
       // "Need better results? Let's grow." block shows with the form below.
       const title = id === "contact" && document.querySelector<HTMLElement>("[data-contact-title]");
-      if (title) {
-        const navHeight = document.querySelector<HTMLElement>("header.fixed")?.offsetHeight ?? 0;
-        scrollTo(title, { offset: -(navHeight + 48) });
-      } else scrollTo(`#${id}`);
+      if (title) scrollTo(title, { offset: -(navHeight + 48) });
+      else scrollTo(`#${id}`, { offset: id === "top" ? 0 : -navHeight });
       return;
     }
     void navigate(id === "top" ? { to: "/" } : { to: "/", hash: id });
