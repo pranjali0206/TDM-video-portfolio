@@ -8,21 +8,31 @@ import { useSectionLinks } from "./use-section-links";
 /**
  * The TDM mascot, floating in the bottom-right corner of every page. It bobs
  * gently, waves a "Let's talk!" bubble on hover and opens the contact form.
- * On the home page it stays out of the way until you've scrolled past the hero.
- * During the home page's growth process it steps onto that stage instead.
+ * It stays out of the way while the home hero or the footer is on screen, so
+ * it never sits on the headline or the TDM wordmark. During the home page's
+ * growth process it steps onto that stage instead.
  */
 export function FloatingMascot() {
   const { hrefFor, goTo } = useSectionLinks();
   const [hidden, setHidden] = useState(true);
 
   useEffect(() => {
-    const hero = document.querySelector("[data-hero]");
-    if (!hero) {
+    // The footer's in-flow wrapper (the footer itself is fixed on desktop, so
+    // it would always count as on screen).
+    const targets = [
+      document.querySelector("[data-hero]"),
+      document.getElementById("site-footer"),
+    ].filter((el): el is Element => el !== null);
+    if (targets.length === 0) {
       setHidden(false);
       return;
     }
-    const io = new IntersectionObserver(([entry]) => setHidden(entry?.isIntersecting ?? false));
-    io.observe(hero);
+    const onScreen = new Map<Element, boolean>();
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) onScreen.set(entry.target, entry.isIntersecting);
+      setHidden([...onScreen.values()].some(Boolean));
+    });
+    targets.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, []);
 

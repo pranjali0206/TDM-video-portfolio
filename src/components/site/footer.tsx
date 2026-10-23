@@ -1,9 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUp } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import tdmLogoMark from "@/assets/tdm-logo-mark.webp";
-import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 
 import { chapters } from "./content";
 import { useExperience } from "./experience";
@@ -12,40 +11,45 @@ import { useSectionLinks } from "./use-section-links";
 
 const indexLinkClass = "group w-fit text-ivory/80 transition-colors hover:text-aqua";
 
+// The TDM GROUPS wordmark is Archivo 900 at its condensed 68% width, which
+// sets almost exactly 1000 units wide at size 190 — so it fills the box
+// natively. (It used to be the 125% width squashed to fit with textLength /
+// lengthAdjust, which Safari on iPhone doesn't apply: the text ran 1706 units
+// wide and was cut off after "TDM GR".)
+const WORDMARK_WIDTH = 1000;
+const WORDMARK_HEIGHT = 170;
+
 /**
  * Curtain footer: from tablet up it sits fixed beneath the page and is
- * uncovered as the last section scrolls away, with the wordmark rising into
- * place. It is never taller than the screen, so on short laptops the logo at
- * its top isn't pushed off-screen. On phones it simply follows the page at its
- * natural height, so nothing gets squeezed.
+ * uncovered as the last section scrolls away. The TDM GROUPS wordmark is
+ * drawn in place from the start (no rise-in), so it's whole and crisp the
+ * moment it's uncovered. The footer is never taller than the screen, so on
+ * short laptops the logo at its top isn't pushed off-screen. On phones it
+ * simply follows the page at its natural height, so nothing gets squeezed.
  */
 export function Footer() {
   const { scrollTo } = useExperience();
   const { hrefFor, goTo } = useSectionLinks();
-  const rootRef = useRef<HTMLDivElement>(null);
+  const wordmarkRef = useRef<SVGTextElement>(null);
+  const [wordmarkWidth, setWordmarkWidth] = useState(WORDMARK_WIDTH);
 
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      gsap.fromTo(
-        "[data-wordmark]",
-        { yPercent: 60, opacity: 0.3 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: rootRef.current,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: true,
-          },
-        },
-      );
-    },
-    { scope: rootRef },
-  );
-
+  // Once the font is in, size the box to the text as this browser actually
+  // draws it, so the whole name always fits — whatever the engine, or if a
+  // fallback font stands in.
+  useEffect(() => {
+    const text = wordmarkRef.current;
+    if (!text) return;
+    let active = true;
+    const fit = () => {
+      const width = text.getComputedTextLength();
+      if (active && width > 0) setWordmarkWidth(Math.ceil(width) + 2);
+    };
+    fit();
+    void document.fonts?.ready.then(fit);
+    return () => {
+      active = false;
+    };
+  }, []);
   // Services has its own page, linked separately below.
   const links = chapters.filter(
     (chapter) => !["top", "services", "formats", "reviews"].includes(chapter.id),
@@ -53,7 +57,6 @@ export function Footer() {
 
   return (
     <div
-      ref={rootRef}
       id="site-footer"
       className="relative md:h-[min(40rem,100svh)] md:[clip-path:polygon(0%_0%,100%_0%,100%_100%,0%_100%)]"
     >
@@ -116,8 +119,7 @@ export function Footer() {
 
         <div className="overflow-hidden">
           <svg
-            data-wordmark
-            viewBox="0 0 1000 170"
+            viewBox={`0 0 ${wordmarkWidth} ${WORDMARK_HEIGHT}`}
             className="w-full"
             role="img"
             aria-label="TDM Groups"
@@ -129,15 +131,14 @@ export function Footer() {
               </linearGradient>
             </defs>
             <text
+              ref={wordmarkRef}
               x="0"
               y="150"
-              textLength="1000"
-              lengthAdjust="spacingAndGlyphs"
               fill="url(#wordmark-fill)"
               style={{
                 fontFamily: "var(--font-display)",
                 fontWeight: 900,
-                fontStretch: "125%",
+                fontStretch: "68%",
                 fontSize: 190,
               }}
             >

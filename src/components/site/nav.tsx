@@ -28,6 +28,35 @@ const barSectionLinks = [
 // The mobile menu also lists the other home-page sections worth jumping to.
 const menuSectionLinks = chapters.filter((chapter) => !hiddenSections.includes(chapter.id));
 
+// Page sections in the order they flow, and the bar link that lights up while
+// each one is on screen (sections without a link of their own light nothing).
+const flowSections = [
+  "top",
+  "services",
+  "how-we-work",
+  "formats",
+  "expertise",
+  "reviews",
+  "contact",
+];
+const sectionLink: Record<string, string> = {
+  services: "services",
+  expertise: "services",
+  formats: "formats",
+  reviews: "reviews",
+  contact: "contact",
+};
+
+/** The bar link for the section under a line 40% down the screen, if any. */
+function currentLink() {
+  const probe = window.innerHeight * 0.4;
+  for (const id of flowSections) {
+    const rect = document.getElementById(id)?.getBoundingClientRect();
+    if (rect && rect.top <= probe && rect.bottom > probe) return sectionLink[id] ?? null;
+  }
+  return null;
+}
+
 const barLinkClass =
   "group flex items-center gap-2 py-2 font-ui text-[15px] font-medium text-hero-ink transition-colors hover:text-hero-teal";
 
@@ -41,26 +70,25 @@ export function Nav() {
   const barRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [current, setCurrent] = useState<string | null>(null);
   const menuTl = useRef<gsap.core.Timeline | null>(null);
 
-  // Hide on scroll down, reveal on scroll up; frost the bar once off the top.
+  // The bar stays in view all the way down the page: frosted once off the
+  // top, and the link for the section being read lights up as you go.
   useGSAP(() => {
     const bar = barRef.current;
     if (!bar) return;
-    const reveal = gsap
-      .from(headerRef.current, { yPercent: -140, duration: 0.6, ease: "power3.out", paused: true })
-      .progress(1);
-
+    const update = (scroll: number) => {
+      bar.dataset["scrolled"] = String(scroll > 80);
+      setCurrent(currentLink());
+    };
     ScrollTrigger.create({
       start: 0,
       end: "max",
-      onUpdate: (self) => {
-        const scrolled = self.scroll() > 80;
-        bar.dataset["scrolled"] = String(scrolled);
-        if (!scrolled || self.direction === -1) reveal.play();
-        else reveal.reverse();
-      },
+      onUpdate: (self) => update(self.scroll()),
+      onRefresh: (self) => update(self.scroll()),
     });
+    update(window.scrollY);
   });
 
   useGSAP(
@@ -134,7 +162,7 @@ export function Nav() {
                 <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
                 <RollText>About</RollText>
               </Link>
-              <ServicesMenu label="Services" />
+              <ServicesMenu label="Services" current={current === "services"} />
               {barSectionLinks.map((link) => (
                 <a
                   key={link.id}
@@ -143,8 +171,11 @@ export function Nav() {
                     event.preventDefault();
                     go(link.id);
                   }}
-                  className={barLinkClass}
+                  data-current={current === link.id || undefined}
+                  aria-current={current === link.id ? "location" : undefined}
+                  className={cn(barLinkClass, "data-[current]:text-hero-teal")}
                 >
+                  <span className="hidden size-1.5 rounded-full bg-glow group-data-[current]:block" />
                   <RollText>{link.label}</RollText>
                 </a>
               ))}
@@ -264,7 +295,7 @@ export function Nav() {
  * (or the chevron, for touch and keyboard) drops down every service, each
  * leading to its own page.
  */
-function ServicesMenu({ label }: { label: string }) {
+function ServicesMenu({ label, current = false }: { label: string; current?: boolean }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
@@ -308,9 +339,13 @@ function ServicesMenu({ label }: { label: string }) {
       <Link
         to="/services"
         onClick={() => setOpen(false)}
-        className={cn(barLinkClass, "data-[status=active]:text-hero-teal")}
+        data-current={current || undefined}
+        className={cn(
+          barLinkClass,
+          "data-[current]:text-hero-teal data-[status=active]:text-hero-teal",
+        )}
       >
-        <span className="hidden size-1.5 rounded-full bg-glow group-data-[status=active]:block" />
+        <span className="hidden size-1.5 rounded-full bg-glow group-data-[current]:block group-data-[status=active]:block" />
         <RollText>{label}</RollText>
       </Link>
       <button
