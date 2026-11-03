@@ -20,10 +20,11 @@ import { GrowthTriangle } from "./growth-triangle";
 import { PlayIcon } from "./hero-reels";
 import { HeroShader } from "./hero-shader";
 import { servicePaths } from "./service-links";
+import { ServiceStrip, type ServicePill } from "./service-strip";
 import { useSectionLinks } from "./use-section-links";
 
 /** Every service as a pill: `tone` fills the icon circle (or the dot on phones). */
-const services: { label: string; to: string; Icon: LucideIcon; tone: string; icon: string }[] = [
+const services: ServicePill[] = [
   {
     label: "MediaHouse",
     to: servicePaths.mediahouse,
@@ -160,55 +161,16 @@ export function Hero() {
               that <span className="font-semibold text-deep-teal">turn growth into reality.</span>
             </p>
 
-            {/* Every service on one line, gliding left without end. Two copies sit
-                side by side so the loop is seamless; hovering or focusing a pill
-                holds it. Reduced motion: one still, wrapped row. */}
-            <nav
-              data-hero-item
-              aria-label="Services"
-              className="-mx-5 -my-2.5 overflow-hidden py-2.5 [mask-image:linear-gradient(to_right,transparent,#000_7%,#000_93%,transparent)] md:mx-0 motion-reduce:[mask-image:none]"
-            >
-              <div className="marquee flex w-max [--marquee-duration:40s] focus-within:[animation-play-state:paused] hover:[animation-play-state:paused] motion-reduce:w-auto">
-                {[0, 1].map((copy) => (
-                  <div
-                    key={copy}
-                    inert={copy === 1}
-                    aria-hidden={copy === 1 || undefined}
-                    className={cn(
-                      "flex shrink-0 gap-2.5 pr-2.5 motion-reduce:flex-wrap md:gap-3 md:pr-3",
-                      copy === 1 && "motion-reduce:hidden",
-                    )}
-                  >
-                    {services.map(({ label, to, Icon, tone, icon }) => (
-                      <Link
-                        key={label}
-                        to={to}
-                        className="inline-flex min-h-12 shrink-0 items-center gap-2.5 whitespace-nowrap rounded-full border border-hairline bg-white pl-2 pr-4 text-[15px] font-semibold text-hero-ink shadow-[0_6px_18px_rgba(15,42,44,0.08)] transition-[transform,box-shadow] duration-300 hover:-translate-y-px hover:shadow-[0_10px_24px_rgba(15,42,44,0.13)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal md:min-h-14 md:gap-3 md:pl-2.5 md:pr-5 md:text-[17px]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className={cn(
-                            "grid size-8 place-items-center rounded-full md:size-[38px]",
-                            tone,
-                            icon,
-                          )}
-                        >
-                          <Icon className="size-4 md:size-[18px]" />
-                        </span>
-                        {label}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </nav>
+            {/* Every service on one endless line: it glides on its own and can be
+                swiped, dragged or scrolled sideways by hand. */}
+            <ServiceStrip items={services} />
 
             <div data-hero-item className="flex items-center gap-2.5 md:flex-wrap md:gap-3.5">
               <Link
                 to="/contact"
                 className="group inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-hero-ink px-3 text-sm font-semibold text-white transition-colors hover:bg-hero-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hero-teal focus-visible:ring-offset-2 min-[390px]:px-4 min-[390px]:text-[15px] md:min-h-14 md:flex-none md:gap-2.5 md:px-[30px] md:text-[17px]"
               >
-                Start a project
+                Request a consultation
                 <ArrowUpRight
                   aria-hidden="true"
                   className="size-4 transition-transform duration-500 group-hover:rotate-45 md:size-[18px]"

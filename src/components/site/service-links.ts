@@ -22,7 +22,7 @@ export const servicePath = (slug: string) =>
  */
 export const contactDetails = {
   /** International format, digits only, e.g. "919876543210". */
-  whatsapp: "",
+  whatsapp: "917828726107",
   /** As dialled, e.g. "+91 98765 43210". */
   phone: "",
   email: "",

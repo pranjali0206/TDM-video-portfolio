@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <SiteShell>
+    <SiteShell floating="whatsapp">
       <Hero />
       <Services />
       <HowWeWork />

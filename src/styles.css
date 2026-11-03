@@ -96,6 +96,7 @@
   --color-hero-base: var(--hero-base);
   --color-lime-ink: var(--lime-ink);
   --color-track: var(--track);
+  --color-whatsapp: var(--whatsapp);
 }
 
 :root {
@@ -152,6 +153,8 @@
   --hero-base: oklch(0.979 0.008 157.1);
   --lime-ink: oklch(0.414 0.095 125.6);
   --track: oklch(0.935 0.011 167.8);
+  /* WhatsApp's brand green (#25D366), for the floating chat button only. */
+  --whatsapp: oklch(0.771 0.195 150.4);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);

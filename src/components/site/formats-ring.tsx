@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
-import { FlowCard, Sticker } from "./process-flow";
+import { FlowCard } from "./process-flow";
 import { ringReels, reelUrls } from "./reels";
 import { ReelsViewer } from "./reels-viewer";
 
@@ -166,13 +166,6 @@ export function FormatsRing() {
         data-cursor-label="Drag"
         className="relative my-auto flex cursor-grab touch-pan-y select-none items-center justify-center py-6 [--panel:clamp(10rem,min(16vw,27svh),19rem)] [--radius:calc(var(--panel)*2.05)] [perspective:1800px] active:cursor-grabbing md:py-8"
       >
-        {/* The mascot, amazed by the reels going round. */}
-        <Sticker
-          id="create"
-          say="Wowww! 🤩"
-          sayAlign="left"
-          className="bottom-2 left-0 w-20 sm:w-28 md:left-[6%] md:w-32"
-        />
         <div
           className="relative h-[calc(var(--panel)*1.25)] w-[var(--panel)] [transform-style:preserve-3d]"
           style={{ transform: "rotateX(-6deg)" }}
